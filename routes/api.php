@@ -79,7 +79,10 @@ Route::name('agenda-gestion')->get('agenda/horarios/paciente/cancelar/{id}', 'Ag
 Route::name('agenda-gestion')->get('agenda/horarios/turno/eliminado', 'Agenda\AgendaController@getAgendaEliminados');   
 Route::name('agenda-gestion')->get('agenda/horarios/turno/todos', 'Agenda\AgendaController@getAgendaAtencionByFechaTurnosTodos');
 Route::name('agenda-gestion')->put('agenda/horarios/turno/operacioncobro/actualizar/{id}', 'Agenda\AgendaController@updateAgendaOperacionCobro'); 
-
+Route::name('agenda-gestion')->get('agenda/horarios/turno/todos', 'Agenda\AgendaController@getAgendaAtencionByFechaTurnosTodos');
+Route::name('agenda-gestion')->get('agenda/horarios/bloqueo/turno', 'Agenda\AgendaController@getHorarioBloqueoByMedico');
+Route::name('agenda-gestion')->get('agenda/horarios/bloqueo/dia', 'Agenda\AgendaController@getDiasBloqueados');
+Route::name('agenda-gestion')->get('agenda/horarios/cancelar/horario/{id}', 'Agenda\AgendaController@deleteAgendaMedicoHorario');
 
 
 /** CIRUGIA **/

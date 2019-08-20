@@ -1080,22 +1080,8 @@ ORDER BY agenda_usuario_dia_horario_id  ASC
             );   
             $i++;
         }
-     // var_dump( $res);
-     // $t = $request[0]["fecha"];
-    //  echo $fecha_desde;
-     //echo $t["usuario_id"]; 
-  //   echo $request[1]["fecha"];
-
-   // }
- //var_dump($someArray);
-    // $q =$request.count();
-    // var_dump($res)
-        return response()->json($t[1]["usuario_id"], "201");
-    
-   // var_dump($someArray);
-      //  echo $fecha_desde;
-      //  echo $fecha_hasta;
-       // echo $usuario_id;
+   
+        return response()->json($t[1]["usuario_id"], "201"); 
     }
 
     public function bloquearAgendaTurno(Request $request){
@@ -1111,6 +1097,45 @@ ORDER BY agenda_usuario_dia_horario_id  ASC
         return response()->json("Datos guardados", "200");
     }
 
+    
+
+ //DEVUELVE LA AGENDA HORARIA BLOQUEADA DE UN MEDICO 
+ public function getHorarioBloqueoByMedico(Request $request )
+ {
+     $tmp_fecha = str_replace('/', '-', $request->input('fecha'));
+ $fecha =  date('Y-m-d H:i', strtotime($tmp_fecha));   
+ $usuario_id =  $request->input('usuario_id');     
+ 
+
+     $horario = DB::select( DB::raw("SELECT users.nombreyapellido, agenda_horario.hora_desde_hasta, agenda_dias.dia_nombre, agenda_medico_bloqueo_horario.fecha , users.id 
+     FROM agenda_medico_bloqueo_horario, agenda_dia_horario_atencion, agenda_usuario_dia_horario, agenda_horario, agenda_dias, users 
+     WHERE agenda_medico_bloqueo_horario.agenda_usuario_dia_horario_id = agenda_dia_horario_atencion.id AND agenda_dia_horario_atencion.agenda_usuario_dia_horario_id = agenda_usuario_dia_horario.id AND agenda_usuario_dia_horario.agenda_horario_id = agenda_horario.id 
+     AND agenda_horario.hora_desde_hasta AND agenda_usuario_dia_horario.agenda_dia_id = agenda_dias.id AND agenda_medico_bloqueo_horario.usuario_id = users.id 
+     AND users.id = usuario_id:usuario_id AND agenda_medico_bloqueo_horario.fecha >= fecha:fecha          
+     
+      "), array(                       
+          'usuario_id' => $usuario_id,
+          'fecha' => $fecha
+        ));
+
+        return response()->json($horario, 201);
+ 
+ }
+
+
+  //DEVUELVE LA AGENDA  BLOQUEADA DE UN MEDICO 
+  public function getDiasBloqueados(Request $request)
+  {
+      
+  $usuario_id =  $request->input('usuario_id');     
+  
+    $horario = DB::select( DB::raw("SELECT agenda_medico_bloqueo.id as agenda_medico_bloqueo_id, agenda_medico_bloqueo.fecha, users.nombreyapellido, users.id as usuario_id  
+    FROM `agenda_medico_bloqueo`, users 
+    WHERE  agenda_medico_bloqueo.usuario_id = users.id        
+     "));
+ 
+    return response()->json($horario, 201);
+  }
     
     
     public function update(Request $request, $id)
@@ -1158,6 +1183,27 @@ ORDER BY agenda_usuario_dia_horario_id  ASC
         FROM agenda_dia_horario_atencion  WHERE  agenda_dia_horario_atencion.id = ".$id." ");
 
               DB::delete(" DELETE  FROM agenda_dia_horario_atencion   WHERE id= ".$id.""); 
+         return response()->json('OK', 201);
+    
+    }
+
+
+    
+    public function deleteAgendaMedico( $id)
+    {
+       
+              DB::delete(" DELETE  FROM agenda_medico_bloqueo   WHERE id= ".$id.""); 
+         return response()->json('OK', 201);
+    
+    }
+
+
+    
+    public function deleteAgendaMedicoHorario( $id)
+    {
+      
+
+              DB::delete(" DELETE  FROM agenda_medico_bloqueo_horario   WHERE id= ".$id.""); 
          return response()->json('OK', 201);
     
     }
