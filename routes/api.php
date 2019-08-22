@@ -83,6 +83,7 @@ Route::name('agenda-gestion')->get('agenda/horarios/turno/todos', 'Agenda\Agenda
 Route::name('agenda-gestion')->get('agenda/horarios/bloqueo/turno', 'Agenda\AgendaController@getHorarioBloqueoByMedico');
 Route::name('agenda-gestion')->get('agenda/horarios/bloqueo/dia', 'Agenda\AgendaController@getDiasBloqueados');
 Route::name('agenda-gestion')->get('agenda/horarios/cancelar/horario/{id}', 'Agenda\AgendaController@deleteAgendaMedicoHorario');
+Route::name('agenda-gestion')->get('agenda/horarios/cancelar/agenda/{id}', 'Agenda\AgendaController@deleteAgendaMedico');
 
 
 /** CIRUGIA **/
@@ -117,6 +118,7 @@ Route::name('cirugia')->put('cirugia/anestesia/{id}',   'Cirugia\CirugiaControll
 Route::name('cirugia')->get('cirugia/ficha/registro/delete',    'Cirugia\CirugiaController@destroyRegistroLenteFichaQuirugica');
 Route::name('cirugia')->get('cirugia/ficha/derivar/listado',    'Cirugia\CirugiaController@getFichAsesoramientoDerivados');
 Route::name('cirugia')->put('cirugia/ficha/derivar/listado/atender/{id}',    'Cirugia\CirugiaController@actualizarFichAsesoramientoDerivados');
+Route::name('cirugia')->delete('cirugia/ficha/listado/{id}', 'Cirugia\CirugiaController@destroyCirugiaListado');
 
 
 
@@ -125,6 +127,7 @@ Route::name('cirugia')->put('cirugia/ficha/derivar/listado/atender/{id}',    'Ci
 //Route::name('cirugia')->put('cirugia/listado/quirofano',    'Cirugia\CirugiaController@actualizarRegistroCirugiaAnestesia');
 Route::name('cirugia')->post('cirugia/listado/quirofano', 'Cirugia\CirugiaController@createListadoQuirofano');
 Route::name('cirugia')->get('cirugia/listado/quirofano',    'Cirugia\CirugiaController@getListadoQuirofano');
+Route::name('cirugia')->get('cirugia/listado/quirofano/realizado',    'Cirugia\CirugiaController@getFichaQuirurgicaRealizado');
 Route::name('cirugia')->put('cirugia/listado/quirofano/{id}',    'Cirugia\CirugiaController@updateListadoQuirofano');
 
 

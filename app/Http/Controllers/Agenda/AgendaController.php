@@ -1103,16 +1103,16 @@ ORDER BY agenda_usuario_dia_horario_id  ASC
  public function getHorarioBloqueoByMedico(Request $request )
  {
      $tmp_fecha = str_replace('/', '-', $request->input('fecha'));
- $fecha =  date('Y-m-d H:i', strtotime($tmp_fecha));   
+ $fecha =  date('Y-m-d', strtotime($tmp_fecha));   
  $usuario_id =  $request->input('usuario_id');     
  
 
-     $horario = DB::select( DB::raw("SELECT users.nombreyapellido, agenda_horario.hora_desde_hasta, agenda_dias.dia_nombre, agenda_medico_bloqueo_horario.fecha , users.id 
+     $horario = DB::select( DB::raw("SELECT agenda_medico_bloqueo_horario.id as agenda_medico_bloqueo_horario_id,  users.nombreyapellido, agenda_horario.hora_desde_hasta, agenda_dias.dia_nombre, agenda_medico_bloqueo_horario.fecha , users.id 
      FROM agenda_medico_bloqueo_horario, agenda_dia_horario_atencion, agenda_usuario_dia_horario, agenda_horario, agenda_dias, users 
      WHERE agenda_medico_bloqueo_horario.agenda_usuario_dia_horario_id = agenda_dia_horario_atencion.id AND agenda_dia_horario_atencion.agenda_usuario_dia_horario_id = agenda_usuario_dia_horario.id AND agenda_usuario_dia_horario.agenda_horario_id = agenda_horario.id 
      AND agenda_horario.hora_desde_hasta AND agenda_usuario_dia_horario.agenda_dia_id = agenda_dias.id AND agenda_medico_bloqueo_horario.usuario_id = users.id 
-     AND users.id = usuario_id:usuario_id AND agenda_medico_bloqueo_horario.fecha >= fecha:fecha          
-     
+     AND users.id = agenda_medico_bloqueo_horario.usuario_id AND agenda_medico_bloqueo_horario.usuario_id =  :usuario_id AND agenda_medico_bloqueo_horario.fecha >= :fecha          
+     ORDER BY agenda_medico_bloqueo_horario.fecha ASC
       "), array(                       
           'usuario_id' => $usuario_id,
           'fecha' => $fecha
@@ -1131,8 +1131,10 @@ ORDER BY agenda_usuario_dia_horario_id  ASC
   
     $horario = DB::select( DB::raw("SELECT agenda_medico_bloqueo.id as agenda_medico_bloqueo_id, agenda_medico_bloqueo.fecha, users.nombreyapellido, users.id as usuario_id  
     FROM `agenda_medico_bloqueo`, users 
-    WHERE  agenda_medico_bloqueo.usuario_id = users.id        
-     "));
+    WHERE  agenda_medico_bloqueo.usuario_id = users.id    AND agenda_medico_bloqueo.usuario_id = :usuario_id ORDER BY   agenda_medico_bloqueo.fecha ASC
+     "), array(                       
+          'usuario_id' => $usuario_id
+        ));
  
     return response()->json($horario, 201);
   }

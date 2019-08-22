@@ -245,12 +245,23 @@ class CirugiaController extends ApiController
 
        $horario = DB::select( DB::raw("SELECT CONCAT(medico_deriva.apellido ,' ', medico_deriva.nombre) as medico_deriva, cirugia_ficha.operacion_cobro_id ,cirugia_ficha.cirugia_medico_grupo_id, cirugia_ficha.id, paciente_id, medico_deriva_id, fecha_derivacion, estado_cirugia_id, paciente.apellido as paciente_apellido, paciente.nombre as paciente_nombre, paciente.dni as paciente_dni, paciente.fecha_nacimiento paciente_fecha_nacimiento, cirugia_estado.estado,  obra_social.nombre as obra_social_nombre, obra_social.id as obra_social_id, ojo, cirugia_practica
        FROM cirugia_ficha,paciente ,cirugia_estado, medicos as medico_deriva, users, obra_social
-       WHERE cirugia_ficha.paciente_id = paciente.id AND users.id = cirugia_ficha.medico_deriva_id AND users.id = medico_deriva.usuario_id AND cirugia_ficha.estado_cirugIa_id =  cirugia_estado.id AND paciente.obra_social_id = obra_social.id AND  estado !='REALIZADO' ORDER BY fecha_derivacion DESC
+       WHERE cirugia_ficha.paciente_id = paciente.id AND users.id = cirugia_ficha.medico_deriva_id AND users.id = medico_deriva.usuario_id AND cirugia_ficha.estado_cirugia_id =  cirugia_estado.id AND paciente.obra_social_id = obra_social.id AND  estado !='REALIZADO' AND  estado !='SUSPENDIDO' ORDER BY fecha_derivacion DESC
         "), array(
         'estado' =>$estado
       ));
      return response()->json($horario, 201);
     }
+
+
+    public function getFichaQuirurgicaRealizado(){
+
+
+        $horario = DB::select( DB::raw("SELECT CONCAT(medico_deriva.apellido ,' ', medico_deriva.nombre) as medico_deriva, cirugia_ficha.operacion_cobro_id ,cirugia_ficha.cirugia_medico_grupo_id, cirugia_ficha.id, paciente_id, medico_deriva_id, fecha_derivacion, estado_cirugia_id, paciente.apellido as paciente_apellido, paciente.nombre as paciente_nombre, paciente.dni as paciente_dni, paciente.fecha_nacimiento paciente_fecha_nacimiento, cirugia_estado.estado,  obra_social.nombre as obra_social_nombre, obra_social.id as obra_social_id, ojo, cirugia_practica
+        FROM cirugia_ficha,paciente ,cirugia_estado, medicos as medico_deriva, users, obra_social
+        WHERE cirugia_ficha.paciente_id = paciente.id AND users.id = cirugia_ficha.medico_deriva_id AND users.id = medico_deriva.usuario_id AND cirugia_ficha.estado_cirugia_id =  cirugia_estado.id AND paciente.obra_social_id = obra_social.id AND  estado IN('REALIZADO','SUSPENDIDO') ORDER BY fecha_derivacion DESC
+         "));
+      return response()->json($horario, 201);
+     }
 
     public function getFichaQuirurgicaGrupoMedico(Request $request, $id){
         $horario = DB::select( DB::raw("SELECT cirugia_medico_grupo.id as cirugia_grupo_medico_id, medico_opera_id, medico_deriva_id, medico_ayuda_id, medico_factura_id, medico_anestesista_id, user_medico_opera.nombreyapellido AS medico_opera_nombre, users_medico_deriva.nombreyapellido as medico_deriva_nombre, users_medico_ayuda.nombreyapellido as medico_ayuda_nombre, users_medico_factura.nombreyapellido as medico_factura_nombre, users_medico_anestesista.nombreyapellido as medico_anestesista_nombre  FROM cirugia_medico_grupo , users as user_medico_opera, users as users_medico_deriva, users as users_medico_ayuda, users as users_medico_factura, users as users_medico_anestesista WHERE cirugia_medico_grupo.medico_opera_id = user_medico_opera.id AND cirugia_medico_grupo.medico_deriva_id = users_medico_deriva.id AND cirugia_medico_grupo.medico_ayuda_id = users_medico_ayuda.id AND cirugia_medico_grupo.medico_factura_id = users_medico_factura.id AND cirugia_medico_grupo.medico_anestesista_id = users_medico_anestesista.id AND cirugia_medico_grupo.id =  :id
@@ -706,7 +717,7 @@ class CirugiaController extends ApiController
         cirugia_listado_quirofano.orden, cirugia_listado_quirofano.fecha_hora ,cirugia_listado_quirofano.usuario_crea_id, usuario_listado_crea.nombreyapellido as usuario_listado_creo_nombre, cirugia_listado_quirofano.usuario_modifica_id ,usuario_listado_modifico.nombreyapellido as usuario_listado_modifico_nombre, lente.dioptria, lente.fecha_vencimiento as lente_vencimiento, lente.lote, lente.estado as lente_estado, lente_tipo.tipo as lente_tipo, usuario_medico_opera.nombreyapellido as usuario_medico_opera_nombre, usuario_medico_ayuda.nombreyapellido as usuario_medico_ayuda_nombre, usuario_medico_anestesista.nombreyapellido as usuario_medico_anestesista_nombre, cirugia_listado_quirofano.observacion as quirofano_observacion, cirugia_listado_quirofano.tiene_observacion
        FROM cirugia_ficha,paciente ,cirugia_estado, medicos as medico_deriva, users, obra_social, obra_social as coseguro,  cirugia_lente, lente, lente_tipo, users as usuario_modifico, users as usuario_audito, cirugia_listado_quirofano, users as usuario_listado_modifico, users as usuario_listado_crea, cirugia_medico_grupo , users as usuario_medico_opera, users as usuario_medico_ayuda, users as usuario_medico_anestesista
        WHERE cirugia_ficha.paciente_id = paciente.id AND users.id = cirugia_ficha.medico_deriva_id AND users.id = medico_deriva.usuario_id AND cirugia_ficha.estado_cirugia_id =  cirugia_estado.id AND paciente.obra_social_id = obra_social.id  AND paciente.coseguro_id = coseguro.id AND cirugia_ficha.usuario_modifico_id = usuario_modifico.id AND cirugia_ficha.usuario_audito = usuario_audito.id AND cirugia_listado_quirofano.usuario_crea_id = usuario_listado_crea.id AND cirugia_listado_quirofano.usuario_modifica_id = usuario_listado_modifico.id AND cirugia_ficha.id = cirugia_lente.cirugia_id AND cirugia_lente.lente_id = lente.id AND lente.tipo_lente_id = lente_tipo.id AND cirugia_listado_quirofano.cirugia_ficha_id = cirugia_ficha.id 
-       AND  cirugia_ficha.cirugia_medico_grupo_id = cirugia_medico_grupo.id AND usuario_medico_opera.id = cirugia_medico_grupo.medico_opera_id AND usuario_medico_ayuda.id = cirugia_medico_grupo.medico_ayuda_id AND usuario_medico_anestesista.id = cirugia_medico_grupo.medico_anestesista_id AND cirugia_estado.estado  != 'REALIZADO'  AND fecha_hora BETWEEN '".$fecha."  00:00:00' AND '".$fecha." 23:59:59'  ORDER BY orden ASC
+       AND  cirugia_ficha.cirugia_medico_grupo_id = cirugia_medico_grupo.id AND usuario_medico_opera.id = cirugia_medico_grupo.medico_opera_id AND usuario_medico_ayuda.id = cirugia_medico_grupo.medico_ayuda_id AND usuario_medico_anestesista.id = cirugia_medico_grupo.medico_anestesista_id AND cirugia_estado.estado  NOT IN(1, 4)  AND fecha_hora BETWEEN '".$fecha."  00:00:00' AND '".$fecha." 23:59:59'  ORDER BY orden ASC
          "), array(
          'estado' =>'PENDIENTE'
        ));
@@ -786,6 +797,12 @@ class CirugiaController extends ApiController
         //
     }
 
+
+    public function destroyCirugiaListado($id)
+    {
+        DB::delete(" DELETE  FROM cirugia_listado_quirofano   WHERE cirugia_ficha_id= ".$id."");         
+        return response()->json('OK', 201);
+    }
    
 }
 
