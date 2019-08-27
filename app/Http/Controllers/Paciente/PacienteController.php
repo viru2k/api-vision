@@ -306,6 +306,51 @@ class PacienteController extends ApiController
         
     }
 
+
+    public function getPacienteByDni(Request $request)
+    {
+        $dni =$request->input('dni');        
+
+        $res = DB::select( DB::raw("SELECT 
+        paciente.id,
+        gravado_adherente,
+        dni,
+        apellido,
+        paciente.nombre,
+        domicilio,
+        sexo,
+        fecha_nacimiento,
+        ciudad,
+        telefono_fijo,
+        telefono_cel,
+        email,
+        tiene_whatsapp,
+        obra_social_id,      
+        obra_social.es_habilitada,  
+        obra_social.nombre as obra_social_nombre,
+        coseguro_id,  
+        coseguro.nombre as coseguro_nombre,
+        obra_social.entidad_factura_id,
+        obra_social.tiene_distribucion,
+        obra_social.es_coseguro,
+        coseguro.tiene_distribucion as coseguro_tiene_distribucion,
+        coseguro.es_coseguro as coseguro_es_coseguro,
+        entidad.nombre as entidad_nombre,
+        numero_afiliado,
+        barra_afiliado,
+        plan
+        FROM paciente,obra_social,entidad, obra_social as coseguro
+        WHERE  obra_social.id = paciente.obra_social_id AND
+         coseguro.id= paciente.coseguro_id AND
+        entidad.id = obra_social.entidad_factura_id 
+        
+        AND   dni = ".$dni."
+    "));
+       
+      return response()->json($res, 201);
+
+        
+    }
     
 
     /**

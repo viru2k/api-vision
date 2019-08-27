@@ -168,13 +168,16 @@ Route::resource('pacienteagenda', 'Paciente\PacienteAgendaController');
 Route::name('pacienteagenda')->get('pacienteagenda/bydate/today', 'Paciente\PacienteAgendaController@byDateToday');
 Route::name('pacienteagenda')->get('pacienteagenda/bydateselected/{fecha}','Paciente\PacienteAgendaController@byDateSelected');
 Route::name('pacienteagenda')->get('pacienteagenda/bydatedni/{dni}','Paciente\PacienteAgendaController@byDni'); 
-
+Route::name('paciente-consulta')->get('paciente/totem/dni', 'Paciente\PacienteController@getPacienteByDni');
 /**OPERACION DE COBRO**/
 Route::resource('operacioncobro', 'OperacionCobro\OperacionCobroController');
 Route::name('operacioncobro')->post('operacioncobro/registros', 'OperacionCobro\OperacionCobroController@registroOperacionCobro');
 Route::name('operacioncobro')->get('operacioncobro/registros/by/dates', 'OperacionCobro\OperacionCobroController@getOperacionCobroRegistrosBetweenDates'); 
 Route::name('operacioncobro')->get('operacioncobro/registros/by/dates/medico', 'OperacionCobro\OperacionCobroController@getOperacionCobroRegistrosBetweenDatesAndMedico'); 
 Route::name('operacioncobro')->get('operacioncobro/registros/by/id', 'OperacionCobro\OperacionCobroController@getOperacionCobroRegistrosById');
+Route::name('operacioncobro')->get('operacioncobro/registros/by/operacioncobro', 'OperacionCobro\OperacionCobroController@getOperacionCobroRegistrosByIdOperacionCobro');
+Route::name('operacioncobro')->get('operacioncobro/registros/by/paciente', 'OperacionCobro\OperacionCobroController@getOperacionCobroRegistrosBypacienteId');
+
 Route::name('operacioncobro')->get('operacioncobro/registros/by/liquidacion/numero', 'OperacionCobro\OperacionCobroController@getPresentacionDetalleById');
 Route::name('operacioncobro')->get('operacioncobro/registros/by/distribucion', 'OperacionCobro\OperacionCobroController@getOperacionCobroRegistroDistribucionById');
 Route::name('operacioncobro')->get('operacioncobro/registros/by/distribucion/prefactura', 'OperacionCobro\OperacionCobroController@getOperacionCobroRegistroDistribucionByIdPrefactura');
@@ -187,9 +190,9 @@ Route::name('operacioncobro')->put('operacioncobro/practica/anular/{id}', 'Opera
 Route::name('operacioncobro')->put('operacioncobro/operacioncobro/actualizar/{id}', 'OperacionCobro\OperacionCobroController@updateOperacionCobroPrincipal'); 
 Route::name('operacioncobro')->put('operacioncobro/presentacion/actualizar/{id}', 'OperacionCobro\OperacionCobroController@updatePresentacion'); 
 Route::name('operacioncobro')->get('operacioncobro/consulta/varios', 'OperacionCobro\OperacionCobroController@operacionCobroByCondicion');
-Route::name('operacioncobro')->get('operacioncobro/recalcular/by/fecha', 'OperacionCobro\OperacionCobroController@updateOperacionCobroRecalcularValoresBetweenDates');
+//Route::name('operacioncobro')->get('operacioncobro/recalcular/by/fecha', 'OperacionCobro\OperacionCobroController@updateOperacionCobroRecalcularValoresBetweenDates');
 Route::name('operacioncobro')->put('operacioncobro/registro/prestacion/{id}', 'OperacionCobro\OperacionCobroController@updateOperacionCobroPrestacion');
-
+Route::name('operacioncobro')->post('operacioncobro/recalcular/by/liquidacion', 'OperacionCobro\OperacionCobroController@updateOperacionCobroValoresByNumeroAfectacion');
 
 /**FACTURACION **/
 
