@@ -84,6 +84,7 @@ Route::name('agenda-gestion')->get('agenda/horarios/bloqueo/turno', 'Agenda\Agen
 Route::name('agenda-gestion')->get('agenda/horarios/bloqueo/dia', 'Agenda\AgendaController@getDiasBloqueados');
 Route::name('agenda-gestion')->get('agenda/horarios/cancelar/horario/{id}', 'Agenda\AgendaController@deleteAgendaMedicoHorario');
 Route::name('agenda-gestion')->get('agenda/horarios/cancelar/agenda/{id}', 'Agenda\AgendaController@deleteAgendaMedico');
+Route::name('agenda-gestion')->get('agenda/turno/by/paciente', 'Agenda\AgendaController@getTurnoPacienteByfecha');
 
 
 /** CIRUGIA **/
