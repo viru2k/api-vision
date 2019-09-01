@@ -77,15 +77,15 @@ Route::name('agenda-gestion')->get('agenda/horarios/medico/bloqueado', 'Agenda\A
 Route::name('agenda-gestion')->get('agenda/horarios/paciente/historia/{id}', 'Agenda\AgendaController@getHistoriaPaciente');  
 Route::name('agenda-gestion')->get('agenda/horarios/paciente/cancelar/{id}', 'Agenda\AgendaController@cancelarTurno');
 Route::name('agenda-gestion')->get('agenda/horarios/turno/eliminado', 'Agenda\AgendaController@getAgendaEliminados');   
-Route::name('agenda-gestion')->get('agenda/horarios/turno/todos', 'Agenda\AgendaController@getAgendaAtencionByFechaTurnosTodos');
+Route::name('agenda-gestion')->get('agenda/horarios/turno/todos', 'Agenda\AgendaController@getAgendaAtencionByFechaTurnosTodos'); 
+Route::name('agenda-gestion')->get('agenda/horarios/turno/presente', 'Agenda\AgendaController@getAgendaAtencionPresente');
 Route::name('agenda-gestion')->put('agenda/horarios/turno/operacioncobro/actualizar/{id}', 'Agenda\AgendaController@updateAgendaOperacionCobro'); 
-Route::name('agenda-gestion')->get('agenda/horarios/turno/todos', 'Agenda\AgendaController@getAgendaAtencionByFechaTurnosTodos');
 Route::name('agenda-gestion')->get('agenda/horarios/bloqueo/turno', 'Agenda\AgendaController@getHorarioBloqueoByMedico');
 Route::name('agenda-gestion')->get('agenda/horarios/bloqueo/dia', 'Agenda\AgendaController@getDiasBloqueados');
 Route::name('agenda-gestion')->get('agenda/horarios/cancelar/horario/{id}', 'Agenda\AgendaController@deleteAgendaMedicoHorario');
 Route::name('agenda-gestion')->get('agenda/horarios/cancelar/agenda/{id}', 'Agenda\AgendaController@deleteAgendaMedico');
 Route::name('agenda-gestion')->get('agenda/turno/by/paciente', 'Agenda\AgendaController@getTurnoPacienteByfecha');
-
+Route::name('agenda-gestion')->put('agenda/turno/presente/{id}', 'Agenda\AgendaController@updatePresente'); 
 
 /** CIRUGIA **/
 Route::name('historia-clinica')->get('cirugia/historia/{id}', 'Cirugia\CirugiaController@getHistoriaClinicaByPaciente');
@@ -156,6 +156,7 @@ Route::name('liquidacion')->get('liquidacion/detalle', 'OperacionCobro\Operacion
 Route::name('liquidacion')->post('liquidacion/detalle/prefactura', 'OperacionCobro\OperacionCobroController@getListadoPreFactura'); 
 Route::name('liquidacion')->post('liquidacion/detalle/prefactura/cirugia', 'OperacionCobro\OperacionCobroController@getListadoPreFacturaCirugia'); 
 Route::name('liquidacion')->get('liquidacion/detalle/prefactura/desafectar', 'OperacionCobro\OperacionCobroController@desafectarPresentacion');
+Route::name('liquidacion')->post('liquidacion/distribucion/medico', 'OperacionCobro\OperacionCobroController@liquidarOperacionCobro');
 
 
 /**PACIENTE**/

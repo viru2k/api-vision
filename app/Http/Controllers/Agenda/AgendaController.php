@@ -66,7 +66,12 @@ class AgendaController extends ApiController
     
 
                $horario = DB::select( DB::raw("
-               SELECT agenda_usuario_dia_horario.id,agenda_horario.hora_desde,agenda_horario.hora_hasta,agenda_horario.hora_desde_hasta,agenda_dia_horario_atencion.id as agenda_dia_horario_atencion_id,agenda_dia_horario_atencion.fecha_turno,agenda_dia_horario_atencion.llegada,agenda_dia_horario_atencion.atendido,agenda_dia_horario_atencion.es_observacion, agenda_dia_horario_atencion.operacion_cobro_id,agenda_dia_horario_atencion.observacion,agenda_dia_horario_atencion.es_alerta,agenda_estado.id as agenda_estado_id,agenda_estado.estado,agenda_dia_id,medicos.usuario_id,users.nombreyapellido,dia_nombre,dia_nro,paciente.id as paciente_id,paciente.nombre as paciente_nombre,paciente.apellido as paciente_apellido,paciente.dni as paciente_dni,paciente.fecha_nacimiento as paciente_fecha_nacimiento,paciente.obra_social_id as paciente_obra_social_id,obra_social.nombre as paciente_obra_social_nombre,obra_social.tiene_distribucion,paciente.coseguro_id as paciente_coseguro_id,coseguro.nombre as paciente_coseguro_nombre,coseguro.es_coseguro as coseguro_es_coseguro,paciente.barra_afiliado,paciente.numero_afiliado ,
+               SELECT agenda_usuario_dia_horario.id,agenda_horario.hora_desde,agenda_horario.hora_hasta,agenda_horario.hora_desde_hasta,agenda_dia_horario_atencion.id as agenda_dia_horario_atencion_id,
+               agenda_dia_horario_atencion.fecha_turno,agenda_dia_horario_atencion.presente,agenda_dia_horario_atencion.llegada,agenda_dia_horario_atencion.atendido,agenda_dia_horario_atencion.es_observacion, 
+               agenda_dia_horario_atencion.operacion_cobro_id,agenda_dia_horario_atencion.observacion,agenda_dia_horario_atencion.es_alerta,agenda_estado.id as agenda_estado_id,agenda_estado.estado,agenda_dia_id,
+               medicos.usuario_id,users.nombreyapellido,dia_nombre,dia_nro,paciente.id as paciente_id,paciente.nombre as paciente_nombre,paciente.apellido as paciente_apellido,paciente.dni as paciente_dni,paciente.fecha_nacimiento as paciente_fecha_nacimiento,
+               paciente.obra_social_id as paciente_obra_social_id,obra_social.nombre as paciente_obra_social_nombre,obra_social.tiene_distribucion,paciente.coseguro_id as paciente_coseguro_id,coseguro.nombre as paciente_coseguro_nombre,coseguro.es_coseguro as coseguro_es_coseguro,
+               paciente.barra_afiliado,paciente.numero_afiliado ,
                medicos.fecha_matricula, paciente.telefono_cel as telefono_cel,
                paciente.telefono_fijo as telefono_fijo
                 FROM agenda_usuario_dia_horario, agenda_dia_horario_atencion,agenda_dias, 
@@ -103,7 +108,11 @@ class AgendaController extends ApiController
     
 
                $horario = DB::select( DB::raw("
-               SELECT agenda_usuario_dia_horario.id,agenda_horario.hora_desde,agenda_horario.hora_hasta,agenda_horario.hora_desde_hasta,agenda_dia_horario_atencion.id as agenda_dia_horario_atencion_id,agenda_dia_horario_atencion.fecha_turno,agenda_dia_horario_atencion.llegada,agenda_dia_horario_atencion.atendido, agenda_dia_horario_atencion.es_observacion, agenda_dia_horario_atencion.operacion_cobro_id, agenda_dia_horario_atencion.observacion,agenda_dia_horario_atencion.es_alerta,agenda_estado.id as agenda_estado_id,agenda_estado.estado,agenda_dia_id,medicos.usuario_id,users.nombreyapellido,dia_nombre,dia_nro,paciente.id as paciente_id,paciente.nombre as paciente_nombre,paciente.apellido as paciente_apellido,paciente.dni as paciente_dni,paciente.fecha_nacimiento as paciente_fecha_nacimiento,paciente.obra_social_id as paciente_obra_social_id,obra_social.nombre as paciente_obra_social_nombre,obra_social.tiene_distribucion,paciente.coseguro_id as paciente_coseguro_id,coseguro.nombre as paciente_coseguro_nombre,coseguro.es_coseguro as coseguro_es_coseguro,paciente.barra_afiliado,paciente.numero_afiliado ,
+               SELECT agenda_usuario_dia_horario.id,agenda_horario.hora_desde,agenda_horario.hora_hasta,agenda_horario.hora_desde_hasta,agenda_dia_horario_atencion.id as agenda_dia_horario_atencion_id,agenda_dia_horario_atencion.fecha_turno,
+               agenda_dia_horario_atencion.llegada,agenda_dia_horario_atencion.presente,agenda_dia_horario_atencion.atendido, agenda_dia_horario_atencion.es_observacion, agenda_dia_horario_atencion.operacion_cobro_id, agenda_dia_horario_atencion.observacion,agenda_dia_horario_atencion.es_alerta,
+               agenda_estado.id as agenda_estado_id,agenda_estado.estado,agenda_dia_id,medicos.usuario_id,users.nombreyapellido,dia_nombre,dia_nro,paciente.id as paciente_id,paciente.nombre as paciente_nombre,paciente.apellido as paciente_apellido,paciente.dni as paciente_dni,
+               paciente.fecha_nacimiento as paciente_fecha_nacimiento,paciente.obra_social_id as paciente_obra_social_id,obra_social.nombre as paciente_obra_social_nombre,obra_social.tiene_distribucion,paciente.coseguro_id as paciente_coseguro_id,
+               coseguro.nombre as paciente_coseguro_nombre,coseguro.es_coseguro as coseguro_es_coseguro,paciente.barra_afiliado,paciente.numero_afiliado ,
                medicos.fecha_matricula, paciente.telefono_cel as telefono_cel,
                paciente.telefono_fijo as telefono_fijo, es_sobreturno
                 FROM agenda_usuario_dia_horario, agenda_dia_horario_atencion,agenda_dias, 
@@ -120,6 +129,47 @@ class AgendaController extends ApiController
                 user_medico.id =agenda_usuario_dia_horario.usuario_id AND 
                 medicos.usuario_id =user_medico.id   AND 
                 agenda_dia_horario_atencion.fecha_turno = :fecha_turno AND agenda_estado.id IN(1,2,3,4,5,6,7)  
+            ORDER BY agenda_horario.id ASC
+                "), array(
+                    'fecha_turno' => $fecha_turno
+                  ));
+
+        return response()->json($horario, 201);
+    
+    }
+
+
+
+    public function getAgendaAtencionPresente(Request $request )
+    {
+           
+        $tmp_fecha = str_replace('/', '-', $request->input('fecha_turno'));
+        $fecha_turno =  date('Y-m-d H:i', strtotime($tmp_fecha));             
+    
+
+               $horario = DB::select( DB::raw("
+               SELECT agenda_usuario_dia_horario.id,agenda_horario.hora_desde,agenda_horario.hora_hasta,agenda_horario.hora_desde_hasta,agenda_dia_horario_atencion.id as agenda_dia_horario_atencion_id,agenda_dia_horario_atencion.fecha_turno,
+               agenda_dia_horario_atencion.llegada,agenda_dia_horario_atencion.presente,agenda_dia_horario_atencion.atendido, agenda_dia_horario_atencion.es_observacion, agenda_dia_horario_atencion.operacion_cobro_id, agenda_dia_horario_atencion.observacion,agenda_dia_horario_atencion.es_alerta,
+               agenda_estado.id as agenda_estado_id,agenda_estado.estado,agenda_dia_id,medicos.usuario_id,users.nombreyapellido,dia_nombre,dia_nro,paciente.id as paciente_id,paciente.nombre as paciente_nombre,paciente.apellido as paciente_apellido,paciente.dni as paciente_dni,
+               paciente.fecha_nacimiento as paciente_fecha_nacimiento,paciente.obra_social_id as paciente_obra_social_id,obra_social.nombre as paciente_obra_social_nombre,obra_social.tiene_distribucion,paciente.coseguro_id as paciente_coseguro_id,
+               coseguro.nombre as paciente_coseguro_nombre,coseguro.es_coseguro as coseguro_es_coseguro,paciente.barra_afiliado,paciente.numero_afiliado ,
+               medicos.fecha_matricula, paciente.telefono_cel as telefono_cel,
+               paciente.telefono_fijo as telefono_fijo, es_sobreturno
+                FROM agenda_usuario_dia_horario, agenda_dia_horario_atencion,agenda_dias, 
+                agenda_horario, agenda_estado, paciente, 
+                obra_social, obra_social as coseguro, users, users as user_medico, medicos
+                WHERE 
+                agenda_dia_horario_atencion.agenda_usuario_dia_horario_id  = agenda_usuario_dia_horario.id AND  
+                agenda_dias.id = agenda_usuario_dia_horario.agenda_dia_id AND 
+                agenda_horario.id = agenda_usuario_dia_horario.agenda_horario_id AND 
+                agenda_estado.id = agenda_dia_horario_atencion.agenda_estado_id AND 
+                paciente.id = agenda_dia_horario_atencion.paciente_id AND 
+                obra_social.id = paciente.obra_social_id AND coseguro.id = paciente.coseguro_id AND 
+                users.id = agenda_usuario_dia_horario.usuario_id AND 
+                user_medico.id =agenda_usuario_dia_horario.usuario_id AND 
+                medicos.usuario_id =user_medico.id   AND 
+                agenda_dia_horario_atencion.fecha_turno = :fecha_turno AND agenda_estado.id IN(1,2,3,4,5,6,7)  
+                AND agenda_dia_horario_atencion.presente !='2099-12-31 00:00:00' AND  agenda_dia_horario_atencion.llegada = '2099-12-31 00:00:00'
             ORDER BY agenda_horario.id ASC
                 "), array(
                     'fecha_turno' => $fecha_turno
@@ -1214,6 +1264,7 @@ ORDER BY agenda_usuario_dia_horario_id  ASC
              'agenda_usuario_dia_horario_id' => $request['id'],       
              'fecha_turno' => $request['fecha_turno'],
              'observacion' => $request['observacion'],
+             'presente' =>  $request['presente']   ,     
              'llegada' =>  $request['llegada']   ,             
              'atendido' =>  $request['atendido'] ,
              'agenda_estado_id' => $request['agenda_estado_id'],
@@ -1223,7 +1274,19 @@ ORDER BY agenda_usuario_dia_horario_id  ASC
             return $this->showOne($agendaHorario);          
     }
 
-
+// actualizo el paciente presente
+    public function updatePresente(Request $request, $id)
+    {
+         
+            $request['fecha_turno'] = date('Y-m-d H:i', strtotime($request['fecha_turno']));             
+           $update = DB::table('agenda_dia_horario_atencion') 
+            ->where('id', $id) ->limit(1) 
+            ->update( [ 
+             'presente' =>   date('Y-m-d H:i:s')  ,                                  
+             'updated_at' => date("Y-m-d H:i:s")     ]); 
+             $agendaHorario = AgendaHorarioAtencion::findOrFail($id);
+            return $this->showOne($agendaHorario);          
+    }
 
 
     public function updateAgendaOperacionCobro(Request $request, $id)

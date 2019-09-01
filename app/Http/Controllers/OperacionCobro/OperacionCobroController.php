@@ -786,6 +786,103 @@ class OperacionCobroController extends ApiController
     }
 
 
+
+
+    
+    public function liquidarOperacionCobro(Request $request)
+    {
+        $tmp_fecha = str_replace('/', '-', $request["numero"]);
+        $liquidacion =  date('Y-m-d H:i:s', strtotime($tmp_fecha));    
+        $fecha_carga = date('Y-m-d H:i:s');
+   /* $liquidacion_numero= DB::table('liq_liquidacion')->insertGetId([
+        'obra_social_id' => $request["obra_social_id"],
+        'numero' => $liquidacion,
+        'nivel' => $request["nivel"],
+        'fecha_desde' => $request["fecha_desde"],
+        'fecha_hasta' => $request["fecha_hasta"],
+        'liquidacion_generada_id' => 0,
+        'cant_orden' => $request["cant_orden"],
+        'total' => $request["total"],
+        'usuario_audito' => $request["usuario_audito"],
+        'medico_id'=> $request["medico_id"],
+        'estado' => $request["estado"],      
+        'created_at' => date("Y-m-d H:i:s"),
+        'updated_at' => date("Y-m-d H:i:s")    
+    ]);    */
+  $distribucion;
+  $i = 0;
+    while(isset($request['operacion_cobro_practica'][$i])){
+        // ACTUALIZO LAS OC PARA SABER QUE ESTUBO DISTRIBUIDO       
+        $update = DB::table('operacion_cobro_practica')         
+        ->where('id',$request['operacion_cobro_practica'][$i]["id"] )  
+        ->update( [            
+         'distribuido' =>'SI',
+         'updated_at' => date("Y-m-d H:i:s")  ]);  
+      //   $request['operacion_cobro_practica'][0]['obra_social_nombre']
+
+
+      if($request->medico_opera_distribucion >0){
+        $distribucion = '('.
+        $request['operacion_cobro_practica'][$i]['paciente_id'].','.
+        $request['operacion_cobro_practica'][$i]['obra_social_id'].','.        
+        $request['operacion_cobro_practica'][$i]['convenio_os_pmo_id'].','.
+        $request['operacion_cobro_practica'][$i]['operacion_cobro_id'].','.
+        $request['operacion_cobro_practica'][$i]['user_medico_id'].','.
+        $request->medico_opera_porcentaje.','.
+        $request->medico_opera_distribucion.','.
+        $request['operacion_cobro_practica'][$i]['valor_facturado'].','.     
+        '"'.$fecha_carga.'"'.
+        ')';
+      }
+      if($request->medico_ayuda_distribucion >0){
+        $distribucion = $distribucion. ',('.
+        $request['operacion_cobro_practica'][$i]['paciente_id'].','.
+        $request['operacion_cobro_practica'][$i]['obra_social_id'].','.        
+        $request['operacion_cobro_practica'][$i]['convenio_os_pmo_id'].','.
+        $request['operacion_cobro_practica'][$i]['operacion_cobro_id'].','.
+        $request['operacion_cobro_practica'][$i]['user_medico_id'].','.
+        $request->medico_ayuda_porcentaje.','.
+        $request->medico_ayuda_distribucion.','.
+        $request['operacion_cobro_practica'][$i]['valor_facturado'].','.     
+        '"'.$fecha_carga.'"'.
+        ')';
+      }
+      if($request->medico_ayuda2_porcentaje >0){
+        $distribucion = $distribucion. ',('.
+        $request['operacion_cobro_practica'][$i]['paciente_id'].','.
+        $request['operacion_cobro_practica'][$i]['obra_social_id'].','.        
+        $request['operacion_cobro_practica'][$i]['convenio_os_pmo_id'].','.
+        $request['operacion_cobro_practica'][$i]['operacion_cobro_id'].','.
+        $request['operacion_cobro_practica'][$i]['user_medico_id'].','.
+        $request->medico_ayuda2_porcentaje.','.
+        $request->medico_ayuda2_distribucion.','.
+        $request['operacion_cobro_practica'][$i]['valor_facturado'].','.     
+        '"'.$fecha_carga.'"'.
+        ')';
+      }
+      if($request->medico_clinica_distribucion >0){
+        $distribucion = $distribucion. ',('.
+        $request['operacion_cobro_practica'][$i]['paciente_id'].','.
+        $request['operacion_cobro_practica'][$i]['obra_social_id'].','.        
+        $request['operacion_cobro_practica'][$i]['convenio_os_pmo_id'].','.
+        $request['operacion_cobro_practica'][$i]['operacion_cobro_id'].','.
+        $request['operacion_cobro_practica'][$i]['user_medico_id'].','.
+        $request->medico_clinica_porcentaje.','.
+        $request->medico_clinica_distribucion.','.
+        $request['operacion_cobro_practica'][$i]['valor_facturado'].','.     
+        '"'.$fecha_carga.'"'.
+        ')';
+      }
+      
+        DB::insert('INSERT INTO liq_liquidacion_distribucion( paciente_id, obra_social_id, convenio_os_pmo_id, operacion_cobro_id, medico_id, porcentaje, valor_distribuido, total, fecha_distribucion) VALUES '.$distribucion);  
+            $i++;
+
+        }
+        //echo  $request->registros[0]["id"];
+ return response()->json($request->medico_clinica_distribucion, 201);        
+ 
+    }
+
     public function getListadoPreFactura(Request $request){
         /**
          * SELECT liq_liquidacion.id as liq_liquidacion_id, liq_liquidacion.obra_social_id, liq_liquidacion.numero, nivel, fecha_desde, fecha_hasta, liquidacion_generada_id, cant_orden, total, usuario_audito, liq_liquidacion.estado as liq_liquidacion_estado, operacion_cobro_practica.id, operacion_cobro_practica.valor_facturado, operacion_cobro_practica.paciente_id, operacion_cobro_practica.user_medico_id, operacion_cobro_practica.convenio_os_pmo_id, obra_social.nombre as obra_social_nombre, pmo.codigo, pmo.descripcion, pmo.complejidad, operacion_cobro.fecha_cobro, paciente.apellido, paciente.nombre FROM operacion_cobro ,liq_liquidacion, operacion_cobro_practica, obra_social,convenio_os_pmo, pmo, users, paciente WHERE liq_liquidacion.id = operacion_cobro_practica.liquidacion_numero AND operacion_cobro_practica.convenio_os_pmo_id = convenio_os_pmo.id AND convenio_os_pmo.obra_social_id = obra_social.id and convenio_os_pmo.pmo_id = pmo.id AND operacion_cobro_practica.user_medico_id = users.id and operacion_cobro.id = operacion_cobro_practica.operacion_cobro_id and operacion_cobro_practica.paciente_id = paciente.id AND liq_liquidacion.id  IN (13,14)
