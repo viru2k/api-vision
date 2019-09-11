@@ -104,13 +104,28 @@ class UserController extends ApiController
         'users.email',
         'modulo.id as modulo_id',
         'modulo.nombre as modulo_nombre',   
-        'user_modulo.id as user_modulo_id'    
+        'user_modulo.id as user_modulo_id',
+        'users.puede_notificar'
         )
             ->where('users.email','=',$email)                                   
             ->get();
-           
         return $this->showAll($horario);
+    }
+
+    public function getUsers(Request $request )
+    {
+              
+        $email =  $request->input('email');
+     //echo $fecha_turno;
+     $horario = DB::table('users')
     
+     ->select(
+        'users.id',
+        'users.name',
+        'users.nombreyapellido',       
+        )                                     
+            ->get();
+        return $this->showAll($horario);
     }
     
 

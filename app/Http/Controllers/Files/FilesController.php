@@ -166,7 +166,7 @@ class FilesController extends ApiController
     
     $matricula = str_pad($request[$i]["matricula"], 4); // completo con espacios segun requerido
     $medico_nombre = str_pad($request[$i]["medico_nombre"], 50); 
-    $nivel = substr($request[$i]["nivel"], 1, 2);// obtengo el segundo caracter para ver si  es Facturacion Refacturacion etc
+    $nivel = substr($request[$i]["nivel"], 1, 1);// obtengo el segundo caracter para ver si  es Facturacion Refacturacion etc
     $nivel_numero = substr($request[$i]["nivel"], 0, 1);
     if($request[$i]["complejidad"] == "1"){
       $prestacion = "C";
@@ -202,8 +202,14 @@ class FilesController extends ApiController
       
       
     }
-    if($request[$i]["complejidad"] == "3"){
-      
+    if($request[$i]["complejidad"] == "4"){
+    $importe_honorario_categoria = str_pad('0.00',11,' ',STR_PAD_LEFT  ); 
+    $gastos_100 = str_pad('0.00',11,' ',STR_PAD_LEFT  ); 
+   //$importe_gastos_reconoce_dos = str_pad(round(floatval($request[$i]["valor_facturado"]),2,PHP_ROUND_HALF_UP),11,' ',STR_PAD_LEFT  );
+    $importe_gastos_reconoce_dos = str_pad(number_format($request[$i]["valor_facturado"], 2, '.', ''),11,' ',STR_PAD_LEFT  );
+    $gastos_100 =  str_pad(number_format((($request[$i]["valor_facturado"]*100)/80), 2, '.', ''),11,' ',STR_PAD_LEFT  );
+    $importe_honorario_reconoce_dos = str_pad('0.00',11,' ',STR_PAD_LEFT  ); 
+    $categoria = str_pad('0.00',11,' ',STR_PAD_LEFT  ); 
     }
 
     
@@ -267,6 +273,8 @@ class FilesController extends ApiController
     ''.";". ''.";". ''.";". ''.";". ''.";". ''.";". ''.";". ''.";". ''."\n";
     $data = $data.$cargarRegistro;
   
+    
+
     $i++;
   }
 
@@ -274,8 +282,8 @@ class FilesController extends ApiController
       /****** CREACION DEL ARCHIVO ***** */
 
       $destinationPath=public_path()."/TXT/dos/";  
-      $file = $periodo.'A_201905_DR_2106_1.txt';
-    
+     // $file = $periodo.'A_201905_DR__1.txt';
+      $file = 'A_'.$periodo.'_106_'.$nivel_numero.'.txt';
       if (!is_dir($destinationPath)) {  mkdir($destinationPath,0777,true);  }
       File::put($destinationPath.$file,$data);
  
