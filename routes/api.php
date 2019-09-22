@@ -37,11 +37,11 @@ Route::resource('medico', 'Medico\MedicoController');
 Route::resource('liquidacion/entidad', 'Liquidacion\EntidadFacturaController');
 Route::name('facturacion')->get('facturacion/comprobante/by/numero', 'Articulo\ArticuloController@getMovimientoByComprobanteNro');
 Route::name('facturacion')->get('facturacion/comprobante/by/fecha', 'Articulo\ArticuloController@getMovimientoByComprobanteFecha'); 
-Route::name('facturacion')->put('facturacion/comprobante/tipo', 'Articulo\ArticuloController@getComprobanteTipo');
+Route::name('facturacion')->get('facturacion/comprobante/tipo', 'Articulo\ArticuloController@getComprobanteTipo');
 Route::name('facturacion')->post('facturacion/comprobante', 'Articulo\ArticuloController@crearComprobante'); 
 Route::name('facturacion')->put('facturacion/comprobante/{id}', 'Articulo\ArticuloController@actualizarComprobante');
 Route::name('facturacion')->put('facturacion/comprobante/movimiento/{id}', 'Articulo\ArticuloController@actualizarMovimientoComprobante');
-
+Route::name('facturacion')->get('facturacion/articulo/anular', 'Articulo\ArticuloController@anularComprobante');
 
 
 Route::name('articulo')->get('articulo', 'Articulo\ArticuloController@getArticulos');
@@ -67,4 +67,7 @@ Route::name('archivos')->post('/multiuploads/texto', 'Files\FilesController@crea
 Route::name('archivos')->post('/multiuploads/texto/cirugia', 'Files\FilesController@createTestTextFileCirugia'); 
 Route::name('archivos')->get('/multiuploads/estudios/verimagen', 'Upload\UploadController@getEstudioImagenes'); 
 
-/** CHAT **/
+/** MOVIMIENTO **/
+
+
+

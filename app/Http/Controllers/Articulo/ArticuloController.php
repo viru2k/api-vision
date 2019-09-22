@@ -18,41 +18,7 @@ class ArticuloController extends Controller
     }
 
  
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
    
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
 
     public function getArticulosTipo()
     {
@@ -127,6 +93,108 @@ public function actualizarArticuloTipo(Request $request ,$id)
         return response()->json($res, 201);
 
         }    
+
+        public function getComprobanteTipo()
+        {
+            $res = DB::select( DB::raw("
+            SELECT id, ultimo_numero, proximo_numero, tipo, estado, updated_at FROM comprobante_tipo
+        "));         
+        return response()->json($res, 201);
+
+        }   
+
+
+        public function crearComprobante(Request $request){
+            $t =$request;
+            $tmp_fecha = str_replace('/', '-', $request->fecha_alta);
+            $fecha_alta =  date('Y-m-d H:i', strtotime($tmp_fecha));  
+
+           // echo $request->fecha_alta;
+        //    $someArray = json_decode($t["AgendaDiaBloqueo"]);
+
+        $comprobante_id =    DB::table('comprobante')->insertGetId(
+           ['fecha_alta' => $fecha_alta,
+            'fecha_baja' => '2099-12-31 00:00:00',
+            'numero' => $request->numero,
+            'total_facturado' => $request->total_facturado,
+            'iva' => $request->iva,
+            'total_facturado_iva' => $request->total_facturado_iva,
+            'estado' => $request->estado,
+            'usuario_alta_id' => $request->usuario_alta_id,
+            'comprobante_tipo_id' => $request->comprobante_tipo_id
+          
+           ]           
+        );   
+        //var_dump($request->articuloMovimiento[0]['total_facturado']);
+      //  echo $request->articuloMovimiento[0]['total_facturado'];
+       
+            $i = 0;
+            while(isset($request->articuloMovimiento[$i])){
+
+             //   var_dump($request[$i]);
+             $articulo_movimiento_id =    DB::table('articulo_movimiento')->insertGetId(
+                [                
+                 'articulo_id' => $request->articuloMovimiento[$i]["articulo_id"],
+                 'fecha_alta' => $fecha_alta,
+                 'fecha_baja' => '2099-12-31 00:00:00',
+                 'precio' => $request->articuloMovimiento[$i]["precio"],
+                 'cantidad' => $request->articuloMovimiento[$i]["cantidad"],
+                 'total_facturado' => $request->articuloMovimiento[$i]["total_facturado"],
+                 'bonificacion' => $request->articuloMovimiento[$i]["bonificacion"],
+                 'estado' => $request->articuloMovimiento[$i]["estado"],
+                 'sucursal_id' => $request->articuloMovimiento[$i]["sucursal_id"],
+                 'comprobante_id' => $request->comprobante_tipo_id,
+                 'proveedor_id' => 1,                 
+                 'created_at' => date("Y-m-d H:i:s", strtotime('-3 hours')),
+                 'updated_at' => date("Y-m-d H:i:s", strtotime('-3 hours'))
+                 ]           
+                );   
+                $i++;
+            }
+
+            $proximo = $request->numero;
+            $proximo ++;
+            
+            $id = DB::table('comprobante_tipo') 
+            ->where('id', $request->comprobante_tipo_id) ->limit(1) 
+            ->update( [     
+             'ultimo_numero' => $request->numero,
+             'proximo_numero' => $proximo,
+             'updated_at' => date("Y-m-d H:i:s", strtotime('-3 hours'))
+             	  ]); 
+            $res = DB::select( DB::raw("
+            SELECT id, ultimo_numero, proximo_numero, tipo, estado, updated_at FROM comprobante_tipo where id = ".$request->comprobante_tipo_id."
+                   "));     
+                
+
+            return response()->json($res, "201"); 
+        }
+
+
+
+        public function anularComprobante(){
+            $id =$request->input('comprobante_id');
+            $fecha_baja =$request->input('fecha_baja');
+            $tmp_fecha = str_replace('/', '-', $fecha_baja);
+            $fecha_baja =  date('Y-m-d H:i', strtotime($tmp_fecha)); 
+
+            $comprobante_id = DB::table('comprobante') 
+            ->where('id', $id) ->limit(1) 
+            ->update( [     
+                'fecha_baja' => $fecha_baja,
+                'estado' => 'ANULADO',
+                'usuario_alta_id' => $request->usuario_alta_id,
+                   ]); 
+                   
+           $id = DB::table('articulo_movimiento') 
+           ->where('comprobante_id', $comprobante_id) ->limit(1) 
+           ->update( [     
+               'fecha_baja' => $fecha_baja,
+               'estado' => 'ANULADO',               
+                  ]); 
+
+        }
+    
 
         public function getMovimientoByComprobanteNro(Request $request)
         {
@@ -203,14 +271,8 @@ public function actualizarArticulo(Request $request ,$id)
 }
 
 
-public function getComprobanteTipo()
-{
-    $res = DB::select( DB::raw("
-    SELECT id, ultimo_numero, tipo, estado, updated_at FROM comprobante_tipo"));         
-return response()->json($res, 201);
 
-}
-
+/*
 public function crearComprobante(Request $request)
 {
     // CREO EL COMPROBANTE
@@ -256,7 +318,7 @@ public function crearComprobante(Request $request)
 
     return response()->json($id, 201);      
      }
-
+*/
 
      public function actualizarComprobante(Request $request ,$id)
      {       
