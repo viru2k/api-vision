@@ -83,10 +83,10 @@ class AfipDatosController extends Controller
 
 
     private function getDatosUsuario(Request $request){
-        $medico = DB::select( DB::raw("SELECT cuit, factura_key, factura_crt FROM medicos WHERE id = ".$request->input('medico_id').""));
+        $medico = DB::select( DB::raw("SELECT cuit, factura_key, factura_crt FROM medicos WHERE id = ".$request->input('medico_id')." ORDER BY apellido ASC"));
         $afip = new Afip(array(
             'CUIT' => (float)$medico[0]->cuit,
-            'production' => FALSE,
+            'production' => TRUE,
             'cert'         => $medico[0]->factura_crt,
             'key'          => $medico[0]->factura_key
             ));
