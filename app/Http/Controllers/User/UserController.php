@@ -122,7 +122,7 @@ class UserController extends ApiController
      ->select(
         'users.id',
         'users.name',
-        'users.nombreyapellido',       
+        'users.nombreyapellido'     
         )                                     
             ->get();
         return $this->showAll($horario);

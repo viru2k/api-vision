@@ -121,10 +121,11 @@ public function actualizarArticuloTipo(Request $request ,$id)
             'total_facturado_iva' => $request->total_facturado_iva,
             'estado' => $request->estado,
             'usuario_alta_id' => $request->usuario_alta_id,
-            'comprobante_tipo_id' => $request->comprobante_tipo_id
-          
+            'comprobante_tipo_id' => $request->comprobante_tipo_id,
+            'local' => $request->local   
            ]           
         );   
+      //  echo $comprobante_id;
         //var_dump($request->articuloMovimiento[0]['total_facturado']);
       //  echo $request->articuloMovimiento[0]['total_facturado'];
        
@@ -143,8 +144,10 @@ public function actualizarArticuloTipo(Request $request ,$id)
                  'bonificacion' => $request->articuloMovimiento[$i]["bonificacion"],
                  'estado' => $request->articuloMovimiento[$i]["estado"],
                  'sucursal_id' => $request->articuloMovimiento[$i]["sucursal_id"],
-                 'comprobante_id' => $request->comprobante_tipo_id,
-                 'proveedor_id' => 1,                 
+                 'comprobante_id' => $comprobante_id,
+                 'proveedor_id' => 1,       
+                 'local' => $request->articuloMovimiento[$i]["local"],          
+                 'existencia' => $request->articuloMovimiento[$i]["cantidad"],   
                  'created_at' => date("Y-m-d H:i:s", strtotime('-3 hours')),
                  'updated_at' => date("Y-m-d H:i:s", strtotime('-3 hours'))
                  ]           
@@ -156,14 +159,14 @@ public function actualizarArticuloTipo(Request $request ,$id)
             $proximo ++;
             
             $id = DB::table('comprobante_tipo') 
-            ->where('id', $request->comprobante_tipo_id) ->limit(1) 
+            ->where('id',$comprobante_id) ->limit(1) 
             ->update( [     
              'ultimo_numero' => $request->numero,
              'proximo_numero' => $proximo,
              'updated_at' => date("Y-m-d H:i:s", strtotime('-3 hours'))
              	  ]); 
             $res = DB::select( DB::raw("
-            SELECT id, ultimo_numero, proximo_numero, tipo, estado, updated_at FROM comprobante_tipo where id = ".$request->comprobante_tipo_id."
+            SELECT id, ultimo_numero, proximo_numero, tipo, estado, updated_at FROM comprobante_tipo where id = ".$comprobante_id." 
                    "));     
                 
 
@@ -199,12 +202,13 @@ public function actualizarArticuloTipo(Request $request ,$id)
         public function getMovimientoByComprobanteNro(Request $request)
         {
             $id =$request->input('id');
+            $local =$request->input('local');
             $res = DB::select( DB::raw("
             SELECT articulo.id, articulo.nombre, codigo, tipo_articulo_id, articulo.precio as articulo_precio, estado_id, articulo_tipo.tipo_articulo,   articulo_estado.estado, comprobante.id AS comprobante_id,
             comprobante.numero, comprobante.fecha_alta, articulo_movimiento.precio as articulo_movimiento_precio ,articulo_movimiento.id as articulo_movimiento_id , articulo_movimiento.bonificacion as  articulo_movimiento_bonificacion,
              articulo_movimiento.sucursal_id, articulo_movimiento.comprobante_id, comprobante.total_facturado, comprobante.iva, comprobante.total_facturado_iva , comprobante_tipo.tipo
             FROM articulo, articulo_tipo, articulo_estado, comprobante, articulo_movimiento , comprobante_tipo
-            WHERE articulo.tipo_articulo_id = articulo_tipo.id AND articulo.estado_id = articulo_estado.id  AND articulo_movimiento.comprobante_id = comprobante.id AND articulo.id = articulo_movimiento.articulo_id AND comprobante_tipo.id = comprobante.comprobante_tipo_id  AND comprobante.id = ".$id."
+            WHERE articulo.tipo_articulo_id = articulo_tipo.id AND articulo.estado_id = articulo_estado.id  AND articulo_movimiento.comprobante_id = comprobante.id AND articulo.id = articulo_movimiento.articulo_id AND comprobante_tipo.id = comprobante.comprobante_tipo_id  AND comprobante.id = ".$id."  AND comprobante.local = ".$local."
         "));         
         return response()->json($res, 201);
         }  
@@ -215,12 +219,15 @@ public function actualizarArticuloTipo(Request $request ,$id)
             $fecha_desde =  date('Y-m-d H:i:s', strtotime($tmp_fecha));               
             $tmp_fecha = str_replace('/', '-', $request->input('fecha_hasta'));
             $fecha_hasta =  date('Y-m-d H:i:s', strtotime($tmp_fecha));   
+            $local =$request->input('local');
             $res = DB::select( DB::raw("
             SELECT articulo.id, articulo.nombre, codigo, tipo_articulo_id, articulo.precio as articulo_precio, estado_id, articulo_tipo.tipo_articulo,   articulo_estado.estado, comprobante.id AS comprobante_id,
             comprobante.numero, comprobante.fecha_alta, articulo_movimiento.precio as articulo_movimiento_precio ,articulo_movimiento.id as articulo_movimiento_id , articulo_movimiento.bonificacion as  articulo_movimiento_bonificacion,
-             articulo_movimiento.sucursal_id, articulo_movimiento.comprobante_id, comprobante.total_facturado, comprobante.iva, comprobante.total_facturado_iva , comprobante_tipo.tipo
+             articulo_movimiento.sucursal_id, articulo_movimiento.comprobante_id, articulo_movimiento.total_facturado, comprobante.iva, comprobante.total_facturado_iva , comprobante_tipo.tipo, articulo_movimiento.precio, 
+             tipo_articulo, cantidad, comprobante_tipo.tipo, comprobante.fecha_alta, articulo_movimiento.local
             FROM articulo, articulo_tipo, articulo_estado, comprobante, articulo_movimiento , comprobante_tipo
-            WHERE articulo.tipo_articulo_id = articulo_tipo.id AND articulo.estado_id = articulo_estado.id  AND articulo_movimiento.comprobante_id = comprobante.id AND articulo.id = articulo_movimiento.articulo_id AND comprobante_tipo.id = comprobante.comprobante_tipo_id AND fecha_alta BETWEEN ".$fecha_desde." AND ".$fecha_hasta."
+            WHERE articulo.tipo_articulo_id = articulo_tipo.id AND articulo.estado_id = articulo_estado.id  AND articulo_movimiento.comprobante_id = comprobante.id AND articulo.id = articulo_movimiento.articulo_id AND comprobante_tipo.id = comprobante.comprobante_tipo_id 
+             AND articulo_movimiento.fecha_alta BETWEEN '".$fecha_desde."' AND '".$fecha_hasta."'
         "));         
         return response()->json($res, 201);
         }   
