@@ -9,7 +9,8 @@ use Illuminate\Support\Facades\DB;
 
 class FacturaElementosController extends ApiController{
     
-
+    var $produccion = TRUE;
+   
 
     public function Alicuota(Request $request){
         $res = DB::table('factura_alicuota')
@@ -73,17 +74,68 @@ class FacturaElementosController extends ApiController{
     }
 
     public function crearFactura(Request $request){
-
+        $numero_recibo = 0;
         $medico = DB::select( DB::raw("SELECT cuit, factura_key, factura_crt FROM medicos WHERE id = ".$request->medico_id.""));
         $afip = new Afip(array(
             'CUIT' => (float)$medico[0]->cuit,
-            'production' => TRUE,
+            'production' => $this->produccion,
             'cert'         => $medico[0]->factura_crt,
             'key'          => $medico[0]->factura_key
             ));
         $Iva = [];
         $i =0;
     
+        if($request->factura_comprobante_id == 15){
+            $recibo = DB::select( DB::raw("SELECT * FROM factura_encabezado WHERE  medico_id = ".$request->medico_id." AND factura_comprobante_id = ".$request->factura_comprobante_id." ORDER BY id DESC limit 1 "));
+          //  echo $request->factura_comprobante_id;
+           // echo $request->medico_id;
+          //  var_dump($recibo);
+            if(!$recibo){
+                // SI NO EXISTE DEVUELVE EL PRIMER NUMERO
+              //  echo 0;
+             //   echo $request->factura_pto_vta_id;
+                $numero_recibo = $numero_recibo +1;
+            }else{
+              //  var_dump($recibo[0]);
+                $numero_recibo = $recibo[0]->factura_numero+1;
+            }
+           
+$factura_encabezado_id= DB::table('factura_encabezado')->insertGetId([
+    'factura_pto_vta_id'=> $request->factura_pto_vta_id,
+    'medico_id'=> $request->medico_id,
+    'factura_comprobante_id'=> $request->factura_comprobante_id,
+    'factura_concepto_id'=> $request->factura_concepto_id,
+    'factura_documento_comprador_id'=> $request->factura_documento_comprador_id,
+    'factura_documento'=> $request->factura_documento,
+    'factura_obra_social'=> $request->factura_obra_social,
+    'factura_cliente'=> $request->factura_cliente,
+    'factura_numero'=>$numero_recibo,
+    'fecha'=> $request->fecha,
+    'fecha_desde'=> $request->fecha_desde,
+    'fecha_hasta'=> $request->fecha_hasta,
+    'importe_gravado'=> $request->importe_gravado,
+    'importe_exento_iva'=> $request->importe_exento_iva,
+    'importe_iva'=> $request->importe_iva,
+    'importe_total'=> $request->importe_total
+    ]);        
+
+    foreach ($request->facturaElectronicaRenglon as $res) {
+        DB::table('factura_renglon')->insertGetId([    
+            'factura_id' => $factura_encabezado_id,        
+            'descripcion' => $res["descripcion"],
+            'cantidad' => $res["cantidad"],
+            'precio_unitario' => $res["precio_unitario"],
+            'alicuota_id' => $res["alicuota_id"],
+            'alicuota' => $res["alicuota"],
+            'iva' => $res["iva"],
+            'total_sin_iva' => $res["total_sin_iva"],
+            'total_renglon' => $res["total_renglon"]
+        ]);    
+    }
+    
+    return response()->json($numero_recibo, 201);
+         }
+         
 
     if($request->factura_comprobante_id != 11){ 
 
@@ -317,7 +369,7 @@ $factura_encabezado_id= DB::table('factura_encabezado')->insertGetId([
         $medico = DB::select( DB::raw("SELECT cuit, factura_key, factura_crt FROM medicos WHERE id = ".$encabezado[0]->medico_id.""));
         $afip = new Afip(array(
             'CUIT' => (float)$medico[0]->cuit,
-            'production' => TRUE,
+            'production' => $this->produccion,
             'cert'         => $medico[0]->factura_crt,
             'key'          => $medico[0]->factura_key
             ));

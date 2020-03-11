@@ -8,14 +8,16 @@ use Illuminate\Support\Facades\DB;
 
 class AfipController extends Controller
 {
+       var  $produccion = TRUE;
     
     public function testAfipGetLastVoucher(){
+        $medico = DB::select( DB::raw("SELECT cuit, factura_key, factura_crt FROM medicos WHERE id = 24"));
         $afip = new Afip(array(
         'CUIT' => 20300712143,
-        'production' => TRUE,
+        'production' => $this->produccion,
         'cert'         => $medico[0]->factura_crt,
         'key'          => $medico[0]->factura_key));
-        $last_voucher = $afip->ElectronicBilling->GetLastVoucher(1,1);
+        $last_voucher = $afip->ElectronicBilling->GetLastVoucher(1,4);
         var_dump( $last_voucher);
     }
     
@@ -40,7 +42,7 @@ class AfipController extends Controller
         $medico = DB::select( DB::raw("SELECT cuit, factura_key, factura_crt FROM medicos WHERE id = ".$request->input('medico_id').""));
         $afip = new Afip(array(
         'CUIT' => (float)$medico[0]->cuit,
-        'production' => TRUE,
+        'production' => $this->produccion,
         'cert'         => $medico[0]->factura_crt,
         'key'          => $medico[0]->factura_key
         ));
@@ -160,7 +162,7 @@ class AfipController extends Controller
         $medico = DB::select( DB::raw("SELECT cuit, factura_key, factura_crt FROM medicos WHERE id = ".$request->input('id').""));
         $afip = new Afip(array( 
         'CUIT' => (float)$medico[0]->cuit,
-        'production' => TRUE,
+        'production' => $this->produccion,
         'cert'         => $medico[0]->factura_crt,
         'key'          => $medico[0]->factura_key));
 
@@ -279,7 +281,7 @@ class AfipController extends Controller
         $medico = DB::select( DB::raw("SELECT cuit, factura_key, factura_crt, factura_punto_vta_medico.punto_vta FROM medicos, factura_punto_vta_medico WHERE medicos.id = factura_punto_vta_medico.medico_id AND medicos.id = ".$request->input('id').""));
         $afip = new Afip(array(
                 'CUIT' => (float)$medico[0]->cuit,
-                'production' => TRUE,
+                'production' => $this->produccion,
                 'cert'         => $medico[0]->factura_crt,
                 'key'          => $medico[0]->factura_key
         ));
@@ -385,7 +387,7 @@ class AfipController extends Controller
         $medico = DB::select( DB::raw("SELECT cuit, factura_key, factura_crt FROM medicos WHERE id = ".$request->input('id').""));
         $afip = new Afip(array(
                 'CUIT' => (float)$medico[0]->cuit,
-                'production' => TRUE,
+                'production' => $this->produccion,
                 'cert'         => $medico[0]->factura_crt,
                 'key'          => $medico[0]->factura_key
         ));
@@ -527,7 +529,7 @@ class AfipController extends Controller
         $medico = DB::select( DB::raw("SELECT cuit, factura_key, factura_crt FROM medicos WHERE id = ".$request->input('id').""));
         $afip = new Afip(array(
                 'CUIT' => (float)$medico[0]->cuit,
-                'production' => TRUE,
+                'production' => $this->produccion,
                 'cert'         => $medico[0]->factura_crt,
                 'key'          => $medico[0]->factura_key        
         ));
@@ -664,6 +666,14 @@ class AfipController extends Controller
 
         public function getMedicosFacturan(){
                 $medico = DB::select( DB::raw("SELECT medicos.id,CONCAT(apellido,' ',nombre) AS nombreyapellido , domicilio, fecha_matricula, cuit, ing_brutos, usuario_id, factura_key, factura_crt, categoria_iva.categoria_iva, factura_documento_comprador.id  AS factura_documento_comprador_id, factura_documento_comprador.descripcion, factura_punto_vta.id AS  factura_punto_vta_id, factura_punto_vta.punto_vta , factura_comprobante.id AS factura_comprobante_id, factura_comprobante.descripcion AS factura_comprobante_descripcion FROM medicos, categoria_iva, factura_documento_comprador, factura_punto_vta, factura_comprobante WHERE medicos.punto_vta_id = factura_punto_vta.id AND factura_documento_comprador.id = medicos.factura_documento_comprador_id AND  medicos.factura_comprobante_id = factura_comprobante.id AND   cuit != '' AND factura_key != '' AND factura_crt !='' AND medicos.categoria_iva_id = categoria_iva.id ORDER BY nombreyapellido ASC"));
+                return $medico;
+        }
+
+
+        public function getDatoMedico(Request $request){
+                $medico_id = $request->input('medico_id');
+                
+                $medico = DB::select( DB::raw("SELECT medicos.id,CONCAT(apellido,' ',nombre) AS nombreyapellido , domicilio, fecha_matricula, cuit, ing_brutos, usuario_id, factura_key, factura_crt, categoria_iva.categoria_iva, factura_documento_comprador.id  AS factura_documento_comprador_id, factura_documento_comprador.descripcion, factura_punto_vta.id AS  factura_punto_vta_id, factura_punto_vta.punto_vta , factura_punto_vta.punto_vta, factura_comprobante.id AS factura_comprobante_id, factura_comprobante.letra, factura_comprobante.comprobante_codigo, factura_comprobante.descripcion AS factura_comprobante_descripcion FROM medicos, categoria_iva, factura_documento_comprador, factura_punto_vta, factura_comprobante WHERE medicos.punto_vta_id = factura_punto_vta.id AND factura_documento_comprador.id = medicos.factura_documento_comprador_id AND  medicos.factura_comprobante_id = factura_comprobante.id AND   cuit != '' AND factura_key != '' AND factura_crt !='' AND medicos.categoria_iva_id = categoria_iva.id AND medicos.id = ".$medico_id." ORDER BY nombreyapellido ASC"));
                 return $medico;
         }
 

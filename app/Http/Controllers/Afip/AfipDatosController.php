@@ -9,7 +9,8 @@ use Illuminate\Support\Facades\DB;
 class AfipDatosController extends Controller
 {
     
-     
+   var  $produccion = TRUE;
+
     public function GetLastVoucher(Request $request){
         $punto_vta =  $request->input('punto_vta');
         $comprobante_tipo =  $request->input('comprobante_tipo');
@@ -86,7 +87,7 @@ class AfipDatosController extends Controller
         $medico = DB::select( DB::raw("SELECT cuit, factura_key, factura_crt FROM medicos WHERE id = ".$request->input('medico_id')." ORDER BY apellido ASC"));
         $afip = new Afip(array(
             'CUIT' => (float)$medico[0]->cuit,
-            'production' => TRUE,
+            'production' => $this->produccion,
             'cert'         => $medico[0]->factura_crt,
             'key'          => $medico[0]->factura_key
             ));
