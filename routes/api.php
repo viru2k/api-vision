@@ -352,3 +352,16 @@ Route::name('listas')->post('lista/receta', 'lista\ListaController@CrearListaRec
 Route::name('listas')->get('lista/obrasocial/autorizacion', 'lista\ListaController@getListaObraSocial');
 Route::name('listas')->put('lista/obrasocial/autorizacion/{id}', 'lista\ListaController@ActualizarListObraSocial');
 Route::name('listas')->post('lista/obrasocial/autorizacion', 'lista\ListaController@CrearListaObraSocial');
+
+/* -------------------------------------------------------------------------- */
+/*                                    CHAT                                    */
+/* -------------------------------------------------------------------------- */
+
+Route::name('chat')->get('chat/usuario/alta', 'Chat\ChatController@altaUsuarioSesionLista'); 
+Route::name('chat')->get('chat/usuario/alta/sesion', 'Chat\ChatController@crearSesionListado'); 
+Route::name('chat')->get('chat/usuario/alta/sesion/grupo', 'Chat\ChatController@asociarUsuarioGrupo'); 
+Route::name('chat')->get('chat/alta/sesion/grupo', 'Chat\ChatController@crearSesionListadoGrupo');
+Route::name('chat')->get('chat/usuario/lista/sesion', 'Chat\ChatController@getSesionListByUsuario'); 
+Route::name('chat')->get('chat/usuario/lista/sesion/grupo', 'Chat\ChatController@getSesionListByGrupo'); 
+Route::name('chat')->post('chat/renglon', 'Chat\ChatControllerr@insertarRenglonChat');
+Route::name('chat')->get('chat/renglon/leido', 'Chat\ChatControllerr@actualizarRenglonListado');
