@@ -138,11 +138,10 @@ public function asociarUsuarioGrupo(Request $request)
     {
 
         $id = $request->input('id');
-        $res = DB::select( DB::raw("SELECT users.id, nombreyapellido 
-        FROM users, chat_sesion, chat_sesion_usuario 
-        WHERE chat_sesion.id = chat_sesion_usuario.sesion_id AND chat_sesion_usuario.usuario_id = users.id  AND users.id != :id
-        GROUP by users.id  
-        ORDER BY `users`.`nombreyapellido` ASC"
+
+        $res = DB::select( DB::raw("SELECT  chat_sesion.id as chat_sesion_id, chat_sesion_usuario.id as chat_sesion_usuario_id,  users.id, nombreyapellido , chat_sesion.fecha_modificacion,  chat_sesion_usuario.estado
+        FROM  chat_sesion,  chat_sesion_usuario, users
+        WHERE chat_sesion.id = chat_sesion_usuario.sesion_id AND  chat_sesion_usuario.usuario_id = users.id AND chat_sesion_usuario.sesion_id   in (SELECT sesion_id FROM  chat_sesion_usuario WHERE chat_sesion_usuario.usuario_id = ".$id.") AND  chat_sesion_usuario.usuario_id != ".$id." AND chat_sesion.grupo_nombre ='LISTADO'"
         )
         , array(
         'id' => $id   
@@ -157,9 +156,9 @@ public function asociarUsuarioGrupo(Request $request)
     public function getChatByUsuario(Request $request)
     {
         $id = $request->input('id');
-        $res = DB::select( DB::raw("SELECT chat_sesion.id, usuario_id, fecha_creacion, chat_sesion.grupo_nombre, chat_sesion.fecha_modificacion, users.nombreyapellido  
-        FROM chat_sesion_usuario, chat_sesion, users 
-        WHERE chat_sesion_usuario.sesion_id = chat_sesion.id AND chat_sesion_usuario.usuario_id = users.id AND chat_sesion.id = (SELECT id FROM chat_sesion_usuario WHERE chat_sesion_usuario.usuario_id = :id)"
+        $res = DB::select( DB::raw("SELECT  chat_sesion.id as chat_sesion_id, chat_sesion_usuario.id as chat_sesion_usuario_id,  users.id, nombreyapellido , chat_sesion.fecha_modificacion,  chat_sesion_usuario.estado
+        FROM  chat_sesion,  chat_sesion_usuario, users
+        WHERE chat_sesion.id = chat_sesion_usuario.sesion_id AND  chat_sesion_usuario.usuario_id = users.id AND chat_sesion_usuario.sesion_id   in (SELECT sesion_id FROM  chat_sesion_usuario WHERE chat_sesion_usuario.usuario_id = :id) AND  chat_sesion_usuario.usuario_id != :id"
         )
         , array(
         'id' => $id   
@@ -213,7 +212,16 @@ public function actualizarRenglonListado(Request $request)
     $sesion_id = $request->input('sesion_id');
     $usuario_id = $request->input('usuario_id');
 
-     $update = DB::table('cha_chat') 
+
+
+       $update = DB::table('chat_sesion_usuario') 
+       ->where('sesion_id',  $sesion_id)
+       ->where('usuario_id', '=',  $usuario_id)
+       ->update( [ 
+        'estado' => 'LEIDO'       
+      ]);  
+
+      $update = DB::table('cha_chat') 
       ->where('sesion_id',  $sesion_id)
       ->where('usuario_id', '<>',  $usuario_id)
       ->update( [ 
