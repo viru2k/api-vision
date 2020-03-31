@@ -363,5 +363,6 @@ Route::name('chat')->get('chat/usuario/alta/sesion/grupo', 'Chat\ChatController@
 Route::name('chat')->get('chat/alta/sesion/grupo', 'Chat\ChatController@crearSesionListadoGrupo');
 Route::name('chat')->get('chat/usuario/lista/sesion', 'Chat\ChatController@getSesionListByUsuario'); 
 Route::name('chat')->get('chat/usuario/lista/sesion/grupo', 'Chat\ChatController@getSesionListByGrupo'); 
-Route::name('chat')->post('chat/renglon', 'Chat\ChatControllerr@insertarRenglonChat');
-Route::name('chat')->get('chat/renglon/leido', 'Chat\ChatControllerr@actualizarRenglonListado');
+Route::name('chat')->post('chat/renglon', 'Chat\ChatController@insertarRenglonChat');
+Route::name('chat')->get('chat/renglon/leido', 'Chat\ChatController@actualizarRenglonListado');
+Route::name('chat')->get('chat/by/sesion', 'Chat\ChatController@getChatBySesion');
