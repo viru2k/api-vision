@@ -120,16 +120,101 @@ public function asociarUsuarioGrupo(Request $request)
   {
     $sesion_id = $request->input('sesion_id');
     $usuario_id = $request->input('usuario_id');
+    $usuario_carga = $request->input('usuario_carga');
+    $sesion_id = $request->input('sesion_id');
+    $grupo = $request->input('grupo');
+    $existe = false;
+    $res = DB::select( DB::raw("SELECT  chat_sesion.id as chat_sesion_id, chat_sesion_usuario.id as chat_sesion_usuario_id,  users.id, nombreyapellido , chat_sesion.fecha_modificacion,  chat_sesion_usuario.estado, chat_sesion_usuario.fecha_lectura, grupo_nombre
+    FROM  chat_sesion,  chat_sesion_usuario, users
+    WHERE chat_sesion.id = chat_sesion_usuario.sesion_id AND  chat_sesion_usuario.usuario_id = users.id AND chat_sesion_usuario.sesion_id   in (SELECT sesion_id FROM  chat_sesion_usuario WHERE chat_sesion_usuario.usuario_id = ".$usuario_id.") AND  chat_sesion_usuario.usuario_id != ".$usuario_id." AND chat_sesion.grupo_nombre ='".$grupo."'
+    ")
+    , array(    
+    'usuario_id' => $usuario_id 
+  ));
+
   
+  foreach($res as $t){
+    //var_dump ($t);
+  
+    if($t->id == $usuario_carga){
+      //echo 'existe';
+      $existe = true;
+      $respuesta = 'existente';
+    }
+  }
+
+
+/* -------------------------------------------------------------------------- */
+/*   SI ES DE LISTADO PRIVADO CREO GRUPO LISTADO Y ASOCIO  LOS DOS USUARIOS   */
+/* -------------------------------------------------------------------------- */
+
+/* -------------------------------------------------------------------------- */
+/*          OBTENGO EL VALOR PROVEIDO POR EL GRUPO CREADO PREVIAMENTE         */
+/* -------------------------------------------------------------------------- */
+   
+
+
+  if(!$existe){
+    if($grupo === 'LISTADO'){
+      $sesion= DB::table('chat_sesion')->insertGetId([
+        'grupo_nombre' => $grupo,
+        'fecha_modificacion' => date("Y-m-d H:i:s")    
+      ]);
+    
     $sesion_usuario= DB::table('chat_sesion_usuario')->insertGetId([
-      'sesion_id' => $sesion_id,
-      'usuario_id' => $usuario_id,
+      'sesion_id' => $sesion,
+      'usuario_id' => $usuario_carga,
+      'estado' => 'NUEVO',
       'fecha_creacion' => date("Y-m-d H:i:s"),
       'fecha_lectura' => date("Y-m-d H:i:s")   
      ]); 
-     
-     return response()->json($sesion_usuario, 201);
+   
+        $sesion_usuario= DB::table('chat_sesion_usuario')->insertGetId([
+          'sesion_id' => $sesion,
+          'usuario_id' => $usuario_id,
+          'estado' => 'NUEVO',
+          'fecha_creacion' => date("Y-m-d H:i:s"),
+          'fecha_lectura' => date("Y-m-d H:i:s")   
+         ]); 
+      }
+
+      if($grupo !== 'LISTADO'){
+        $sesion= DB::table('chat_sesion')->insertGetId([
+          'grupo_nombre' => $grupo,
+          'fecha_modificacion' => date("Y-m-d H:i:s")    
+        ]);
+      
+      $sesion_usuario= DB::table('chat_sesion_usuario')->insertGetId([
+        'sesion_id' => $sesion_id,
+        'usuario_id' => $usuario_carga,
+        'estado' => 'NUEVO',
+        'fecha_creacion' => date("Y-m-d H:i:s"),
+        'fecha_lectura' => date("Y-m-d H:i:s")   
+       ]); 
+
+      }
+    
+      $respuesta = 'creado';
+  }
+ 
+     return response()->json($respuesta, 201);
         }
+
+/* -------------------------------------------------------------------------- */
+/*                         OBTENGO LOS GRUPOS CREADOS                         */
+/* -------------------------------------------------------------------------- */
+
+
+
+public function getGrupos(Request $request)
+{
+    $id = $request->input('id');
+    $res = DB::select( DB::raw("SELECT * FROM `chat_sesion` WHERE grupo_nombre !='LISTADO' GROUP BY grupo_nombre"
+    )
+   );
+  return response()->json($res, 201);
+}
+
     
 /* -------------------------------------------------------------------------- */
 /*                       OBTENGO EL LISTADO DE USUARIOS                       */
@@ -185,13 +270,15 @@ UNION
       $sesion_id = $request->input('sesion_id');
       $usuario_id = $request->input('id');
       $grupo_nombre = $request->input('grupo_nombre');
+      $limite = $request->input('limite');
+    //  echo $limite;
 
-        $res = DB::select( DB::raw("SELECT cha_chat.sesion_id, cha_chat.usuario_id, mensaje, cha_chat.fecha_lectura, cha_chat.fecha_creacion, es_adjunto, archivo,  users.nombreyapellido 
+        $res = DB::select( DB::raw("SELECT * FROM (SELECT cha_chat.sesion_id, cha_chat.usuario_id, mensaje, cha_chat.fecha_lectura, cha_chat.fecha_creacion, es_adjunto, archivo,  users.nombreyapellido 
         FROM `cha_chat`, chat_sesion, users 
-        WHERE  cha_chat.sesion_id = chat_sesion.id  AND cha_chat.usuario_id = users.id AND chat_sesion.id = :sesion_id ORDER BY  cha_chat.fecha_creacion ASC
+        WHERE  cha_chat.sesion_id = chat_sesion.id  AND cha_chat.usuario_id = users.id AND chat_sesion.id = :sesion_id   ORDER BY  fecha_creacion DESC  ".$limite." ) AS temp  ORDER BY  fecha_creacion ASC
         ")
         , array(
-        'sesion_id' => $sesion_id   
+        'sesion_id' => $sesion_id    
       ));
       if($grupo_nombre ==='LISTADO'){
       $update = DB::table('chat_sesion_usuario') 
@@ -215,6 +302,14 @@ UNION
       ->update( [        
        'fecha_modificacion' => date("Y-m-d H:i:s")
        ]);
+       $update = DB::table('chat_sesion_usuario') 
+       ->where('sesion_id', '=',  $sesion_id)
+       ->where('usuario_id', '=',  $usuario_id)
+       ->update( [ 
+        'estado' => 'LEIDO',
+        'fecha_lectura' => date("Y-m-d H:i:s")       
+        ]);
+       
      }
    
  
@@ -286,4 +381,57 @@ public function actualizarRenglonListado(Request $request)
    ));
      return response()->json($res, 201);
         }
+
+  
+
+        public function showUploadFile(Request $request) {
+
+
+          $parts = explode('/', $request->url());
+         // var_dump($parts);
+          $sesion_id =  $parts[8];
+          $usuario_id =  $parts[9];
+        //  echo $usuario_id;
+           
+        
+          $fecha = date("Y-m-d-H-i-s");
+          $allowedfileExtension=['pdf','jpg','png','docx','pdf'];
+          $files = $request->file('images');
+          foreach($files as $file){
+          $filename = $file->getClientOriginalName();
+          $extension = $file->getClientOriginalExtension();
+          $check=in_array($extension,$allowedfileExtension);
+          $parts = explode('/', $request->url());
+           $last = end($parts);
+          $destinationPath = 'uploads/chat/'.$last.'-'.$fecha;
+          $without_extension = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+          
+
+          $sesion_usuario= DB::table('cha_chat')->insertGetId([
+            'sesion_id' => $sesion_id,
+            'usuario_id' => $usuario_id,
+            'estado' => 'PENDIENTE',
+            'mensaje' =>  $file->getClientOriginalName(),
+            'fecha_creacion' => date("Y-m-d H:i:s"),
+            'es_adjunto' => 'SI',
+            'archivo' => $destinationPath.'/'.$file->getClientOriginalName()
+            
+           ]); 
+      
+           $update = DB::table('chat_sesion_usuario') 
+           ->where('sesion_id', '=',  $sesion_id)
+           ->where('usuario_id', '=',  $usuario_id)
+           ->update( [ 
+            'estado' => 'NUEVO',
+            'fecha_lectura' => date("Y-m-d H:i:s"),       
+          ]);  
+          
+          
+          $file->move($destinationPath,$filename);
+          
+          } 
+          
+                  return response()->json("Upload Successfully ", 201);
+               }
 }
+
