@@ -324,6 +324,7 @@ Route::name('facturacion-elementos')->post('afip/elementos/factura/nota/credito'
 Route::name('facturacion-elementos')->get('afip/elementos/factura/by/fecha', 'Afip\FacturaElementosController@GetFacturaBetweenDates');
 Route::name('facturacion-elementos')->get('afip/elementos/factura/by/cliente', 'Afip\FacturaElementosController@GetFacturaByNameOrDocumento');
 Route::name('facturacion-elementos')->get('afip/elementos/factura/by/id', 'Afip\FacturaElementosController@FacturaById');
+Route::name('facturacion-elementos')->get('afip/elementos/factura/libro/iva', 'Afip\FacturaElementosController@getLibroIva');
 
 Route::name('facturacion-elementos')->get('afip/elementos/articulo', 'Afip\FacturaElementosController@FacturaArticulo');
 Route::name('facturacion-elementos')->post('afip/elementos/articulo', 'Afip\FacturaElementosController@CrearFacturaArticulo');
@@ -368,3 +369,16 @@ Route::name('chat')->get('chat/renglon/leido', 'Chat\ChatController@actualizarRe
 Route::name('chat')->get('chat/by/sesion', 'Chat\ChatController@getChatBySesion'); 
 Route::name('chat')->get('chat/grupos', 'Chat\ChatController@getGrupos'); 
 Route::name('chat')->post('/chat/adjuntar/{sesion_id}/{usuario_id}', 'Chat\ChatController@showUploadFile'); 
+
+
+
+/* -------------------------------------------------------------------------- */
+/*                                   INSUMOS                                  */
+/* -------------------------------------------------------------------------- */
+
+
+
+Route::name('insumo')->post('/insumo/nuevo', 'Insumo\InsumoController@crearInsumo'); 
+Route::name('insumo')->put('insumo/actualizar/{id}', 'Insumo\InsumoController@actualizarInsumo'); 
+Route::name('insumo')->post('/insumo/stock/nuevo', 'Insumo\InsumoController@crearInsumoStock'); 
+Route::name('insumo')->post('/insumo/stock/movimiento', 'Insumo\InsumoController@crearInsumoStockMovimiento'); 

@@ -106,6 +106,7 @@ $factura_encabezado_id= DB::table('factura_encabezado')->insertGetId([
     'factura_comprobante_id'=> $request->factura_comprobante_id,
     'factura_concepto_id'=> $request->factura_concepto_id,
     'factura_documento_comprador_id'=> $request->factura_documento_comprador_id,
+    'categoria_iva'=> $request->elementoCondicionIva,
     'factura_documento'=> $request->factura_documento,
     'factura_obra_social'=> $request->factura_obra_social,
     'factura_cliente'=> $request->factura_cliente,
@@ -614,6 +615,22 @@ var_dump($data);
         WHERE  factura_encabezado.id = factura_renglon.factura_id AND factura_encabezado.factura_pto_vta_id = factura_punto_vta.id AND factura_encabezado.medico_id = medicos.id  
         AND  factura_encabezado.factura_comprobante_id = factura_comprobante.id
          AND factura_encabezado.factura_concepto_id = factura_concepto.id AND  factura_encabezado.factura_documento_comprador_id = factura_documento_comprador.id AND categoria_iva.id = medicos.categoria_iva_id  AND factura_encabezado.id = ".$request->input('factura_numero')."
+         "));
+        return $factura;
+    }
+
+    public function getLibroIva(Request $request){
+        $medico_id = $request->input('medico_id');
+        $tmp_fecha = str_replace('/', '-', $request->input('fecha_desde'));
+        $fecha_desde =  date('Y-m-d H:i:s', strtotime($tmp_fecha));         
+        $tmp_fecha = str_replace('/', '-', $request->input('fecha_hasta'));
+        $fecha_hasta =  date('Y-m-d H:i:s', strtotime($tmp_fecha));     
+        
+        $factura = DB::select( DB::raw("SELECT factura_encabezado.fecha, factura_comprobante.descripcion as comprobante_tipo, CONCAT( LPAD(factura_punto_vta.punto_vta,4,0),'-',LPAD(factura_encabezado.factura_numero,8,0)) as numero , factura_encabezado.categoria_iva, factura_encabezado.factura_cliente,factura_documento_comprador.descripcion, factura_encabezado.factura_documento , ((factura_renglon.alicuota-1)*100) AS alicuota , importe_iva, 
+        factura_renglon.total_sin_iva, factura_renglon.total_renglon importe_gravado, importe_exento_iva, importe_total
+        FROM factura_encabezado, factura_punto_vta, medicos, factura_comprobante, factura_concepto, factura_documento_comprador, categoria_iva, factura_renglon, factura_alicuota
+        WHERE factura_encabezado.factura_pto_vta_id = factura_punto_vta.id AND factura_encabezado.medico_id = medicos.id AND factura_encabezado.factura_comprobante_id = factura_comprobante.id AND factura_encabezado.factura_concepto_id = factura_concepto.id AND factura_encabezado.factura_documento_comprador_id = factura_documento_comprador.id AND medicos.categoria_iva_id = categoria_iva.id AND factura_encabezado.id = factura_renglon.factura_id AND factura_renglon.alicuota_id = factura_alicuota.id AND medico_id = '".$medico_id."' AND  factura_encabezado.fecha    BETWEEN '".$fecha_desde."' AND '".$fecha_hasta."'  
+        ORDER BY factura_encabezado.fecha  ASC
          "));
         return $factura;
     }
