@@ -377,8 +377,10 @@ Route::name('chat')->post('/chat/adjuntar/{sesion_id}/{usuario_id}', 'Chat\ChatC
 /* -------------------------------------------------------------------------- */
 
 
-
-Route::name('insumo')->post('/insumo/nuevo', 'Insumo\InsumoController@crearInsumo'); 
+Route::name('insumo')->get('insumo/activo', 'Insumo\InsumoController@getInsumo'); 
+Route::name('insumo')->post('insumo/nuevo', 'Insumo\InsumoController@crearInsumo'); 
 Route::name('insumo')->put('insumo/actualizar/{id}', 'Insumo\InsumoController@actualizarInsumo'); 
-Route::name('insumo')->post('/insumo/stock/nuevo', 'Insumo\InsumoController@crearInsumoStock'); 
-Route::name('insumo')->post('/insumo/stock/movimiento', 'Insumo\InsumoController@crearInsumoStockMovimiento'); 
+Route::name('insumo')->post('insumo/stock/nuevo', 'Insumo\InsumoController@crearInsumoStock'); 
+Route::name('insumo')->post('insumo/stock/movimiento', 'Insumo\InsumoController@crearInsumoStockMovimiento'); 
+Route::name('insumo')->get('insumo/stock', 'Insumo\InsumoController@getInsumoStock'); 
+Route::name('insumo')->get('insumo/stock/movimiento', 'Insumo\InsumoController@getInsumoStockMovimiento'); 
