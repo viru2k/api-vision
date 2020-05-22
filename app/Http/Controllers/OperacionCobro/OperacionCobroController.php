@@ -813,6 +813,34 @@ class OperacionCobroController extends ApiController
       return response()->json($i, "201");
   }
 
+/* -------------------------------------------------------------------------- */
+/*        GENERA LA LIQUIDACION, ACTUALIZA LAS LIQUIDACIONES PENDIENTES       */
+/* -------------------------------------------------------------------------- */
+  
+  public function DistribuirOperacionCobroLiquidar(Request $request){
+    $t =$request;
+    $i = 0;
+  while(isset($t[$i])){       
+    $update = DB::table('operacion_cobro_practica')         
+    ->where('liquidacion_numero',$t[$i]["id"])
+    ->where('es_distribuido','SI')       
+    ->update( [   
+     'estado_liquidacion' => 'LIQ',  
+     'updated_at' => date("Y-m-d H:i:s")     ]);  
+
+   $update = DB::table('liq_liquidacion')         
+   ->where('id',$t[$i]["id"])           
+   ->update( [   
+    'estado' => 'LIQ',  
+    'updated_at' => date("Y-m-d H:i:s")     ]);  
+        $i++;
+    }
+
+    
+    return response()->json($i, "201");
+}
+
+
 
     
     public function liquidarOperacionCobro(Request $request)
@@ -1007,7 +1035,7 @@ $horario = DB::select( DB::raw(" SELECT  operacion_cobro_practica.id as operacio
         $horario = DB::select( DB::raw(" SELECT liq_liquidacion.id, obra_social_id, numero, nivel, fecha_desde, fecha_hasta, liquidacion_generada_id,
         cant_orden, total, usuario_audito, estado, obra_social.nombre as obra_social_nombre, users.nombreyapellido,users_medico.nombreyapellido as medico_nombre,entidad.nombre as entidad_nombre, entidad.cuit, users_medico.id as medico_id, categoria_iva.categoria_iva
         FROM liq_liquidacion , obra_social,users , users as users_medico, entidad, categoria_iva
-        WHERE liq_liquidacion.obra_social_id = obra_social.id AND usuario_audito = users.id AND categoria_iva.id = entidad.categoria_iva_id AND   obra_social.entidad_factura_id = entidad.id  AND  liq_liquidacion.medico_id = users_medico.id  AND estado ='".$estado."' order by    id DESC
+        WHERE liq_liquidacion.obra_social_id = obra_social.id AND usuario_audito = users.id AND categoria_iva.id = entidad.categoria_iva_id AND   obra_social.entidad_factura_id = entidad.id  AND  liq_liquidacion.medico_id = users_medico.id  AND estado ='".$estado."' AND  order by    id DESC
         
     "));
        
@@ -1160,11 +1188,11 @@ echo $fecha_hasta;
 // OBTIENE EL MEDICO DEL PRIMER ELEMENTO SELECCIONADO
         $medico_id =$request[0]["medico_id"];        
 
-        $horario = DB::select( DB::raw(" SELECT  liq_liquidacion_distribucion.id, medico_opera_id, medico_opera.nombreyapellido as medico_opera,   medico_opera_porcentaje, medico_opera_valor, medico_ayuda_id,medico_ayuda.nombreyapellido as medico_ayuda, medico_ayuda_porcentaje, medico_ayuda_valor, medico_ayuda2_id,medico_ayuda2.nombreyapellido as medico_ayuda2, medico_ayuda2_porcentaje, medico_ayuda2_valor, medico_clinica_id,medico_clinica.nombreyapellido as medico_clinica, medico_clinica_porcentaje, medico_clinica_valor, valor_distribuido, total, fecha_liquidacion, usuario_audito, fecha_distribucion, concepto_liquidacion_id,operacion_cobro_practica.operacion_cobro_id,operacion_cobro.fecha_cobro ,CONCAT(paciente.apellido,' ' , paciente.nombre) as paciente_apellido, paciente.dni FROM paciente, operacion_cobro_practica, operacion_cobro, liq_liquidacion_distribucion 
+        $horario = DB::select( DB::raw("SELECT obra_social.nombre as obra_social_nombre, obra_social.id as obra_social_id,  liq_liquidacion_distribucion.id, medico_opera_id, medico_opera.nombreyapellido as medico_opera,   medico_opera_porcentaje, medico_opera_valor, medico_ayuda_id,medico_ayuda.nombreyapellido as medico_ayuda, medico_ayuda_porcentaje, medico_ayuda_valor, medico_ayuda2_id,medico_ayuda2.nombreyapellido as medico_ayuda2, medico_ayuda2_porcentaje, medico_ayuda2_valor, medico_clinica_id,medico_clinica.nombreyapellido as medico_clinica, medico_clinica_porcentaje, medico_clinica_valor, valor_distribuido, total, fecha_liquidacion, usuario_audito, fecha_distribucion, concepto_liquidacion_id,operacion_cobro_practica.operacion_cobro_id,operacion_cobro.fecha_cobro ,CONCAT(paciente.apellido,' ' , paciente.nombre) as paciente_apellido, paciente.dni FROM paciente, operacion_cobro_practica, operacion_cobro ,obra_social, convenio_os_pmo, liq_liquidacion_distribucion 
         LEFT OUTER JOIN users as medico_ayuda  ON medico_ayuda.id = liq_liquidacion_distribucion.medico_ayuda_id
         LEFT OUTER JOIN users as medico_ayuda2  ON medico_ayuda2.id = liq_liquidacion_distribucion.medico_ayuda2_id
         LEFT OUTER JOIN users as medico_opera  ON medico_opera.id = liq_liquidacion_distribucion.medico_opera_id
-        LEFT OUTER JOIN users as medico_clinica  ON medico_clinica.id = liq_liquidacion_distribucion.medico_clinica_id  WHERE liq_liquidacion_distribucion.id = operacion_cobro_practica.liquidacion_distribucion_id AND operacion_cobro_practica.paciente_id = paciente.id AND operacion_cobro_practica.operacion_cobro_id = operacion_cobro.id AND  operacion_cobro_practica.liquidacion_numero IN (".$in.")
+        LEFT OUTER JOIN users as medico_clinica  ON medico_clinica.id = liq_liquidacion_distribucion.medico_clinica_id  WHERE operacion_cobro_practica.convenio_os_pmo_id = convenio_os_pmo.id AND convenio_os_pmo.obra_social_id = obra_social.id AND liq_liquidacion_distribucion.id = operacion_cobro_practica.liquidacion_distribucion_id AND operacion_cobro_practica.paciente_id = paciente.id AND operacion_cobro_practica.operacion_cobro_id = operacion_cobro.id AND  operacion_cobro_practica.liquidacion_numero IN (".$in.")
         group by liq_liquidacion_distribucion.id
        
        
@@ -1172,9 +1200,61 @@ echo $fecha_hasta;
        
       return response()->json($horario, 201);
     }
+
+
+    public function clonarLiquidacion(Request $request){
+      /**
+       * SELECT liq_liquidacion.id as liq_liquidacion_id, liq_liquidacion.obra_social_id, liq_liquidacion.numero, nivel, fecha_desde, fecha_hasta, liquidacion_generada_id, cant_orden, total, usuario_audito, liq_liquidacion.estado as liq_liquidacion_estado, operacion_cobro_practica.id, operacion_cobro_practica.valor_facturado, operacion_cobro_practica.paciente_id, operacion_cobro_practica.user_medico_id, operacion_cobro_practica.convenio_os_pmo_id, obra_social.nombre as obra_social_nombre, pmo.codigo, pmo.descripcion, pmo.complejidad, operacion_cobro.fecha_cobro, paciente.apellido, paciente.nombre FROM operacion_cobro ,liq_liquidacion, operacion_cobro_practica, obra_social,convenio_os_pmo, pmo, users, paciente WHERE liq_liquidacion.id = operacion_cobro_practica.liquidacion_numero AND operacion_cobro_practica.convenio_os_pmo_id = convenio_os_pmo.id AND convenio_os_pmo.obra_social_id = obra_social.id and convenio_os_pmo.pmo_id = pmo.id AND operacion_cobro_practica.user_medico_id = users.id and operacion_cobro.id = operacion_cobro_practica.operacion_cobro_id and operacion_cobro_practica.paciente_id = paciente.id AND liq_liquidacion.id  IN (13,14)
+       */
+      $in = "";
+      $i=0;
+      while(isset($request[$i])){
+          if($i==0){
+          $in = $request[$i]["id"];
+          }else{
+              $in = $in.",".$request[$i]["id"];
+          }
+          $i++;
+      }
+   
+/* -------------------------------------------------------------------------- */
+/*                            insertar liquidacion                            */
+/* -------------------------------------------------------------------------- */
+
+$liquidacion = DB::select( DB::raw("
+INSERT INTO liq_liquidacion ( obra_social_id, numero, nivel, fecha_desde, fecha_hasta, liquidacion_generada_id, cant_orden, total, medico_id, usuario_audito, estado, created_at, updated_at)
+SELECT   obra_social_id, numero, nivel, fecha_desde, fecha_hasta, liquidacion_generada_id, cant_orden, total, medico_id, usuario_audito, estado, created_at, updated_at FROM liq_liquidacion WHERE  id IN (".$in.")")       );
+
+/* ----------------------- OBTENGO EL ULTIMO REGISTRO ----------------------- */
+
+$ultimo = DB::select( DB::raw("
+SELECT MAX(id) as ultimo FROM liq_liquidacion ")       );
+/*
+$INSERCION = DB::select( DB::raw("INSERT INTO operacion_cobro (obra_social_id, paciente_id, total_operacion_cobro, total_facturado, total_coseguro, total_honorarios_medicos, total_otros, numero_bono, usuario_cobro_id, usuario_audita_id, observacion, fecha_cobro, estado, liquidacion_numero, es_anulado, created_at, updated_at)
+SELECT DISTINCT obra_social_id, operacion_cobro.paciente_id, total_operacion_cobro, total_facturado, total_coseguro, total_honorarios_medicos, total_otros, numero_bono, usuario_cobro_id, operacion_cobro.usuario_audita_id, operacion_cobro.observacion, fecha_cobro, estado, operacion_cobro.liquidacion_numero, operacion_cobro.es_anulado, operacion_cobro.created_at, operacion_cobro.updated_at FROM operacion_cobro, operacion_cobro_practica WHERE operacion_cobro.id = operacion_cobro_practica.operacion_cobro_id  AND operacion_cobro_practica.liquidacion_numero IN (".$in.")   
+ORDER BY operacion_cobro.id ASC ")       );
+*/
+
+//var_dump ($ultimo[0]->ultimo);
+//echo $ultimo[0]->ultimo;
+
+/* ------------- INSERTO LOS REGISTROS EN LA NUEVA DISTRIBUCION ------------- */
+
+$insertado = DB::select( DB::raw("INSERT INTO  operacion_cobro_practica ( convenio_os_pmo_id, valor_original, valor_facturado, coeficiente, forma_pago, operacion_cobro_id, paciente_id, user_medico_id, categorizacion, observacion, created_at, updated_at, usuario_audita_id, liquidacion_numero, estado_liquidacion, estado_facturacion, facturacion_nro, distribuido, usuario_realiza_id, usuario_modifica_id, usuario_liquida_id, liquidacion_distribucion_id, liquidacion_realizada_numero, es_distribuido, cantidad, tiene_observacion, motivo_observacion, es_anulado, internacion_tipo )
+SELECT  convenio_os_pmo_id, valor_original, valor_facturado, coeficiente, forma_pago, operacion_cobro_id, paciente_id, user_medico_id, categorizacion, observacion, created_at, updated_at, usuario_audita_id, ".$ultimo[0]->ultimo.", estado_liquidacion, estado_facturacion, facturacion_nro, distribuido, usuario_realiza_id, usuario_modifica_id, usuario_liquida_id, liquidacion_distribucion_id, liquidacion_realizada_numero, es_distribuido, cantidad, tiene_observacion, motivo_observacion, es_anulado, internacion_tipo FROM operacion_cobro_practica where operacion_cobro_practica.liquidacion_numero  IN (".$in.")    ")       );
+
+
+
+    return response()->json($ultimo, 201);
+  }
 }
 
 
+
+/*
+INSERT INTO  operacion_cobro_practica ( convenio_os_pmo_id, valor_original, valor_facturado, coeficiente, forma_pago, operacion_cobro_id, paciente_id, user_medico_id, categorizacion, observacion, created_at, updated_at, usuario_audita_id, liquidacion_numero, estado_liquidacion, estado_facturacion, facturacion_nro, distribuido, usuario_realiza_id, usuario_modifica_id, usuario_liquida_id, liquidacion_distribucion_id, liquidacion_realizada_numero, es_distribuido, cantidad, tiene_observacion, motivo_observacion, es_anulado, internacion_tipo )
+SELECT  convenio_os_pmo_id, valor_original, valor_facturado, coeficiente, forma_pago, operacion_cobro_id, paciente_id, user_medico_id, categorizacion, observacion, created_at, updated_at, usuario_audita_id, 9999999, estado_liquidacion, estado_facturacion, facturacion_nro, distribuido, usuario_realiza_id, usuario_modifica_id, usuario_liquida_id, liquidacion_distribucion_id, liquidacion_realizada_numero, es_distribuido, cantidad, tiene_observacion, motivo_observacion, es_anulado, internacion_tipo FROM operacion_cobro_practica where operacion_cobro_practica.liquidacion_numero = 1799
+*/
 
 
 /*

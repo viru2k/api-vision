@@ -188,6 +188,7 @@ Route::name('liquidacion')->post('liquidacion/detalle/prefactura/cirugia/cosegur
 Route::name('liquidacion')->get('liquidacion/detalle/prefactura/desafectar', 'OperacionCobro\OperacionCobroController@desafectarPresentacion');
 Route::name('liquidacion')->post('liquidacion/distribucion/medico', 'OperacionCobro\OperacionCobroController@liquidarOperacionCobro');
 
+Route::name('liquidacion')->post('liquidacion/distribucion/clonar', 'OperacionCobro\OperacionCobroController@clonarLiquidacion');
 
 /** DISTRIBUCION */
 
@@ -220,7 +221,8 @@ Route::name('operacioncobro')->get('operacioncobro/registros/by/distribucion/pre
 
 Route::name('operacioncobro')->post('operacioncobro/facturacion/auditarorden', 'OperacionCobro\OperacionCobroController@auditarOrdenes');
 Route::name('operacioncobro')->post('operacioncobro/afectar/orden', 'OperacionCobro\OperacionCobroController@afectarOperacionCobro');
-Route::name('operacioncobro')->post('operacioncobro/distribuir/orden', 'OperacionCobro\OperacionCobroController@DistribuirOperacionCobro');
+Route::name('operacioncobro')->post('operacioncobro/distribuir/orden', 'OperacionCobro\OperacionCobroController@DistribuirOperacionCobro'); 
+Route::name('operacioncobro')->post('operacioncobro/distribuir/orden/liquidar', 'OperacionCobro\OperacionCobroController@DistribuirOperacionCobroLiquidar');
 Route::name('operacioncobro')->delete('operacioncobro/practica/{id}', 'OperacionCobro\OperacionCobroController@destroyByPracticaById');
 Route::name('operacioncobro')->put('operacioncobro/practica/actualizar/{id}', 'OperacionCobro\OperacionCobroController@updateOperacionCobroPractica'); 
 Route::name('operacioncobro')->put('operacioncobro/practica/anular/{id}', 'OperacionCobro\OperacionCobroController@updateOperacionCobroPracticaAnular'); 
