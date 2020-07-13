@@ -1035,7 +1035,7 @@ $horario = DB::select( DB::raw(" SELECT  operacion_cobro_practica.id as operacio
         $horario = DB::select( DB::raw(" SELECT liq_liquidacion.id, obra_social_id, numero, nivel, fecha_desde, fecha_hasta, liquidacion_generada_id,
         cant_orden, total, usuario_audito, estado, obra_social.nombre as obra_social_nombre, users.nombreyapellido,users_medico.nombreyapellido as medico_nombre,entidad.nombre as entidad_nombre, entidad.cuit, users_medico.id as medico_id, categoria_iva.categoria_iva
         FROM liq_liquidacion , obra_social,users , users as users_medico, entidad, categoria_iva
-        WHERE liq_liquidacion.obra_social_id = obra_social.id AND usuario_audito = users.id AND categoria_iva.id = entidad.categoria_iva_id AND   obra_social.entidad_factura_id = entidad.id  AND  liq_liquidacion.medico_id = users_medico.id  AND estado ='".$estado."' AND  order by    id DESC
+        WHERE liq_liquidacion.obra_social_id = obra_social.id AND usuario_audito = users.id AND categoria_iva.id = entidad.categoria_iva_id AND   obra_social.entidad_factura_id = entidad.id  AND  liq_liquidacion.medico_id = users_medico.id  AND estado ='".$estado."'   order by    id DESC
         
     "));
        
