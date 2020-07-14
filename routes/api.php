@@ -64,6 +64,7 @@ Route::name('agenda-gestion')->get('agenda/horarios/turno/medico', 'Agenda\Agend
 Route::name('agenda-gestion')->get('agenda/horarios/turno/medico/noestado', 'Agenda\AgendaController@getAgendaAtencionByFechaAndMedicoSinEstado');
 Route::name('agenda-gestion')->get('agenda/horarios/turno/todos/noestado', 'Agenda\AgendaController@getAgendaAtencionByFechaTodosSinEstado'); 
 Route::name('agenda-gestion')->get('agenda/horarios/turno/todos/noestado/bydates', 'Agenda\AgendaController@getAgendaAtencionByFechaTodosSinEstadoBetweenDates');
+Route::name('agenda-gestion')->get('agenda/horarios/turno/todos/noestado/bydates/gerencia', 'Agenda\AgendaController@getAgendaAtencionByFechaTodosSinEstadoBetweenDatesGerencia');
 Route::name('agenda-gestion')->get('agenda/horarios/turno/nuevo', 'Agenda\AgendaController@getAgendaAtByFechaTodosTurnos');
 Route::name('agenda-gestion')->get('agenda/horarios/turno/nuevo/usuario', 'Agenda\AgendaController@getAgendaAtByFechaMedicoTurnos');
 Route::name('agenda-gestion')->get('agenda/horarios/turno/nuevo/usuario/todos', 'Agenda\AgendaController@getAgendaAtByFechaMedicoTurnosTodos');

@@ -467,6 +467,83 @@ public function getAgendaAtencionByFechaTodosSinEstadoBetweenDates(Request $requ
 
 
 
+public function getAgendaAtencionByFechaTodosSinEstadoBetweenDatesGerencia(Request $request )
+{
+    
+       
+    $tmp_fecha = str_replace('/', '-', $request->input('fecha_desde'));
+    $fecha_desde =  date('Y-m-d H:i', strtotime($tmp_fecha));         
+
+    $tmp_fecha = str_replace('/', '-', $request->input('fecha_hasta'));
+    $fecha_hasta =  date('Y-m-d H:i', strtotime($tmp_fecha));         
+    
+    $horario = DB::table('agenda_usuario_dia_horario','agenda_horario', 'users','agenda_dias','agenda_dia_horario_atencion','paciente','operacion_cobro')
+    ->join('users', 'users.id', '=', 'agenda_usuario_dia_horario.usuario_id')           
+    ->join('agenda_dia_horario_atencion', 'agenda_dia_horario_atencion.agenda_usuario_dia_horario_id', '=', 'agenda_usuario_dia_horario.id')
+    ->join('operacion_cobro', 'operacion_cobro.id', '=', 'agenda_dia_horario_atencion.operacion_cobro_id')
+    ->join('agenda_dias', 'agenda_dias.id', '=', 'agenda_usuario_dia_horario.agenda_dia_id')
+    ->join('agenda_horario', 'agenda_horario.id', '=', 'agenda_usuario_dia_horario.agenda_horario_id')
+    ->join('agenda_estado', 'agenda_estado.id', '=', 'agenda_dia_horario_atencion.agenda_estado_id')
+    ->join('paciente', 'paciente.id','=','agenda_dia_horario_atencion.paciente_id')
+    ->join('obra_social', 'obra_social.id','=','paciente.obra_social_id')
+    ->join('obra_social as coseguro', 'coseguro.id','=','paciente.coseguro_id')
+    ->join('users as usuario_genero', 'usuario_genero.id', '=', 'agenda_dia_horario_atencion.usuario_alta_id')  
+    ->select(
+       'agenda_usuario_dia_horario.id',
+       'agenda_horario.hora_desde',
+       'agenda_horario.hora_hasta',
+       'agenda_horario.hora_desde_hasta',
+       'agenda_dia_horario_atencion.id as agenda_dia_horario_atencion_id',
+       'agenda_dia_horario_atencion.fecha_turno',
+       'agenda_dia_horario_atencion.llegada',
+       'agenda_dia_horario_atencion.atendido',
+       'agenda_dia_horario_atencion.es_observacion',
+       'agenda_dia_horario_atencion.operacion_cobro_id',
+       'agenda_dia_horario_atencion.observacion',
+       'agenda_dia_horario_atencion.es_alerta',
+       'agenda_dia_horario_atencion.es_sobreturno',
+       'agenda_dia_horario_atencion.usuario_alta_id',
+       'agenda_dia_horario_atencion.usuario_medico_factura_id',
+       'usuario_genero.nombreyapellido as usuario_alta',
+       'agenda_estado.id as agenda_estado_id',
+       'agenda_estado.estado',
+       'agenda_dia_id',
+       'usuario_id',
+       'users.nombreyapellido',
+       'dia_nombre',
+       'dia_nro',
+       'paciente.id as paciente_id',
+       'paciente.nombre as paciente_nombre',
+       'paciente.apellido as paciente_apellido',
+       'paciente.dni as paciente_dni',
+       'paciente.telefono_cel as telefono_cel',
+       'paciente.telefono_fijo as telefono_fijo',
+       'paciente.fecha_nacimiento as paciente_fecha_nacimiento',
+       'paciente.obra_social_id as paciente_obra_social_id',
+       'paciente.plan',
+       'paciente.numero_afiliado', 
+       'paciente.domicilio',
+       'obra_social.nombre as paciente_obra_social_nombre',
+       'obra_social.tiene_distribucion',
+       'paciente.coseguro_id as paciente_coseguro_id',
+       'coseguro.nombre as paciente_coseguro_nombre',
+       'coseguro.es_coseguro as coseguro_es_coseguro',
+       'paciente.barra_afiliado',
+       'paciente.numero_afiliado',
+       'agenda_dia_horario_atencion.created_at as agenda_creacion',
+       'operacion_cobro.total_operacion_cobro'
+       )
+         //  ->where('agenda_dia_horario_atencion.fecha_turno','=',$fecha_turno)                                   
+        ->whereBetween('agenda_dia_horario_atencion.fecha_turno',[$fecha_desde, $fecha_hasta])
+           ->orderBy('agenda_horario.id', 'asc')
+           ->get();
+       
+    return $this->showAll($horario);
+
+}
+
+
+
 // METODO QUE DEVUELVE LOS PACIENTES POR FECHA Y MEDICO
 public function getAgendaAtencionByFechaAndMedicoSinEstado(Request $request )
 {
