@@ -258,7 +258,10 @@ Route::resource('practicadistribucion', 'Practica\PracticaDistribucionController
 Route::name('practicadistribucion')->get('practicadistribucion/byconvenioospmo/{id}', 'Practica\PracticaDistribucionController@bypractica');
 
 /** STOCK **/
-Route::name('stock')->get('stock/lente/by/todos', 'Cirugia\CirugiaController@GetLentes');
+Route::name('stock')->get('stock/lente/by/todos', 'Cirugia\CirugiaController@GetLentes'); 
+Route::name('stock')->get('stock/lente/by/dates/todos', 'Cirugia\CirugiaController@getLentesByDates'); 
+Route::name('stock')->get('stock/lente/by/dates', 'Cirugia\CirugiaController@getLentesCirugiaByDates'); 
+Route::name('stock')->get('stock/lente/by/dates/baja', 'Cirugia\CirugiaController@getLentesCirugiaByDatesAndBaja');
 Route::name('stock')->post('stock/lente', 'Cirugia\CirugiaController@crearLente');
 Route::name('stock')->put('stock/lente/{id}', 'Cirugia\CirugiaController@actualizarLente');
 Route::name('stock')->get('lente/lente', 'Cirugia\CirugiaController@getLenteTipo');

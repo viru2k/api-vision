@@ -614,6 +614,8 @@ class CirugiaController extends ApiController
             'tipo_lente_id' => $request->tipo_lente_id,
             'dioptria' => $request->dioptria,                                            
             'lote' => $request->lote,    
+            'remito' => $request->remito,
+            'factura' => $request->factura,
             'fecha_vencimiento' => $fecha_vencimiento,    
             'ubicacion' => $request->ubicacion,    
             'estado' => $request->estado["name"],   
@@ -629,14 +631,73 @@ class CirugiaController extends ApiController
 
     public function getLentes(Request $request){
 
-        $horario = DB::select( DB::raw("SELECT lente.id, tipo_lente_id, dioptria, lote, fecha_vencimiento, ubicacion, estado, lente_tipo.tipo, lente_tipo.proveedor, es_baja, usuario_modifico FROM lente, lente_tipo WHERE  lente.tipo_lente_id = lente_tipo.id AND  estado !='USADO'
+        $es_baja = $request->input('es_baja');
+        $horario = DB::select( DB::raw("SELECT lente.id, tipo_lente_id, dioptria, lote, fecha_vencimiento, ubicacion, estado, lente_tipo.tipo, lente_tipo.proveedor, es_baja, remito, factura, usuario_modifico, users.nombreyapellido FROM lente, lente_tipo, users WHERE  lente.tipo_lente_id = lente_tipo.id AND lente.usuario_modifico = users.id AND es_baja ='".$es_baja."'
         "), array(
         
       ));
      return response()->json($horario, 201);
-        
     }
 
+
+    public function getLentesByDates(Request $request){
+        $tmp_fecha = str_replace('/', '-', $request->input('fecha_desde'));
+        $fecha_desde =  date('Y-m-d H:i:s', strtotime($tmp_fecha));         
+        $tmp_fecha = str_replace('/', '-', $request->input('fecha_hasta'));
+        $fecha_hasta =  date('Y-m-d H:i:s', strtotime($tmp_fecha));  
+
+        $horario = DB::select( DB::raw("(SELECT lente.id, tipo_lente_id, dioptria, lote, fecha_vencimiento, ubicacion, estado, lente_tipo.tipo, lente_tipo.proveedor, es_baja, remito, factura, usuario_modifico, users.nombreyapellido FROM lente, lente_tipo, users WHERE  lente.tipo_lente_id = lente_tipo.id AND lente.usuario_modifico = users.id AND es_baja ='NO')
+
+        UNION
+        (SELECT lente.id, tipo_lente_id, dioptria, lote, fecha_vencimiento, ubicacion, estado, lente_tipo.tipo, lente_tipo.proveedor, es_baja, remito, factura, usuario_modifico, users.nombreyapellido FROM lente, lente_tipo, users WHERE  lente.tipo_lente_id = lente_tipo.id AND lente.usuario_modifico = users.id AND es_baja ='SI' AND lente.updated_at  BETWEEN :fecha_desde AND :fecha_hasta)
+        "), array(
+            'fecha_desde' =>$fecha_desde,
+            'fecha_hasta' => $fecha_hasta
+          ));
+     return response()->json($horario, 201);
+    }
+
+    public function getLentesCirugiaByDates(Request $request){
+
+        $tmp_fecha = str_replace('/', '-', $request->input('fecha_desde'));
+        $fecha_desde =  date('Y-m-d H:i:s', strtotime($tmp_fecha));         
+        $tmp_fecha = str_replace('/', '-', $request->input('fecha_hasta'));
+        $fecha_hasta =  date('Y-m-d H:i:s', strtotime($tmp_fecha));  
+      
+
+        $horario = DB::select( DB::raw("SELECT lente.id, tipo_lente_id, dioptria, lote, fecha_vencimiento, ubicacion, estado, lente_tipo.tipo, lente_tipo.proveedor, es_baja, remito, factura, cirugia_ficha.fecha_inicio_acto_quirurgico, cirugia_ficha.id as cirugia_numero, cirugia_ficha.operacion_cobro_id as operacion_cobro, cirugia_ficha.ojo,CONCAT(paciente.apellido, ' ', paciente.nombre ) AS nombreyapellido, paciente.dni , usuario_modifico, users.nombreyapellido
+         FROM lente, lente_tipo, users,  cirugia_ficha, cirugia_lente, paciente 
+         WHERE  lente.tipo_lente_id = lente_tipo.id AND lente.usuario_modifico = users.id AND cirugia_ficha.id = cirugia_lente.cirugia_id 
+         AND cirugia_lente.lente_id = lente.id AND cirugia_ficha.paciente_id = paciente.id  AND fecha_inicio_acto_quirurgico BETWEEN :fecha_desde AND :fecha_hasta  ORDER BY cirugia_ficha.id DESC
+        "), array(
+        'fecha_desde' =>$fecha_desde,
+        'fecha_hasta' => $fecha_hasta
+      ));
+     return response()->json($horario, 201);
+    }
+
+
+    public function getLentesCirugiaByDatesAndBaja(Request $request){
+
+        $tmp_fecha = str_replace('/', '-', $request->input('fecha_desde'));
+        $fecha_desde =  date('Y-m-d H:i:s', strtotime($tmp_fecha));         
+        $tmp_fecha = str_replace('/', '-', $request->input('fecha_hasta'));
+        $fecha_hasta =  date('Y-m-d H:i:s', strtotime($tmp_fecha));  
+        $es_baja = $request->input('es_baja');
+
+        $horario = DB::select( DB::raw("SELECT lente.id, tipo_lente_id, dioptria, lote, fecha_vencimiento, ubicacion, estado, lente_tipo.tipo, lente_tipo.proveedor, es_baja, remito, factura, cirugia_ficha.fecha_inicio_acto_quirurgico, cirugia_ficha.id as cirugia_numero, cirugia_ficha.operacion_cobro_id as operacion_cobro, cirugia_ficha.ojo,CONCAT(paciente.apellido, ' ', paciente.nombre ) AS nombreyapellido, paciente.dni , usuario_modifico, users.nombreyapellido
+         FROM lente, lente_tipo, users,  cirugia_ficha, cirugia_lente, paciente 
+         WHERE  lente.tipo_lente_id = lente_tipo.id AND lente.usuario_modifico = users.id AND cirugia_ficha.id = cirugia_lente.cirugia_id 
+         AND cirugia_lente.lente_id = lente.id AND cirugia_ficha.paciente_id = paciente.id AND lente.es_baja = :es_baja AND fecha_inicio_acto_quirurgico BETWEEN :fecha_desde AND :fecha_hasta  ORDER BY cirugia_ficha.id DESC
+        "), array(
+        'fecha_desde' =>$fecha_desde,
+        'fecha_hasta' => $fecha_hasta,
+        'es_baja' => $es_baja,
+      ));
+     return response()->json($horario, 201);
+    }
+    
+    
     
     public function actualizarLente(Request $request,$id){
 
@@ -648,7 +709,9 @@ class CirugiaController extends ApiController
         ->update( [ 
          'tipo_lente_id' => $request['tipo_lente_id'],       
          'dioptria' => $request['dioptria'],
-         'lote' =>  $request['lote']   ,             
+         'lote' =>  $request['lote'],
+         'remito' =>  $request['remito'],             
+         'factura' =>  $request['factura'],             
          'fecha_vencimiento' =>  $fecha_vencimiento ,
          'ubicacion' => $request['ubicacion'],
          'estado' => $request['estado']['name'],  

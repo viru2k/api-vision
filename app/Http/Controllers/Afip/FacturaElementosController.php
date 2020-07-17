@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\DB;
 
 class FacturaElementosController extends ApiController{
     
-    var $produccion = FALSE;
+    var $produccion = TRUE;
    
 
     public function Alicuota(Request $request){
