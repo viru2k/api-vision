@@ -632,7 +632,7 @@ class CirugiaController extends ApiController
     public function getLentes(Request $request){
 
         $es_baja = $request->input('es_baja');
-        $horario = DB::select( DB::raw("SELECT lente.id, tipo_lente_id, dioptria, lote, fecha_vencimiento, ubicacion, estado, lente_tipo.tipo, lente_tipo.proveedor, es_baja, remito, factura, usuario_modifico, users.nombreyapellido FROM lente, lente_tipo, users WHERE  lente.tipo_lente_id = lente_tipo.id AND lente.usuario_modifico = users.id AND es_baja ='".$es_baja."'
+        $horario = DB::select( DB::raw("SELECT lente.id, tipo_lente_id, dioptria, lote, fecha_vencimiento, ubicacion, estado, lente_tipo.tipo, lente_tipo.proveedor, es_baja, remito, factura, usuario_modifico FROM lente, lente_tipo WHERE  lente.tipo_lente_id = lente_tipo.id AND es_baja ='".$es_baja."'
         "), array(
         
       ));

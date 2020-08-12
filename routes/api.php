@@ -375,6 +375,8 @@ Route::name('chat')->get('chat/renglon/leido', 'Chat\ChatController@actualizarRe
 Route::name('chat')->get('chat/by/sesion', 'Chat\ChatController@getChatBySesion'); 
 Route::name('chat')->get('chat/grupos', 'Chat\ChatController@getGrupos'); 
 Route::name('chat')->post('/chat/adjuntar/{sesion_id}/{usuario_id}', 'Chat\ChatController@showUploadFile'); 
+Route::name('chat')->get('chat/grupo/detalle/usuarios', 'Chat\ChatController@getGrupoDetalleUsuarios'); 
+Route::name('chat')->get('chat/grupo/detalle/usuarios/borrar', 'Chat\ChatController@destroyUsuarioGrupoSesion'); 
 
 
 

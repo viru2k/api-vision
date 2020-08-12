@@ -215,7 +215,36 @@ public function getGrupos(Request $request)
   return response()->json($res, 201);
 }
 
+
+public function getUsuariosByGrupo(Request $request)
+{
+    $id = $request->input('id');
+    $res = DB::select( DB::raw("SELECT * FROM `chat_sesion` WHERE grupo_nombre !='LISTADO' GROUP BY grupo_nombre"
+    )
+   );
+  return response()->json($res, 201);
+}
     
+
+
+/* -------------------------------------------------------------------------- */
+/*                OBTENGO EL DETALLE DE LOS USUARIOS POR GRUPO                */
+/* -------------------------------------------------------------------------- */
+
+
+public function getGrupoDetalleUsuarios(Request $request)
+{
+    $sesion_id = $request->input('sesion_id');
+    $res = DB::select( DB::raw("SELECT chat_sesion.id AS chat_sesion_id, chat_sesion.grupo_nombre, chat_sesion.fecha_modificacion, chat_sesion_usuario.usuario_id, chat_sesion_usuario.fecha_lectura, chat_sesion_usuario.estado, users.nombreyapellido from chat_sesion, chat_sesion_usuario , users
+    WHERE   chat_sesion.id = chat_sesion_usuario.sesion_id AND chat_sesion_usuario.usuario_id = users.id AND chat_sesion.id = :sesion_id"
+    )
+    , array(
+    'sesion_id' => $sesion_id   
+  )
+   );
+  return response()->json($res, 201);
+}
+
 /* -------------------------------------------------------------------------- */
 /*                       OBTENGO EL LISTADO DE USUARIOS                       */
 /* -------------------------------------------------------------------------- */
@@ -430,8 +459,21 @@ public function actualizarRenglonListado(Request $request)
           $file->move($destinationPath,$filename);
           
           } 
-          
                   return response()->json("Upload Successfully ", 201);
-               }
+       }
+
+
+       
+    public function destroyUsuarioGrupoSesion(Request $request)
+    {
+
+      $sesion_id = $request->input('sesion_id');
+      $usuario_id = $request->input('usuario_id');
+     $res = DB::table('chat_sesion_usuario')
+     ->where('sesion_id', '=', $sesion_id)
+     ->where('usuario_id', '=', $usuario_id)->delete();
+      return response()->json("registro desafectado", 201);  
+        return response()->json($res, 201);
+    }
 }
 

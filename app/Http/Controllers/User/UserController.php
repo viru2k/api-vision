@@ -100,6 +100,7 @@ class UserController extends ApiController
      ->select(
         'users.id',
         'users.name',
+        'users.admin',
         'users.nombreyapellido',
         'users.email',
         'modulo.id as modulo_id',
