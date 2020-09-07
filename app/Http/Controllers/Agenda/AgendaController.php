@@ -1224,8 +1224,8 @@ ORDER BY agenda_usuario_dia_horario_id  ASC
              'llegada' => "2099-12-31 00:00:00",
              'atendido' => "2099-12-31 00:00:00",
              'usuario_medico_factura_id'=> $request->usuario_medico_factura_id,
-             'created_at' => date("Y-m-d H:i:s", strtotime('-3 hours')),
-             'updated_at' => date("Y-m-d H:i:s", strtotime('-3 hours'))
+             'created_at' => date("Y-m-d H:i:s"),
+             'updated_at' => date("Y-m-d H:i:s")
         ]);          
         }   
 
@@ -1407,7 +1407,7 @@ ORDER BY agenda_usuario_dia_horario_id  ASC
             'puesto_estado' =>  $request['puesto_estado'] ,
             'puesto_llamado' =>  $request['puesto_llamado'] ,         
             'llama_pantalla' =>  $request['llama_pantalla'] , 
-             'updated_at' => date("Y-m-d H:i:s", strtotime('-3 hours'))     ]); 
+             'updated_at' => date("Y-m-d H:i:s")     ]); 
              $agendaHorario = AgendaHorarioAtencion::findOrFail($id);
             return $this->showOne($agendaHorario);          
     }
@@ -1420,11 +1420,11 @@ ORDER BY agenda_usuario_dia_horario_id  ASC
            $update = DB::table('agenda_dia_horario_atencion') 
             ->where('id', $id) ->limit(1) 
             ->update( [ 
-             'presente' =>   date("Y-m-d H:i:s", strtotime('-3 hours'))  ,  
+             'presente' =>   date("Y-m-d H:i:s")  ,  
              'llamando' =>   '2099-12-31 00:00:00',
              'llegada' =>    '2099-12-31 00:00:00',
              'atendido' =>   '2099-12-31 00:00:00',
-             'updated_at' => date("Y-m-d H:i:s", strtotime('-3 hours'))     ]); 
+             'updated_at' => date("Y-m-d H:i:s")     ]); 
              $agendaHorario = AgendaHorarioAtencion::findOrFail($id);
             return $this->showOne($agendaHorario);          
     }
@@ -1437,11 +1437,11 @@ ORDER BY agenda_usuario_dia_horario_id  ASC
             ->where('id', $id) ->limit(1) 
             ->update( [ 
                 'agenda_estado_id' =>   '11',          
-             'presente' =>   date("Y-m-d H:i:s", strtotime('-3 hours')),                                  
+             'presente' =>   date("Y-m-d H:i:s"),                                  
              'llamando' =>   '2099-12-31 00:00:00',                                  
              'llegada' =>    '2099-12-31 00:00:00',                                  
              'atendido' =>   '2099-12-31 00:00:00',                                  
-             'updated_at' => date("Y-m-d H:i:s", strtotime('-3 hours'))     ]); 
+             'updated_at' => date("Y-m-d H:i:s")     ]); 
              $agendaHorario = AgendaHorarioAtencion::findOrFail($id);
             return $this->showOne($agendaHorario);          
     }
@@ -1518,7 +1518,7 @@ ORDER BY agenda_usuario_dia_horario_id  ASC
 
     public function turnoRecepcionPacienteNuevo(Request $request){
         
-        $fecha_turno = date("Y-m-d", strtotime('-3 hours'));
+        $fecha_turno = date("Y-m-d");
         $paciente_id = 0;
         // CREO EL PACIENTE
         $id= DB::table('paciente')->insertGetId([
@@ -1541,8 +1541,8 @@ ORDER BY agenda_usuario_dia_horario_id  ASC
        'plan' => '0',
        'usuario_alta_id' => '23', 
        'gravado_adherente' => 'A',
-       'created_at' => date("Y-m-d H:i:s", strtotime('-3 hours')),
-       'updated_at' => date("Y-m-d H:i:s", strtotime('-3 hours'))    
+       'created_at' => date("Y-m-d H:i:s"),
+       'updated_at' => date("Y-m-d H:i:s")    
    ]);
    $resp = Paciente::find($id);
 
@@ -1560,7 +1560,7 @@ ORDER BY agenda_usuario_dia_horario_id  ASC
          ->where('id', $turno_paciente[0]->id) ->limit(1) 
          ->update( [     
           'agenda_estado_id' => 2,
-          'presente' => date("Y-m-d H:i:s", strtotime('-3 hours')),
+          'presente' => date("Y-m-d H:i:s"),
           'llegada' => "2099-12-31 00:00:00",
           'atendido' => "2099-12-31 00:00:00"		  ]); 
 
@@ -1584,7 +1584,7 @@ ORDER BY agenda_usuario_dia_horario_id  ASC
                  'agenda_usuario_dia_horario_id' =>  $horario[0]->id, 
                  'paciente_id' => $resp->id, 
                  'usuario_alta_id' => '23', 
-                 'fecha_turno' => date("Y-m-d H:i:s", strtotime('-3 hours')) ,           
+                 'fecha_turno' => date("Y-m-d H:i:s") ,           
                  'observacion' => 'PACIENTE NUEVO  SOLICITA TURNO',
             'es_alerta' => 'SI',
              'agenda_estado_id' => 8,
@@ -1593,9 +1593,9 @@ ORDER BY agenda_usuario_dia_horario_id  ASC
              'operacion_cobro_id' => 0,
             'llegada' => "2099-12-31 00:00:00",
             'atendido' => "2099-12-31 00:00:00",
-            'presente' =>   date("Y-m-d H:i:s", strtotime('-3 hours')),
-             'created_at' => date("Y-m-d H:i:s", strtotime('-3 hours')),
-             'updated_at' => date("Y-m-d H:i:s", strtotime('-3 hours'))
+            'presente' =>   date("Y-m-d H:i:s"),
+             'created_at' => date("Y-m-d H:i:s"),
+             'updated_at' => date("Y-m-d H:i:s")
              ]);    
 
 
@@ -1614,7 +1614,7 @@ ORDER BY agenda_usuario_dia_horario_id  ASC
 
         public function turnoRecepcionPacienteExistente(Request $request){
             $turno_paciente = $this->getTurnoByPaciente($request);
-            $fecha_turno = date("Y-m-d", strtotime('-3 hours'));            
+            $fecha_turno = date("Y-m-d");            
             $paciente_id = 0;
           //  var_dump($turno_paciente);
           //  echo $turno_paciente[0]->fecha_turno;
@@ -1630,7 +1630,7 @@ ORDER BY agenda_usuario_dia_horario_id  ASC
                 ->where('id', $turno_paciente[0]->id) ->limit(1) 
                 ->update( [     
                  'agenda_estado_id' => 2,       
-                 'presente' => date("Y-m-d H:i:s", strtotime('-3 hours')),
+                 'presente' => date("Y-m-d H:i:s"),
 				 'llegada' => "2099-12-31 00:00:00",
                  'atendido' => "2099-12-31 00:00:00"	]); 
 
@@ -1658,7 +1658,7 @@ ORDER BY agenda_usuario_dia_horario_id  ASC
                         'agenda_usuario_dia_horario_id' =>  $horario[0]->id, 
                         'paciente_id' => $request->id, 
                         'usuario_alta_id' => '23', 
-                        'fecha_turno' => date("Y-m-d H:i:s", strtotime('-3 hours')) ,           
+                        'fecha_turno' => date("Y-m-d H:i:s") ,           
                         'observacion' => 'PACIENTE SOLICITA TURNO',
                         'es_alerta' => 'SI',
                          'agenda_estado_id' => 8,
@@ -1667,9 +1667,9 @@ ORDER BY agenda_usuario_dia_horario_id  ASC
                          'operacion_cobro_id' => 0,
                         'llegada' => "2099-12-31 00:00:00",
                         'atendido' => "2099-12-31 00:00:00",
-                        'presente' =>   date("Y-m-d H:i:s", strtotime('-3 hours')),
-                         'created_at' => date("Y-m-d H:i:s", strtotime('-3 hours')),
-                         'updated_at' => date("Y-m-d H:i:s", strtotime('-3 hours'))
+                        'presente' =>   date("Y-m-d H:i:s"),
+                         'created_at' => date("Y-m-d H:i:s"),
+                         'updated_at' => date("Y-m-d H:i:s")
                     ]);    
                         //OBTENGO EL DIA DEL TURNO
                       
@@ -1746,7 +1746,7 @@ ORDER BY agenda_usuario_dia_horario_id  ASC
 
             public function totemGenerarTurnoPacienteNuevo(Request $request){
                 // obtengo el numero del dia con la fecha
-                $day_number = date('N',  strtotime(date("Y-m-d H:i:s", strtotime('-3 hours'))));
+                $day_number = date('N',  strtotime(date("Y-m-d H:i:s")));
                 $day_number = $day_number;
 
                 /*******************CREO EL PACIENTE CON UN DNI QUE INGRESO EL PACIENTE */
@@ -1770,8 +1770,8 @@ ORDER BY agenda_usuario_dia_horario_id  ASC
                     'plan' => '0',
                     'usuario_alta_id' => '23', 
                     'gravado_adherente' => 'O',
-                    'created_at' => date("Y-m-d H:i:s", strtotime('-3 hours')),
-                    'updated_at' => date("Y-m-d H:i:s", strtotime('-3 hours'))    
+                    'created_at' => date("Y-m-d H:i:s"),
+                    'updated_at' => date("Y-m-d H:i:s")    
                 ]);
 
                 //SELECT agenda_usuario_dia_horario.id,agenda_horario.hora_desde,agenda_horario.hora_hasta,agenda_horario.hora_desde_hasta,agenda_dia_id,usuario_id,nombreyapellido,dia_nombre,dia_nro FROM agenda_usuario_dia_horario,agenda_horario, users,agenda_dias,agenda_dia_horario_atencion
@@ -1796,11 +1796,11 @@ ORDER BY agenda_usuario_dia_horario_id  ASC
                      'es_observacion' => 'NUEVO',
                      'es_sobreturno' => 'SI',
                      'operacion_cobro_id' => 0,
-                     'presente' => date("Y-m-d H:i:s", strtotime('-3 hours')),
+                     'presente' => date("Y-m-d H:i:s"),
                      'llegada' => "2099-12-31 00:00:00",
                      'atendido' => "2099-12-31 00:00:00",
-                     'created_at' => date("Y-m-d H:i:s", strtotime('-3 hours')),
-                     'updated_at' => date("Y-m-d H:i:s", strtotime('-3 hours'))
+                     'created_at' => date("Y-m-d H:i:s"),
+                     'updated_at' => date("Y-m-d H:i:s")
                 ]);        
                 }   
         
@@ -1833,11 +1833,11 @@ ORDER BY agenda_usuario_dia_horario_id  ASC
                      'es_observacion' => 'TURNO',
                      'es_sobreturno' => 'SI',
                      'operacion_cobro_id' => 0,
-                     'presente' => date("Y-m-d H:i:s", strtotime('-3 hours')),
+                     'presente' => date("Y-m-d H:i:s"),
                      'llegada' => "2099-12-31 00:00:00",
                      'atendido' => "2099-12-31 00:00:00",
-                     'created_at' => date("Y-m-d H:i:s", strtotime('-3 hours')),
-                     'updated_at' => date("Y-m-d H:i:s", strtotime('-3 hours'))
+                     'created_at' => date("Y-m-d H:i:s"),
+                     'updated_at' => date("Y-m-d H:i:s")
                 ]);        
                 }   
         
@@ -1859,7 +1859,7 @@ ORDER BY agenda_usuario_dia_horario_id  ASC
 
                 public function getTurnoPantallaLlamando()
                 {
-                         $fecha_turno = date("Y-m-d", strtotime('-3 hours'));
+                         $fecha_turno = date("Y-m-d");
 
                   $horario = DB::select( DB::raw("SELECT * FROM (SELECT DISTINCT puesto_llamado, agenda_usuario_dia_horario.id,agenda_horario.hora_desde,agenda_horario.hora_hasta,agenda_horario.hora_desde_hasta,agenda_dia_horario_atencion.id as agenda_dia_horario_atencion_id,agenda_dia_horario_atencion.fecha_turno,
                   agenda_dia_horario_atencion.presente, agenda_dia_horario_atencion.llamando,agenda_dia_horario_atencion.llegada,agenda_dia_horario_atencion.atendido,
@@ -1889,7 +1889,7 @@ ORDER BY agenda_usuario_dia_horario_id  ASC
 
                 public function getTurnoPantallaAtendido()
                 {
-                         $fecha_turno = date("Y-m-d", strtotime('-3 hours'));
+                         $fecha_turno = date("Y-m-d");
 
                          $horario = DB::select( DB::raw("SELECT * FROM (SELECT DISTINCT puesto_llamado, agenda_usuario_dia_horario.id,agenda_horario.hora_desde,agenda_horario.hora_hasta,agenda_horario.hora_desde_hasta,agenda_dia_horario_atencion.id as agenda_dia_horario_atencion_id,agenda_dia_horario_atencion.fecha_turno,
                          agenda_dia_horario_atencion.presente, agenda_dia_horario_atencion.llamando,agenda_dia_horario_atencion.llegada,agenda_dia_horario_atencion.atendido,
@@ -1918,7 +1918,7 @@ ORDER BY agenda_usuario_dia_horario_id  ASC
 
                 public function getPuestoLlamando()
                 {
-                         $fecha_turno = date("Y-m-d", strtotime('-3 hours'));
+                         $fecha_turno = date("Y-m-d");
 
                          $horario = DB::select( DB::raw("SELECT paciente_id, medico_id, puesto , CONCAT(paciente.apellido,' ',paciente.nombre) as paciente_nombre, users.nombreyapellido   FROM agenda_turno_llamando, paciente, users
                          WHERE  agenda_turno_llamando.paciente_id = paciente.id AND agenda_turno_llamando.medico_id = users.id

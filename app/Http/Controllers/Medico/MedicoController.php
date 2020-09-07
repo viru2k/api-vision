@@ -23,7 +23,8 @@ class MedicoController extends ApiController
      */
     public function index()
     {
-            $factura = DB::select( DB::raw("SELECT id, apellido, nombre, domicilio, fecha_matricula, telefono, telefono_cel, email, email_laboral, cuit, ing_brutos, usuario_id, usuario_old, codigo_old, especialidad_old, categoria_iva_id, factura_documento_comprador_id, punto_vta_id, factura_comprobante_id, factura_key, factura_crt,fecha_alta_afip, es_medico_activo, created_at, updated_at FROM medicos WHERE es_medico_activo = 'SI'
+        
+            $factura = DB::select( DB::raw("SELECT id, apellido, nombre, domicilio, fecha_matricula, telefono, telefono_cel, email, email_laboral, cuit, ing_brutos, usuario_id, usuario_old, codigo_old, especialidad_old, categoria_iva_id, factura_documento_comprador_id, punto_vta_id, factura_comprobante_id, factura_key, factura_crt,fecha_alta_afip, es_medico_activo, created_at, updated_at FROM medicos WHERE es_medico_activo = 'SI' order by apellido ASC
          "));
                 return response()->json($factura, 201);
         

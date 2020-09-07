@@ -194,6 +194,7 @@ Route::name('liquidacion')->post('liquidacion/distribucion/clonar', 'OperacionCo
 /** DISTRIBUCION */
 
 Route::name('distribucion')->post('distribucion/operacion/cobro/medico', 'Liquidacion\LiquidacionController@liquidacionDistribuir');
+Route::name('distribucion')->put('distribucion/operacion/cobro/medico/actualizar/{id}', 'Liquidacion\LiquidacionController@liquidacionDistribuirActualizar');
 
 /**PACIENTE**/
 
@@ -239,6 +240,8 @@ Route::name('operacioncobro')->post('operacioncobro/recalcular/by/liquidacion', 
 Route::name('operacioncobro')->get('operacioncobro/distribucion/by/operacioncobro', 'OperacionCobro\OperacionCobroController@getDistribucionbyOperacionCobro');
 Route::name('operacioncobro')->post('operacioncobro/distribucion/expediente', 'OperacionCobro\OperacionCobroController@GetDistribucionByExpediente'); 
 Route::name('operacioncobro')->post('operacioncobro/distribucion/medico', 'OperacionCobro\OperacionCobroController@GetDistribucionByMedico'); 
+Route::name('operacioncobro')->post('operacioncobro/distribucion/medico/detalle', 'OperacionCobro\OperacionCobroController@GetDistribucionByMedicoDetalle'); 
+Route::name('operacioncobro')->get('operacioncobro/distribucion/numero', 'OperacionCobro\OperacionCobroController@GetDistribucionByNumero'); 
 
 /**FACTURACION **/
 

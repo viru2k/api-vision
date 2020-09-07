@@ -1169,6 +1169,27 @@ echo $fecha_hasta;
     }
 
 
+
+    public function GetDistribucionByNumero(Request $request)
+    {
+           
+     $id = $request->input('id');
+// OBTIENE EL MEDICO DEL PRIMER ELEMENTO SELECCIONADO              
+      //  echo $in;
+        $horario = DB::select( DB::raw("
+        SELECT  liq_liquidacion_distribucion.id, medico_opera_id, medico_opera.nombreyapellido as medico_opera,   medico_opera_porcentaje, medico_opera_valor, medico_ayuda_id,medico_ayuda.nombreyapellido as medico_ayuda, medico_ayuda_porcentaje, medico_ayuda_valor, medico_ayuda2_id,medico_ayuda2.nombreyapellido as medico_ayuda2, medico_ayuda2_porcentaje, medico_ayuda2_valor, medico_clinica_id,medico_clinica.nombreyapellido as medico_clinica, medico_clinica_porcentaje, medico_clinica_valor, valor_distribuido, total, fecha_liquidacion, usuario_audito, fecha_distribucion, concepto_liquidacion_id,operacion_cobro_practica.operacion_cobro_id FROM operacion_cobro_practica, liq_liquidacion_distribucion 
+        LEFT OUTER JOIN users as medico_ayuda  ON medico_ayuda.id = liq_liquidacion_distribucion.medico_ayuda_id
+        LEFT OUTER JOIN users as medico_ayuda2  ON medico_ayuda2.id = liq_liquidacion_distribucion.medico_ayuda2_id
+        LEFT OUTER JOIN users as medico_opera  ON medico_opera.id = liq_liquidacion_distribucion.medico_opera_id
+        LEFT OUTER JOIN users as medico_clinica  ON medico_clinica.id = liq_liquidacion_distribucion.medico_clinica_id WHERE liq_liquidacion_distribucion.id = operacion_cobro_practica.liquidacion_distribucion_id AND liq_liquidacion_distribucion.id= :id AND operacion_cobro_practica.es_distribuido = 'SI'
+    "), array(
+      'id' =>$id
+    ));
+       
+      return response()->json($horario, 201);
+    }
+
+
     public function GetDistribucionByMedico(Request $request)
     {
            
@@ -1198,6 +1219,40 @@ echo $fecha_hasta;
        
     "));
        
+
+      return response()->json($horario, 201);
+    }
+
+
+
+    public function GetDistribucionByMedicoDetalle(Request $request)
+    {
+           
+      $IN = "";
+      $i=0;
+      while(isset($request[$i])){
+          if($i==0){
+            
+          $in = $request[$i]["id"];
+          }else{
+              $in = $in.",".$request[$i]["id"];
+          }
+          $i++;
+      }
+
+    
+// OBTIENE EL MEDICO DEL PRIMER ELEMENTO SELECCIONADO
+        $medico_id =$request[0]["medico_id"];        
+
+        $horario = DB::select( DB::raw(" SELECT pmo.descripcion, pmo.codigo, operacion_cobro_practica.id as operacion_cobro_practica_id, obra_social.nombre as obra_social_nombre, obra_social.id as obra_social_id,  liq_liquidacion_distribucion.id, medico_opera_id, medico_opera.nombreyapellido as medico_opera,   medico_opera_porcentaje, medico_opera_valor, medico_ayuda_id,medico_ayuda.nombreyapellido as medico_ayuda, medico_ayuda_porcentaje, medico_ayuda_valor, medico_ayuda2_id,medico_ayuda2.nombreyapellido as medico_ayuda2, medico_ayuda2_porcentaje, medico_ayuda2_valor, medico_clinica_id,medico_clinica.nombreyapellido as medico_clinica, medico_clinica_porcentaje, medico_clinica_valor, valor_distribuido, total, fecha_liquidacion, usuario_audito, fecha_distribucion, concepto_liquidacion_id,operacion_cobro_practica.operacion_cobro_id,operacion_cobro.fecha_cobro ,CONCAT(paciente.apellido,' ' , paciente.nombre) as paciente_apellido, paciente.dni FROM pmo, paciente, operacion_cobro_practica, operacion_cobro ,obra_social, convenio_os_pmo, liq_liquidacion_distribucion 
+        LEFT OUTER JOIN users as medico_ayuda  ON medico_ayuda.id = liq_liquidacion_distribucion.medico_ayuda_id
+        LEFT OUTER JOIN users as medico_ayuda2  ON medico_ayuda2.id = liq_liquidacion_distribucion.medico_ayuda2_id
+        LEFT OUTER JOIN users as medico_opera  ON medico_opera.id = liq_liquidacion_distribucion.medico_opera_id
+        LEFT OUTER JOIN users as medico_clinica  ON medico_clinica.id = liq_liquidacion_distribucion.medico_clinica_id  WHERE pmo.id = convenio_os_pmo.pmo_id AND  operacion_cobro_practica.convenio_os_pmo_id = convenio_os_pmo.id AND convenio_os_pmo.obra_social_id = obra_social.id AND liq_liquidacion_distribucion.id = operacion_cobro_practica.liquidacion_distribucion_id AND operacion_cobro_practica.paciente_id = paciente.id AND operacion_cobro_practica.operacion_cobro_id = operacion_cobro.id AND  operacion_cobro_practica.liquidacion_numero IN (".$in.") order BY operacion_cobro.fecha_cobro ASC , operacion_cobro.id, operacion_cobro_practica.id
+    "));
+       
+
+   
       return response()->json($horario, 201);
     }
 

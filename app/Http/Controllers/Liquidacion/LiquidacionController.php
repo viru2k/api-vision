@@ -42,8 +42,8 @@ class LiquidacionController extends ApiController
             'total'=> $request["total"],            
             'usuario_audito'=> $request["usuario_audito"],
             'fecha_distribucion' => $fecha_distribucion,         
-            'created_at' => date("Y-m-d H:i:s", strtotime('-3 hours')),
-            'updated_at' => date("Y-m-d H:i:s", strtotime('-3 hours'))   
+            'created_at' => date("Y-m-d H:i:s"),
+            'updated_at' => date("Y-m-d H:i:s")   
         ]);    
 
         
@@ -64,6 +64,31 @@ class LiquidacionController extends ApiController
 
     }
 
-       
+    public function liquidacionDistribuirActualizar(Request $request, $id)
+    {
+        
+
+
+       $update = DB::table('liq_liquidacion_distribucion') 
+        ->where('id', $id) ->limit(1) 
+        ->update( [ 
+         'medico_opera_id' => $request['medico_opera_id'],
+         'medico_opera_porcentaje' => $request['medico_opera_porcentaje'],
+         'medico_opera_valor' => $request['medico_opera_valor'],
+         'medico_ayuda_id' => $request['medico_ayuda_id'],
+         'medico_ayuda_porcentaje' => $request['medico_ayuda_porcentaje'],
+         'medico_ayuda_valor' => $request['medico_ayuda_valor'],
+         'medico_ayuda2_id' => $request['medico_ayuda_id'],
+         'medico_ayuda2_porcentaje' => $request['medico_ayuda_porcentaje'],
+         'medico_ayuda2_valor' => $request['medico_ayuda_valor'],
+         'medico_clinica_id' => $request['medico_ayuda_id'],
+         'medico_clinica_porcentaje' => $request['medico_ayuda_porcentaje'],
+         'medico_clinica_valor' => $request['medico_ayuda_valor'],
+         'valor_distribuido'=> $request["valor_distribuido"],
+         'total'=> $request["total"],    
+         'updated_at' => date("Y-m-d H:i:s")     ]); 
+         return response()->json($update, "201");
+
+    }
     
 }

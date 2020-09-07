@@ -69,8 +69,8 @@ class notificacionController extends Controller
         'tipo_mensaje' => $request->tipo_mensaje,
         'usuario_creo' => $request->usuario_creo,
         'url' => $url_archivos,        
-        'created_at' => date("Y-m-d H:i:s", strtotime('-3 hours')) ,
-        'updated_at' => date("Y-m-d H:i:s", strtotime('-3 hours')) 
+        'created_at' => date("Y-m-d H:i:s") ,
+        'updated_at' => date("Y-m-d H:i:s") 
     ]);
     $t_usuarios = $request->notificacion_usuario;
  //   echo $request->notificacion_usuario[0];

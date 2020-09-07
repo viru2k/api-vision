@@ -24,7 +24,7 @@ class ListaController extends ApiController
         ->update([
         'id' => $id,
         'descripcion' => $descripcion,
-        'updated_at' => date("Y-m-d H:i:s", strtotime('-3 hours')) 
+        'updated_at' => date("Y-m-d H:i:s") 
         ]);
        //return $res;
          return $this->showOne($res);
@@ -33,8 +33,8 @@ class ListaController extends ApiController
     public function CrearListaCirugia(Request $request){                
         $paciente_id= DB::table('lista_cirugia')->insertGetId([
             'descripcion'=> $request->descripcion,            
-            'created_at' => date("Y-m-d H:i:s", strtotime('-3 hours')),
-            'updated_at' => date("Y-m-d H:i:s", strtotime('-3 hours'))    
+            'created_at' => date("Y-m-d H:i:s"),
+            'updated_at' => date("Y-m-d H:i:s")    
         ]);
         return response()->json($paciente_id, "201");
         }   
@@ -55,7 +55,7 @@ class ListaController extends ApiController
            ->where('id', $id) ->limit(1)  
             ->update([
             'descripcion' => $descripcion,
-            'updated_at' => date("Y-m-d H:i:s", strtotime('-3 hours')) 
+            'updated_at' => date("Y-m-d H:i:s") 
             ]);
             return response()->json($res, "201");
             // return $this->showOne($res);
@@ -64,8 +64,8 @@ class ListaController extends ApiController
         public function CrearListaEstudios(Request $request){                
             $paciente_id= DB::table('lista_estudios')->insertGetId([
                 'descripcion'=> $request->descripcion,            
-                'created_at' => date("Y-m-d H:i:s", strtotime('-3 hours')),
-                'updated_at' => date("Y-m-d H:i:s", strtotime('-3 hours'))    
+                'created_at' => date("Y-m-d H:i:s"),
+                'updated_at' => date("Y-m-d H:i:s")    
             ]);
             return response()->json($paciente_id, "201");
             }  
@@ -84,7 +84,7 @@ class ListaController extends ApiController
                ->where('id', $id) ->limit(1)   
                 ->update([
                 'descripcion' => $descripcion,
-                'updated_at' => date("Y-m-d H:i:s", strtotime('-3 hours')) 
+                'updated_at' => date("Y-m-d H:i:s") 
                 ]);
                //return $res;
                  return $this->showOne($res);
@@ -93,8 +93,8 @@ class ListaController extends ApiController
             public function CrearListaReceta(Request $request){                
                 $paciente_id= DB::table('lista_receta')->insertGetId([
                     'descripcion'=> $request->descripcion,            
-                    'created_at' => date("Y-m-d H:i:s", strtotime('-3 hours')),
-                    'updated_at' => date("Y-m-d H:i:s", strtotime('-3 hours'))    
+                    'created_at' => date("Y-m-d H:i:s"),
+                    'updated_at' => date("Y-m-d H:i:s")    
                 ]);
                 return response()->json($paciente_id, "201");
                 }  
