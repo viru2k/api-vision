@@ -863,7 +863,7 @@ class OperacionCobroController extends ApiController
         'created_at' => date("Y-m-d H:i:s"),
         'updated_at' => date("Y-m-d H:i:s")    
     ]);    */
-  $distribucion;
+  $distribucion = '';
   $i = 0;
     while(isset($request['operacion_cobro_practica'][$i])){
         // ACTUALIZO LAS OC PARA SABER QUE ESTUBO DISTRIBUIDO       
@@ -1065,6 +1065,39 @@ $horario = DB::select( DB::raw(" SELECT  operacion_cobro_practica.id as operacio
     "));
        
       return response()->json($horario, 201);
+    }
+
+     public function getPresentacionDetalleByMultipleId(Request $request)
+    {
+           
+    
+      $in = "";
+      $i=0;
+      while(isset($request[$i])){
+          if($i==0){
+          $in = $request[$i]["id"];
+          }else{
+              $in = $in.",".$request[$i]["id"];
+          }
+          $i++;
+      }
+    
+        $resp = DB::select( DB::raw("SELECT operacion_cobro_practica.id , operacion_cobro.id as operacion_cobro_id, convenio_os_pmo.id as pmo_id,forma_pago, 
+        operacion_cobro_practica.valor_facturado, operacion_cobro_practica.valor_facturado as distribucion, operacion_cobro_practica.valor_original, operacion_cobro_practica.categorizacion, operacion_cobro_practica.cantidad,
+        operacion_cobro_practica.observacion,operacion_cobro_practica.user_medico_id,operacion_cobro.fecha_cobro, paciente.apellido, paciente.nombre, paciente.dni,paciente.plan, paciente.numero_afiliado,paciente.barra_afiliado,
+        obra_social.nombre as obra_social_nombre, pmo.codigo, pmo.descripcion,   pmo.complejidad   , users.nombreyapellido as medico_nombre,
+        operacion_cobro_practica.liquidacion_numero, operacion_cobro_practica.estado_liquidacion, estado_facturacion, usuario_realiza_id , usuario_cobro.nombreyapellido as usuario_cobro_nombre,
+        usuario_cobro.id as usuario_cobro_id,  paciente.id as paciente_id , paciente.gravado_adherente, obra_social.id as obra_social_id, convenio_os_pmo.id as convenio_os_pmo_id,
+        operacion_cobro.obra_social_id as operacion_cobro_obra_social_id, operacion_cobro_practica.usuario_audita_id, operacion_cobro.total_operacion_cobro as operacion_cobro_total_operacion_cobro, operacion_cobro.total_facturado as operacion_cobro_total_facturado,
+        operacion_cobro.total_coseguro as operacion_cobro_total_coseguro, operacion_cobro.total_honorarios_medicos as operacion_cobro_total_honorarios_medicos, operacion_cobro.total_otros as operacion_cobro_total_otros, operacion_cobro.fecha_cobro as operacion_cobro_fecha_cobro,
+        operacion_cobro.numero_bono as operacion_cobro_numero_bono, operacion_cobro.liquidacion_numero as operacion_cobro_liquidacion_numero, operacion_cobro.estado as operacion_cobro_estado, operacion_cobro_obra_social.nombre as operacion_cobro_obra_social_nombre,
+        CONCAT(operacion_cobro_paciente.apellido,' ' , operacion_cobro_paciente.nombre) as  operacion_cobro_paciente_nombre,  operacion_cobro_practica.tiene_observacion, operacion_cobro_practica.motivo_observacion, operacion_cobro.es_anulado as operacion_cobro_es_anulado, operacion_cobro_practica.es_anulado, estado_liquidacion, es_distribuido, liquidacion_distribucion_id
+        FROM users as usuario_cobro, obra_social as operacion_cobro_obra_social , paciente as operacion_cobro_paciente,operacion_cobro_practica
+        LEFT JOIN operacion_cobro 
+        ON  operacion_cobro_practica.operacion_cobro_id = operacion_cobro.id , paciente, convenio_os_pmo, pmo,users, obra_social WHERE operacion_cobro_practica.paciente_id = paciente.id AND operacion_cobro.paciente_id =  operacion_cobro_paciente.id AND  operacion_cobro_practica.convenio_os_pmo_id = convenio_os_pmo.id AND convenio_os_pmo.pmo_id = pmo.id AND operacion_cobro_practica.user_medico_id = users.id AND convenio_os_pmo.obra_social_id = obra_social.id  AND usuario_cobro.id = usuario_realiza_id  AND estado_facturacion = 'P'  AND operacion_cobro_obra_social.id = operacion_cobro.obra_social_id   AND  operacion_cobro_practica.liquidacion_numero IN (".$in.") 
+    ")); 
+       
+      return response()->json($resp, 201);
     }
 
     

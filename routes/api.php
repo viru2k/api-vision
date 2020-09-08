@@ -218,6 +218,7 @@ Route::name('operacioncobro')->get('operacioncobro/registros/by/operacioncobro',
 Route::name('operacioncobro')->get('operacioncobro/registros/by/paciente', 'OperacionCobro\OperacionCobroController@getOperacionCobroRegistrosBypacienteId');
 
 Route::name('operacioncobro')->get('operacioncobro/registros/by/liquidacion/numero', 'OperacionCobro\OperacionCobroController@getPresentacionDetalleById');
+Route::name('operacioncobro')->post('operacioncobro/registros/by/liquidacion/numero/multiple', 'OperacionCobro\OperacionCobroController@getPresentacionDetalleByMultipleId');
 Route::name('operacioncobro')->get('operacioncobro/registros/by/distribucion', 'OperacionCobro\OperacionCobroController@getOperacionCobroRegistroDistribucionById');
 Route::name('operacioncobro')->get('operacioncobro/registros/by/distribucion/prefactura', 'OperacionCobro\OperacionCobroController@getOperacionCobroRegistroDistribucionByIdPrefactura');
 
