@@ -396,3 +396,27 @@ Route::name('insumo')->post('insumo/stock/nuevo', 'Insumo\InsumoController@crear
 Route::name('insumo')->post('insumo/stock/movimiento', 'Insumo\InsumoController@crearInsumoStockMovimiento'); 
 Route::name('insumo')->get('insumo/stock', 'Insumo\InsumoController@getInsumoStock'); 
 Route::name('insumo')->get('insumo/stock/movimiento', 'Insumo\InsumoController@getInsumoStockMovimiento'); 
+
+
+/* -------------------------------------------------------------------------- */
+/*                             MOVIMIENTOS DE CAJA                            */
+/* -------------------------------------------------------------------------- */
+Route::name('movimiento-caja')->get('movimiento/concepto/moneda', 'MovimientosCaja\MovimientosCajaController@getConceptoMoneda'); 
+Route::name('movimiento-caja')->get('movimiento/concepto/monedas', 'MovimientosCaja\MovimientosCajaController@getConceptoMonedas'); 
+Route::name('movimiento-caja')->post('movimiento/concepto/moneda', 'MovimientosCaja\MovimientosCajaController@setConceptoMoneda'); 
+Route::name('movimiento-caja')->put('movimiento/concepto/moneda/{id}', 'MovimientosCaja\MovimientosCajaController@putConceptoMoneda'); 
+
+Route::name('movimiento-caja')->get('movimiento/concepto/comprobante', 'MovimientosCaja\MovimientosCajaController@getConceptoTipoComprobante'); 
+Route::name('movimiento-caja')->get('movimiento/concepto/comprobantes', 'MovimientosCaja\MovimientosCajaController@getConceptoTipoComprobantes'); 
+Route::name('movimiento-caja')->post('movimiento/concepto/comprobante', 'MovimientosCaja\MovimientosCajaController@setConceptoTipoComprobante'); 
+Route::name('movimiento-caja')->put('movimiento/concepto/comprobante/{id}', 'MovimientosCaja\MovimientosCajaController@putConceptoTipoComprobante'); 
+
+Route::name('movimiento-caja')->get('movimiento/concepto/cuenta', 'MovimientosCaja\MovimientosCajaController@getConceptoCuenta'); 
+Route::name('movimiento-caja')->get('movimiento/concepto/cuentas', 'MovimientosCaja\MovimientosCajaController@getConceptoCuentas'); 
+Route::name('movimiento-caja')->post('movimiento/concepto/cuenta', 'MovimientosCaja\MovimientosCajaController@setConceptoCuenta'); 
+Route::name('movimiento-caja')->put('movimiento/concepto/cuenta/{id}', 'MovimientosCaja\MovimientosCajaController@putConceptoCuenta'); 
+
+Route::name('movimiento-caja')->get('movimiento/cuenta', 'MovimientosCaja\MovimientosCajaController@getCuenta'); 
+Route::name('movimiento-caja')->get('movimiento/cuentas', 'MovimientosCaja\MovimientosCajaController@getCuentas'); 
+Route::name('movimiento-caja')->post('movimiento/cuenta', 'MovimientosCaja\MovimientosCajaController@setCuenta'); 
+Route::name('movimiento-caja')->put('movimiento/cuenta/{id}', 'MovimientosCaja\MovimientosCajaController@putCuenta'); 
