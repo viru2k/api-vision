@@ -420,3 +420,17 @@ Route::name('movimiento-caja')->get('movimiento/cuenta', 'MovimientosCaja\Movimi
 Route::name('movimiento-caja')->get('movimiento/cuentas', 'MovimientosCaja\MovimientosCajaController@getCuentas'); 
 Route::name('movimiento-caja')->post('movimiento/cuenta', 'MovimientosCaja\MovimientosCajaController@setCuenta'); 
 Route::name('movimiento-caja')->put('movimiento/cuenta/{id}', 'MovimientosCaja\MovimientosCajaController@putCuenta'); 
+
+Route::name('movimiento-caja')->get('movimiento/registro/by/date', 'MovimientosCaja\MovimientosCajaController@geRegistroMovimientoBydate'); 
+
+Route::name('movimiento-caja')->post('movimiento/caja', 'MovimientosCaja\MovimientosCajaController@setMovimientoCaja'); 
+
+/* -------------------------------------------------------------------------- */
+/*                                  PROVEEDOR                                 */
+/* -------------------------------------------------------------------------- */
+
+Route::name('movimiento-caja')->get('proveedor', 'MovimientosCaja\MovimientosCajaController@getProveedor'); 
+Route::name('movimiento-caja')->get('proveedores', 'MovimientosCaja\MovimientosCajaController@getProveedores'); 
+Route::name('movimiento-caja')->post('proveedor', 'MovimientosCaja\MovimientosCajaController@setProveedor'); 
+Route::name('movimiento-caja')->put('proveedor/{id}', 'MovimientosCaja\MovimientosCajaController@putProveedor'); 
+

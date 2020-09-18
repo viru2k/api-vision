@@ -9,8 +9,8 @@ use Illuminate\Support\Facades\DB;
 use App\models\ConceptoMoneda; 
 use App\models\ConceptoCuenta; 
 use App\models\ConceptoTipoComprobante; 
-use App\models\Cuenta; 
-
+use App\models\Cuenta;
+use App\models\Proveedor;
 
 class MovimientosCajaController extends ApiController
 {
@@ -182,6 +182,111 @@ class MovimientosCajaController extends ApiController
     return $this->showOne($pmo);
     }
     
+    public function geRegistroMovimientoBydate(Request $request)
+    {
+        $tmp_fecha = str_replace('/', '-', $request->input('fecha_desde'));
+        $fecha_desde =  date('Y-m-d H:i:s', strtotime($tmp_fecha));         
+        $tmp_fecha = str_replace('/', '-', $request->input('fecha_hasta'));
+        $fecha_hasta =  date('Y-m-d H:i:s', strtotime($tmp_fecha));      
+
+        $horario = DB::select( DB::raw("SELECT mov_registro.id, mov_concepto_cuenta_id, descripcion, mov_cuenta_id , fecha_carga, mov_tipo_comprobante_id, comprobante_numero, tiene_enlace_factura, mov_tipo_moneda_id,  mov_registro.importe,  mov_registro.cotizacion, mov_registro.total, liq_liquidacion_distribucion_id,factura_encabezado_id, paciente_id, proveedor_id, proveedor_nombre, 
+        proveedor_cuit, proveedor_direccion , dni, CONCAT(paciente.apellido, ' ', paciente.nombre) AS paciente_nombre, paciente.domicilio, 
+        paciente.fecha_nacimiento, factura_encabezado.factura_pto_vta_id, factura_encabezado.medico_id, factura_encabezado.factura_comprobante_id, 
+        factura_encabezado.factura_concepto_id, liq_liquidacion_distribucion.id as liq_liquidacion_distribucion_id,  concepto_liquidacion_id, concepto_cuenta, 
+        cuenta_nombre, movimiento_tipo, tipo_comprobante ,tipo_moneda    , cierre_caja_id
+        FROM mov_registro 
+        LEFT JOIN paciente_proveedor ON mov_registro.proveedor_id = paciente_proveedor.id 
+        LEFT JOIN paciente ON mov_registro.paciente_id = paciente.id 
+        LEFT JOIN factura_encabezado ON mov_registro.factura_encabezado_id = factura_encabezado.id 
+        LEFT JOIN liq_liquidacion_distribucion ON mov_registro.liq_liquidacion_distribucion_id = liq_liquidacion_distribucion.id, 
+        mov_concepto_cuenta, mov_cuenta, mov_tipo_comprobante, mov_tipo_moneda 
+        WHERE mov_registro.mov_concepto_cuenta_id = mov_concepto_cuenta.id 
+        AND mov_registro.mov_cuenta_id = mov_cuenta.id 
+        AND mov_registro.mov_tipo_comprobante_id = mov_tipo_comprobante.id 
+        AND mov_registro.mov_tipo_moneda_id = mov_tipo_moneda.id
+    "), array(
+        'fecha_desde' =>$fecha_desde,
+        'fecha_hasta' => $fecha_hasta 
+      ));
+       
+      return response()->json($horario, 201);
+    }
+
+
+    public function setMovimientoCaja(Request $request)
+    {
+        $id= DB::table('mov_registro')->insertGetId([                              
+            'mov_concepto_cuenta_id' => $request->mov_concepto_cuenta_id,
+            'descripcion' => $request->descripcion,
+            'mov_cuenta_id' => $request->mov_cuenta_id,
+            'fecha_carga' => str_replace('/', '-', $request->fecha_carga),
+            'mov_tipo_comprobante_id' => $request->mov_tipo_comprobante_id,
+            'comprobante_numero' => $request->comprobante_numero,
+            'tiene_enlace_factura' => $request->tiene_enlace_factura,
+            'mov_tipo_moneda_id' => $request->mov_tipo_moneda_id,
+            'importe' => $request->importe,
+            'cotizacion' => $request->cotizacion,
+            'total' => $request->total,
+            'liq_liquidacion_distribucion_id' => $request->liq_liquidacion_distribucion_id,
+            'factura_encabezado_id' => $request->factura_encabezado_id,
+            'paciente_id' => $request->paciente_id,
+            'proveedor_id' => $request->proveedor_id,
+            'created_at' => date("Y-m-d H:i:s"),
+            'updated_at' => date("Y-m-d H:i:s")    
+
+        ]);
+        $resp = Cuenta::find($id);
+        return $this->showOne($resp);  
+    }
+
+    
+/* -------------------------------------------------------------------------- */
+/*                                  PROVEEDOR                                 */
+/* -------------------------------------------------------------------------- */
+
+public function getProveedores()
+{
+    $cuenta = Proveedor::all();
+    return $this->showAll($cuenta);
+}
+
+public function getProveedor(Proveedor $Sector)
+{
+    return $this->showOne($Sector);
+}
+
+
+
+public function setProveedor(Request $request)
+{
+    $id= DB::table('paciente_proveedor')->insertGetId([
+        'proveedor_nombre' => $request->proveedor_nombre,                       
+        'proveedor_cuit' => $request->proveedor_cuit,                       
+        'proveedor_direccion' => $request->proveedor_direccion,  
+        'created_at' => date("Y-m-d H:i:s"),
+        'updated_at' => date("Y-m-d H:i:s")    
+
+    ]);
+    $resp = Cuenta::find($id);
+    return $this->showOne($resp);  
+}
+
+
+public function putProveedor(Request $request, $id)
+{
+    $pmo = Proveedor::findOrFail($id);
+    $pmo->fill($request->only([
+        'proveedor_nombre',
+        'proveedor_cuit',
+        'proveedor_direccion'
+]));
+
+if ($pmo->isClean()) {
+    return $this->errorRepsonse('Se debe especificar al menos un valor', 422);
+}
+$pmo->save();
+return $this->showOne($pmo);
+}
 
 
 }
