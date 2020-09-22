@@ -424,7 +424,7 @@ Route::name('movimiento-caja')->put('movimiento/cuenta/{id}', 'MovimientosCaja\M
 Route::name('movimiento-caja')->get('movimiento/registro/by/date', 'MovimientosCaja\MovimientosCajaController@geRegistroMovimientoBydate'); 
 
 Route::name('movimiento-caja')->post('movimiento/caja', 'MovimientosCaja\MovimientosCajaController@setMovimientoCaja'); 
-
+Route::name('movimiento-caja')->put('movimiento/caja/{id}', 'MovimientosCaja\MovimientosCajaController@putMovimientoCaja'); 
 /* -------------------------------------------------------------------------- */
 /*                                  PROVEEDOR                                 */
 /* -------------------------------------------------------------------------- */

@@ -204,6 +204,7 @@ class MovimientosCajaController extends ApiController
         AND mov_registro.mov_cuenta_id = mov_cuenta.id 
         AND mov_registro.mov_tipo_comprobante_id = mov_tipo_comprobante.id 
         AND mov_registro.mov_tipo_moneda_id = mov_tipo_moneda.id
+        AND fecha_carga BETWEEN :fecha_desde AND :fecha_hasta
     "), array(
         'fecha_desde' =>$fecha_desde,
         'fecha_hasta' => $fecha_hasta 
@@ -215,11 +216,12 @@ class MovimientosCajaController extends ApiController
 
     public function setMovimientoCaja(Request $request)
     {
+        $fecha =  date('Y-m-d H:i:s', strtotime($request->fecha_carga)); 
         $id= DB::table('mov_registro')->insertGetId([                              
             'mov_concepto_cuenta_id' => $request->mov_concepto_cuenta_id,
             'descripcion' => $request->descripcion,
             'mov_cuenta_id' => $request->mov_cuenta_id,
-            'fecha_carga' => str_replace('/', '-', $request->fecha_carga),
+            'fecha_carga' => $fecha,
             'mov_tipo_comprobante_id' => $request->mov_tipo_comprobante_id,
             'comprobante_numero' => $request->comprobante_numero,
             'tiene_enlace_factura' => $request->tiene_enlace_factura,
@@ -235,8 +237,38 @@ class MovimientosCajaController extends ApiController
             'updated_at' => date("Y-m-d H:i:s")    
 
         ]);
-        $resp = Cuenta::find($id);
-        return $this->showOne($resp);  
+       
+        return response()->json($id, 201); 
+    }
+
+
+    public function putMovimientoCaja(Request $request, $id)
+    {
+        $fecha =  date('Y-m-d H:i:s', strtotime($request['fecha_carga'])); 
+        $update = DB::table('mov_registro') 
+        ->where('id', $id) ->limit(1) 
+        ->update( [ 
+         
+            'mov_concepto_cuenta_id' => $request['mov_concepto_cuenta_id'],     
+            'descripcion' =>  $request['descripcion'],                 
+            'mov_cuenta_id' => $request['mov_cuenta_id'],     
+            'fecha_carga' => $fecha,                
+            'mov_tipo_comprobante_id' => $request['mov_tipo_comprobante_id'],      
+            'comprobante_numero' => $request['comprobante_numero'],                  
+            'tiene_enlace_factura' => $request['tiene_enlace_factura'],
+            'mov_tipo_moneda_id' => $request['mov_tipo_moneda_id'],
+            'importe' => $request['importe'],
+            'cotizacion' => $request['cotizacion'],   
+            'total' =>  $request['total'] ,         
+            'liq_liquidacion_distribucion_id' =>  $request['liq_liquidacion_distribucion_id'] ,
+            'factura_encabezado_id' =>  $request['factura_encabezado_id'] ,
+            'paciente_id' =>  $request['paciente_id'] ,
+            'proveedor_id' =>  $request['proveedor_id'] ,            
+            'updated_at' => date("Y-m-d H:i:s")     ]); 
+
+                  
+           return response()->json($request, 201);   
+        
     }
 
     
