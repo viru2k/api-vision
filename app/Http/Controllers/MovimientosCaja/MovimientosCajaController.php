@@ -243,7 +243,7 @@ class MovimientosCajaController extends ApiController
 
 
     public function putMovimientoCaja(Request $request, $id)
-    {
+    {        
         $fecha =  date('Y-m-d H:i:s', strtotime($request['fecha_carga'])); 
         $update = DB::table('mov_registro') 
         ->where('id', $id) ->limit(1) 
