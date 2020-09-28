@@ -28,7 +28,7 @@ class FacturaElementosController extends ApiController{
 
     public function Comprobante(Request $request){
         $res = DB::table('factura_comprobante')
-        ->select('descripcion','id','comprobante_codigo','letra')
+        ->select('descripcion','id','comprobante_codigo','letra', 'es_afip')
             ->get();
         return $this->showAll($res);
     }
@@ -74,18 +74,24 @@ class FacturaElementosController extends ApiController{
     }
 
     public function crearFactura(Request $request){
+        
         $numero_recibo = 0;
-        $medico = DB::select( DB::raw("SELECT cuit, factura_key, factura_crt FROM medicos WHERE id = ".$request->medico_id.""));
-        $afip = new Afip(array(
-            'CUIT' => (float)$medico[0]->cuit,
-            'production' => $this->produccion,
-            'cert'         => $medico[0]->factura_crt,
-            'key'          => $medico[0]->factura_key
-            ));
+        try {
+            $medico = DB::select( DB::raw("SELECT cuit, factura_key, factura_crt FROM medicos WHERE id = ".$request->medico_id.""));
+            $afip = new Afip(array(
+                'CUIT' => (float)$medico[0]->cuit,
+                'production' => $this->produccion,
+                'cert'         => $medico[0]->factura_crt,
+                'key'          => $medico[0]->factura_key
+                ));
+        } catch (\Throwable $th) {
+            //throw $th;
+        }
+  
         $Iva = [];
         $i =0;
-    
-        if($request->factura_comprobante_id == 15){
+        //if($request->factura_comprobante_id == 15){
+        if($request->es_afip === "NO"){
             $recibo = DB::select( DB::raw("SELECT * FROM factura_encabezado WHERE  medico_id = ".$request->medico_id." AND factura_comprobante_id = ".$request->factura_comprobante_id." ORDER BY id DESC limit 1 "));
           //  echo $request->factura_comprobante_id;
            // echo $request->medico_id;

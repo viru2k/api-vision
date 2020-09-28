@@ -81,7 +81,7 @@ class MovimientosCajaController extends ApiController
 
     public function setConceptoCuenta(Request $request)
     {
-        $id= DB::table('mov_tipo_moneda')->insertGetId([
+        $id= DB::table('mov_concepto_cuenta')->insertGetId([
             'concepto_cuenta' => $request->concepto_cuenta,                       
             'created_at' => date("Y-m-d H:i:s"),
             'updated_at' => date("Y-m-d H:i:s")    
