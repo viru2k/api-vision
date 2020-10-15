@@ -819,6 +819,8 @@ class OperacionCobroController extends ApiController
 /* -------------------------------------------------------------------------- */
   
   public function DistribuirOperacionCobroLiquidar(Request $request){
+  
+    $numero = $request["numero"];
     $t =$request;
     $i = 0;
   while(isset($t[$i])){       
@@ -827,18 +829,56 @@ class OperacionCobroController extends ApiController
     ->where('es_distribuido','SI')       
     ->update( [   
      'estado_liquidacion' => 'LIQ',  
+     'liquidacion_realizada_numero' => $numero,  
      'updated_at' => date("Y-m-d H:i:s")     ]);  
 
    $update = DB::table('liq_liquidacion')         
    ->where('id',$t[$i]["id"])           
    ->update( [   
     'estado' => 'LIQ',  
+    'liquidacion_generada_id' => $numero, 
     'updated_at' => date("Y-m-d H:i:s")     ]);  
         $i++;
     }
 
     
     return response()->json($i, "201");
+}
+
+
+public function generarLiquidacionNumero(Request $request){
+   
+  $tmp_fecha = str_replace('/', '-', $request->fecha_liquidacion);
+  $fecha_liquidacion =  date('Y-m-d H:i:s', strtotime($tmp_fecha));    
+  
+  $liquidacion_numero= DB::table('liq_liquidacion_generada')->insertGetId([    
+    'numero' =>  $request->numero,
+    'fecha_liquidacion' => $fecha_liquidacion,
+    'estado' => $request->estado,
+    'detalle' => $request->detalle,
+    'created_at' => date("Y-m-d H:i:s"),
+    'updated_at' => date("Y-m-d H:i:s")    
+]); 
+ 
+
+ $resp = DB::select( DB::raw(" SELECT numero, fecha_liquidacion, estado, created_at, updated_at FROM liq_liquidacion_generada WHERE    id =   ".$liquidacion_numero."  
+"));
+
+return response()->json($resp, 201);
+ 
+}
+
+
+public function getLiquidacionNumero(Request $request){
+
+$id = $request->input('id');
+
+
+$resp = DB::select( DB::raw(" SELECT numero, fecha_liquidacion, estado, created_at, updated_at FROM liq_liquidacion_generada WHERE    id =   ".$id."  
+"));
+
+return response()->json($resp, 201);
+
 }
 
 

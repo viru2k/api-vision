@@ -243,6 +243,9 @@ Route::name('operacioncobro')->post('operacioncobro/distribucion/expediente', 'O
 Route::name('operacioncobro')->post('operacioncobro/distribucion/medico', 'OperacionCobro\OperacionCobroController@GetDistribucionByMedico'); 
 Route::name('operacioncobro')->post('operacioncobro/distribucion/medico/detalle', 'OperacionCobro\OperacionCobroController@GetDistribucionByMedicoDetalle'); 
 Route::name('operacioncobro')->get('operacioncobro/distribucion/numero', 'OperacionCobro\OperacionCobroController@GetDistribucionByNumero'); 
+Route::name('operacioncobro')->post('operacioncobro/liquidacion/generdada/id', 'OperacionCobro\OperacionCobroController@generarLiquidacionNumero'); 
+Route::name('operacioncobro')->get('operacioncobro/liquidacion/generdada', 'OperacionCobro\OperacionCobroController@getLiquidacionNumero'); 
+
 
 /**FACTURACION **/
 
@@ -317,6 +320,8 @@ Route::name('factura')->get('afip/factura/c', 'Afip\AfipController@CrearFacturaC
 Route::name('factura')->get('afip/notacredito/a', 'Afip\AfipController@CrearNotaCreditoA');
 Route::name('factura')->get('afip/notacredito/b', 'Afip\AfipController@CrearNotaCreditoB');
 Route::name('factura')->get('afip/notacredito/c', 'Afip\AfipController@CrearNotaCreditoC');
+
+Route::name('factura')->get('afip/factura/info', 'Afip\AfipController@GetVoucherInfo');
 
 
 /**** ELEMENTOS FACTURACION */

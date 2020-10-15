@@ -299,8 +299,8 @@ public function setProveedor(Request $request)
         'updated_at' => date("Y-m-d H:i:s")    
 
     ]);
-    $resp = Cuenta::find($id);
-    return $this->showOne($resp);  
+  
+    return response()->json($id, 201);
 }
 
 

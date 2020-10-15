@@ -32,6 +32,37 @@ class AfipController extends Controller
         var_dump( $test);
     }
 
+
+
+    public function GetVoucherInfo(Request $request){
+
+        // echo $request->input('comprobante_numero');
+        // echo $request->input('punto_vta');
+        // echo $request->input('comprobante_id');
+        $medico = DB::select( DB::raw("SELECT cuit, factura_key, factura_crt FROM medicos WHERE id = ".$request->input('medico_id').""));
+        $afip = new Afip(array(
+        'CUIT' => (float)$medico[0]->cuit,
+        'production' => $this->produccion,
+        'cert'         => $medico[0]->factura_crt,
+        'key'          => $medico[0]->factura_key
+        ));
+
+        //Esta línea es solo para probar si funciona pero no es obligatorio
+        $voucher_info = $afip->ElectronicBilling->GetVoucherInfo($request->input('comprobante_numero'),$request->input('punto_vta'),$request->input('comprobante_id')); //Devuelve la información del comprobante 1 para el punto de venta 1 y el tipo de comprobante 6 (Factura B)
+
+        if($voucher_info === NULL){
+          //  echo 'El comprobante no existe';
+            return response()->json('El comprobante no existe', 401);
+        }
+        else{
+            // echo 'Esta es la información del comprobante:';
+            // echo '<pre>';
+            // print_r($voucher_info);
+            // echo '</pre>';
+            return response()->json($voucher_info, 201);
+        }
+    }
+
     public function CrearFacturaA(Request $request){
 
         /**
