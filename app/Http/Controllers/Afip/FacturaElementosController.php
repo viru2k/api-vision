@@ -123,7 +123,8 @@ $factura_encabezado_id= DB::table('factura_encabezado')->insertGetId([
     'importe_gravado'=> $request->importe_gravado,
     'importe_exento_iva'=> $request->importe_exento_iva,
     'importe_iva'=> $request->importe_iva,
-    'importe_total'=> $request->importe_total
+    'importe_total'=> $request->importe_total,
+    'usuario_id'=> $request->usuario_id
     ]);        
 
     foreach ($request->facturaElectronicaRenglon as $res) {
