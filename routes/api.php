@@ -26,8 +26,8 @@ Route::post('oauth/token','\Laravel\Passport\Http\Controllers\AccessTokenControl
 /************************USUARIOS************************** */
 
 
-Route::name('user-info')->get('user/password', 'User\UserController@getPassword'); 
-Route::name('user-info')->get('user/info/menu', 'User\UserController@getUserDataAndMenu'); 
+Route::name('user-info')->get('user/password', 'User\UserController@getPassword');
+Route::name('user-info')->get('user/info/menu', 'User\UserController@getUserDataAndMenu');
 Route::name('user-info')->get('user/menu', 'User\UserController@getMenu');
 Route::name('user-info')->post('user/menu/add/{id}', 'User\UserController@agregarMenuUsuario');
 Route::name('user-info')->delete('user/menu/{id}', 'User\UserController@borrarMenuUsuario');
@@ -41,7 +41,7 @@ Route::resource('medico', 'Medico\MedicoController');
 
 Route::name('medico-afip')->get('medico/factura/afip', 'Medico\MedicoController@getAfip');
 
-Route::resource('medicoobrasocial', 'Medico\MedicoObraSocialController'); 
+Route::resource('medicoobrasocial', 'Medico\MedicoObraSocialController');
 Route::name('medico-obrasocial')->post('medicoobrasocial', 'Medico\MedicoController@postMedicoObraSocial');
 Route::name('medico-obrasocial')->get('medico/obrasocial/todos', 'Medico\MedicoObraSocialController@byIdMedicoTodos');
 Route::name('medico-obrasocial')->get('medico/obrasocial/byobrasocial', 'Medico\MedicoObraSocialController@getMedicoByObraSocialHabilitado');
@@ -57,67 +57,67 @@ Route::resource('estudio', 'Estudio\EstudioController');
 Route::resource('agenda', 'Agenda\AgendaController');
 
 
-Route::name('agenda-gestion')->get('agenda/horarios/turno/medico/sobreturno', 'Agenda\AgendaController@getAgendaAtByFechaUsuarioSobreTurno'); 
-//Route::name('agenda-gestion')->get('agenda/horarios/turno/medico/sobreturno', 'Agenda\AgendaController@getAgendaAtByFechaUsuarioSobreTurno'); 
+Route::name('agenda-gestion')->get('agenda/horarios/turno/medico/sobreturno', 'Agenda\AgendaController@getAgendaAtByFechaUsuarioSobreTurno');
+//Route::name('agenda-gestion')->get('agenda/horarios/turno/medico/sobreturno', 'Agenda\AgendaController@getAgendaAtByFechaUsuarioSobreTurno');
 Route::name('agenda-gestion')->get('agenda/horarios/turno', 'Agenda\AgendaController@getAgendaAtencionByFechaTodos');
-Route::name('agenda-gestion')->get('agenda/horarios/turno/medico', 'Agenda\AgendaController@getAgendaAtencionByFechaAndMedico'); 
+Route::name('agenda-gestion')->get('agenda/horarios/turno/medico', 'Agenda\AgendaController@getAgendaAtencionByFechaAndMedico');
 Route::name('agenda-gestion')->get('agenda/horarios/turno/medico/noestado', 'Agenda\AgendaController@getAgendaAtencionByFechaAndMedicoSinEstado');
-Route::name('agenda-gestion')->get('agenda/horarios/turno/todos/noestado', 'Agenda\AgendaController@getAgendaAtencionByFechaTodosSinEstado'); 
+Route::name('agenda-gestion')->get('agenda/horarios/turno/todos/noestado', 'Agenda\AgendaController@getAgendaAtencionByFechaTodosSinEstado');
 Route::name('agenda-gestion')->get('agenda/horarios/turno/todos/noestado/bydates', 'Agenda\AgendaController@getAgendaAtencionByFechaTodosSinEstadoBetweenDates');
 Route::name('agenda-gestion')->get('agenda/horarios/turno/todos/noestado/bydates/gerencia', 'Agenda\AgendaController@getAgendaAtencionByFechaTodosSinEstadoBetweenDatesGerencia');
 Route::name('agenda-gestion')->get('agenda/horarios/turno/nuevo', 'Agenda\AgendaController@getAgendaAtByFechaTodosTurnos');
 Route::name('agenda-gestion')->get('agenda/horarios/turno/nuevo/usuario', 'Agenda\AgendaController@getAgendaAtByFechaMedicoTurnos');
 Route::name('agenda-gestion')->get('agenda/horarios/turno/nuevo/usuario/todos', 'Agenda\AgendaController@getAgendaAtByFechaMedicoTurnosTodos');
 Route::name('agenda-gestion')->get('agenda/horarios', 'Agenda\AgendaController@getAgendaByHorarios');
-Route::name('agenda-gestion')->get('agenda/medico/dia', 'Agenda\AgendaController@getAgendaByMedicoAndDia'); 
-Route::name('agenda-gestion')->put('agenda/deshabilitar/{id}', 'Agenda\AgendaController@DeshabilitarHorarioByMedico'); 
-Route::name('agenda-gestion')->get('agenda/medico/todo', 'Agenda\AgendaController@getAgendaByMedicoAndDiaTodoEstado'); 
-Route::name('agenda-gestion')->get('agenda/medico/disponilible', 'Agenda\AgendaController@getAgendaByMedicoAndDiaDisponible'); 
-Route::name('agenda-gestion')->get('agenda/todos/disponilible', 'Agenda\AgendaController@getAgendaByDiaDisponible'); 
-Route::name('agenda-gestion')->post('agenda/crear/medico', 'Agenda\AgendaController@generarHorarioAgenda'); 
+Route::name('agenda-gestion')->get('agenda/medico/dia', 'Agenda\AgendaController@getAgendaByMedicoAndDia');
+Route::name('agenda-gestion')->put('agenda/deshabilitar/{id}', 'Agenda\AgendaController@DeshabilitarHorarioByMedico');
+Route::name('agenda-gestion')->get('agenda/medico/todo', 'Agenda\AgendaController@getAgendaByMedicoAndDiaTodoEstado');
+Route::name('agenda-gestion')->get('agenda/medico/disponilible', 'Agenda\AgendaController@getAgendaByMedicoAndDiaDisponible');
+Route::name('agenda-gestion')->get('agenda/todos/disponilible', 'Agenda\AgendaController@getAgendaByDiaDisponible');
+Route::name('agenda-gestion')->post('agenda/crear/medico', 'Agenda\AgendaController@generarHorarioAgenda');
 Route::name('agenda-gestion')->get('agenda/crearhorario', 'Agenda\AgendaController@crearAgendaByHorario');
 Route::name('agenda-gestion')->post('agenda/asignar/turno', 'Agenda\AgendaController@asignarTurno');
-Route::name('agenda-gestion')->get('agenda/horarios/dias', 'Agenda\AgendaController@getDias'); 
+Route::name('agenda-gestion')->get('agenda/horarios/dias', 'Agenda\AgendaController@getDias');
 Route::name('agenda-gestion')->get('agenda/horarios/periodo', 'Agenda\AgendaController@getHorario');
-Route::name('agenda-gestion')->get('agenda/horarios/horarios/bloquear/turno', 'Agenda\AgendaController@bloquearAgendaTurno'); 
-Route::name('agenda-gestion')->post('agenda/horarios/horarios/bloquear/periodo', 'Agenda\AgendaController@bloquearAgenda'); 
-Route::name('agenda-gestion')->get('agenda/horarios/horarios/bloquear/medico', 'Agenda\AgendaController@getAgendaBloqueoByMedicoAndDiaTodoEstado'); 
-Route::name('agenda-gestion')->get('agenda/horarios/medico/bloqueado', 'Agenda\AgendaController@getAgendaBloqueo');  
-Route::name('agenda-gestion')->get('agenda/horarios/paciente/historia/{id}', 'Agenda\AgendaController@getHistoriaPaciente');  
+Route::name('agenda-gestion')->get('agenda/horarios/horarios/bloquear/turno', 'Agenda\AgendaController@bloquearAgendaTurno');
+Route::name('agenda-gestion')->post('agenda/horarios/horarios/bloquear/periodo', 'Agenda\AgendaController@bloquearAgenda');
+Route::name('agenda-gestion')->get('agenda/horarios/horarios/bloquear/medico', 'Agenda\AgendaController@getAgendaBloqueoByMedicoAndDiaTodoEstado');
+Route::name('agenda-gestion')->get('agenda/horarios/medico/bloqueado', 'Agenda\AgendaController@getAgendaBloqueo');
+Route::name('agenda-gestion')->get('agenda/horarios/paciente/historia/{id}', 'Agenda\AgendaController@getHistoriaPaciente');
 Route::name('agenda-gestion')->get('agenda/horarios/paciente/cancelar/{id}', 'Agenda\AgendaController@cancelarTurno');
-Route::name('agenda-gestion')->get('agenda/horarios/turno/eliminado', 'Agenda\AgendaController@getAgendaEliminados');   
-Route::name('agenda-gestion')->get('agenda/horarios/turno/todos', 'Agenda\AgendaController@getAgendaAtencionByFechaTurnosTodos'); 
+Route::name('agenda-gestion')->get('agenda/horarios/turno/eliminado', 'Agenda\AgendaController@getAgendaEliminados');
+Route::name('agenda-gestion')->get('agenda/horarios/turno/todos', 'Agenda\AgendaController@getAgendaAtencionByFechaTurnosTodos');
 Route::name('agenda-gestion')->get('agenda/horarios/turno/presente', 'Agenda\AgendaController@getAgendaAtencionPresente');
 Route::name('agenda-gestion')->get('agenda/horarios/turno/otrosestados', 'Agenda\AgendaController@getAgendaAtencionOtrosEstados');
-Route::name('agenda-gestion')->put('agenda/horarios/turno/operacioncobro/actualizar/{id}', 'Agenda\AgendaController@updateAgendaOperacionCobro'); 
+Route::name('agenda-gestion')->put('agenda/horarios/turno/operacioncobro/actualizar/{id}', 'Agenda\AgendaController@updateAgendaOperacionCobro');
 Route::name('agenda-gestion')->get('agenda/horarios/bloqueo/turno', 'Agenda\AgendaController@getHorarioBloqueoByMedico');
 Route::name('agenda-gestion')->get('agenda/horarios/bloqueo/dia', 'Agenda\AgendaController@getDiasBloqueados');
 Route::name('agenda-gestion')->get('agenda/horarios/cancelar/horario/{id}', 'Agenda\AgendaController@deleteAgendaMedicoHorario');
 Route::name('agenda-gestion')->get('agenda/horarios/cancelar/agenda/{id}', 'Agenda\AgendaController@deleteAgendaMedico');
 Route::name('agenda-gestion')->get('agenda/turno/by/paciente', 'Agenda\AgendaController@getTurnoPacienteByfecha');
-Route::name('agenda-gestion')->put('agenda/turno/presente/{id}', 'Agenda\AgendaController@updatePresente'); 
-Route::name('agenda-gestion')->put('agenda/turno/derivado/{id}', 'Agenda\AgendaController@pacienteDerivado'); 
+Route::name('agenda-gestion')->put('agenda/turno/presente/{id}', 'Agenda\AgendaController@updatePresente');
+Route::name('agenda-gestion')->put('agenda/turno/derivado/{id}', 'Agenda\AgendaController@pacienteDerivado');
 Route::name('agenda-gestion')->get('agenda/turno/pantalla/llamando', 'Agenda\AgendaController@ActualizarTurnoLlamando');
 Route::name('agenda-gestion')->get('agenda/turno/pantalla/puesto/llamando', 'Agenda\AgendaController@getPuestoLlamando');
 
 
 /****TOTEM */
-Route::name('totem')->put('totem/turno/presente/{id}', 'Agenda\AgendaController@updatePresente'); 
+Route::name('totem')->put('totem/turno/presente/{id}', 'Agenda\AgendaController@updatePresente');
 Route::name('totem')->post('totem/paciente/nuevo', 'Agenda\AgendaController@turnoRecepcionPacienteNuevo');
-Route::name('totem')->post('totem/paciente/existente', 'Agenda\AgendaController@turnoRecepcionPacienteExistente'); 
-Route::name('totem')->get('totem/turno/by/paciente', 'Agenda\AgendaController@getTurnoByPaciente'); 
-Route::name('totem')->get('totem/turno/nuevo', 'Agenda\AgendaController@totemGenerarTurnoPacienteNuevo'); 
-Route::name('totem')->get('totem/turno/existente', 'Agenda\AgendaController@totemGenerarTurnoPacienteExistente'); 
-Route::name('totem')->put('totem/turno/llamar', 'Agenda\AgendaController@llamarTurnoPaciente'); 
+Route::name('totem')->post('totem/paciente/existente', 'Agenda\AgendaController@turnoRecepcionPacienteExistente');
+Route::name('totem')->get('totem/turno/by/paciente', 'Agenda\AgendaController@getTurnoByPaciente');
+Route::name('totem')->get('totem/turno/nuevo', 'Agenda\AgendaController@totemGenerarTurnoPacienteNuevo');
+Route::name('totem')->get('totem/turno/existente', 'Agenda\AgendaController@totemGenerarTurnoPacienteExistente');
+Route::name('totem')->put('totem/turno/llamar', 'Agenda\AgendaController@llamarTurnoPaciente');
 
 /****PANTALLA */
-Route::name('totem')->get('pantalla/turno/llamando', 'Agenda\AgendaController@getTurnoPantallaLlamando'); 
-Route::name('totem')->get('pantalla/turno/ingresado', 'Agenda\AgendaController@getTurnoPantallaAtendido'); 
+Route::name('totem')->get('pantalla/turno/llamando', 'Agenda\AgendaController@getTurnoPantallaLlamando');
+Route::name('totem')->get('pantalla/turno/ingresado', 'Agenda\AgendaController@getTurnoPantallaAtendido');
 
 
 /** CIRUGIA **/
 Route::name('historia-clinica')->get('cirugia/historia/{id}', 'Cirugia\CirugiaController@getHistoriaClinicaByPaciente');
-Route::name('historia-clinica')->get('cirugia/historia/actualizar/paciente', 'Cirugia\CirugiaController@actualizarRegistroHistoriaClinica'); 
+Route::name('historia-clinica')->get('cirugia/historia/actualizar/paciente', 'Cirugia\CirugiaController@actualizarRegistroHistoriaClinica');
 Route::name('historia-clinica')->post('cirugia/historia/registro/insertar', 'Cirugia\CirugiaController@setHistoriaClinicaFicha');
 Route::name('historia-clinica')->put('cirugia/historia/registro/actualizar/{id}', 'Cirugia\CirugiaController@updHistoriaClinicaById');
 
@@ -130,13 +130,13 @@ Route::name('cirugia')->get('cirugia/ficha/anestesia/{id}', 'Cirugia\CirugiaCont
 Route::name('cirugia')->get('cirugia/ficha/practica/{id}', 'Cirugia\CirugiaController@ getFichaQuirurgicaPractica');
 Route::name('cirugia')->get('cirugia/ficha/rendicion/{id}', 'Cirugia\CirugiaController@getFichaQuirurgicaRendicion');
 Route::name('cirugia')->get('cirugia/ficha/lente/{id}', 'Cirugia\CirugiaController@getFichaQuirurgicaLente');
-Route::name('cirugia')->get('cirugia/ficha/cirugia/estado', 'Cirugia\CirugiaController@getCirugiaEstado'); 
+Route::name('cirugia')->get('cirugia/ficha/cirugia/estado', 'Cirugia\CirugiaController@getCirugiaEstado');
 
 Route::name('cirugia')->post('cirugia/ficha/derivar', 'Cirugia\CirugiaController@crearRegistroCirugia');
 Route::name('cirugia')->post('cirugia/grupomedico', 'Cirugia\CirugiaController@crearRegistroGrupoMedico');
 Route::name('cirugia')->post('cirugia/estudios', 'Cirugia\CirugiaController@crearRegistroCirugiaGrupoMedico');
 Route::name('cirugia')->post('cirugia/anestesia', 'Cirugia\CirugiaController@crearRegistroAnestesia');
-Route::name('cirugia')->put('cirugia/practica/{id}', 'Cirugia\CirugiaController@actualizarRegistroCirugiaPractica'); 
+Route::name('cirugia')->put('cirugia/practica/{id}', 'Cirugia\CirugiaController@actualizarRegistroCirugiaPractica');
 Route::name('cirugia')->put('cirugia/practica/estado/{id}', 'Cirugia\CirugiaController@actualizarRegistroCirugiaEstado');
 Route::name('cirugia')->post('cirugia/registro/lente', 'Cirugia\CirugiaController@crearRegistroLente');
 
@@ -155,7 +155,7 @@ Route::name('cirugia')->delete('cirugia/ficha/listado/{id}', 'Cirugia\CirugiaCon
 //Route::name('cirugia')->get('cirugia/listado/quirofano',    'Cirugia\CirugiaController@getFichaQuirurgicaListadoQuirofano');
 //Route::name('cirugia')->put('cirugia/listado/quirofano',    'Cirugia\CirugiaController@actualizarRegistroCirugiaAnestesia');
 Route::name('cirugia')->post('cirugia/listado/quirofano', 'Cirugia\CirugiaController@createListadoQuirofano');
-Route::name('cirugia')->get('cirugia/listado/quirofano',    'Cirugia\CirugiaController@getListadoQuirofano'); 
+Route::name('cirugia')->get('cirugia/listado/quirofano',    'Cirugia\CirugiaController@getListadoQuirofano');
 Route::name('cirugia')->get('cirugia/listado/quirofano/by/medico',    'Cirugia\CirugiaController@getListadoQuirofanoByMedico');
 Route::name('cirugia')->get('cirugia/listado/quirofano/by/medico/by/periodo',    'Cirugia\CirugiaController@getListadoQuirofanoByMedicoByPeriodo');
 Route::name('cirugia')->get('cirugia/listado/quirofano/realizado',    'Cirugia\CirugiaController@getFichaQuirurgicaRealizado');
@@ -165,16 +165,16 @@ Route::name('cirugia')->put('cirugia/listado/quirofano/{id}',    'Cirugia\Cirugi
 
 /** CONVENIOS **/
 Route::resource('obrasocial', 'ObraSocial\ObraSocialController');
-Route::name('obra-social')->get('obrasocialby/obrasocialpmo', 'ObraSocial\ObraSocialController@obraSocialByIdAndPmoId'); 
-Route::name('obra-social')->get('obrasocialby/generarcoseguro', 'ObraSocial\ObraSocialController@generarCoseguros'); 
-Route::name('obra-social')->get('obrasocialby/actualizarcoseguro', 'ObraSocial\ObraSocialController@actualizarCoseguros'); 
-Route::name('obra-social')->get('obrasocialby/insertarcoseguro', 'ObraSocial\ObraSocialController@insertarConvenioCoseguro'); 
-Route::name('obra-social')->get('obrasocialby/actualizar/distribucion', 'ObraSocial\ConvenioObraSocialController@ActualizarValoresDistribucion'); 
+Route::name('obra-social')->get('obrasocialby/obrasocialpmo', 'ObraSocial\ObraSocialController@obraSocialByIdAndPmoId');
+Route::name('obra-social')->get('obrasocialby/generarcoseguro', 'ObraSocial\ObraSocialController@generarCoseguros');
+Route::name('obra-social')->get('obrasocialby/actualizarcoseguro', 'ObraSocial\ObraSocialController@actualizarCoseguros');
+Route::name('obra-social')->get('obrasocialby/insertarcoseguro', 'ObraSocial\ObraSocialController@insertarConvenioCoseguro');
+Route::name('obra-social')->get('obrasocialby/actualizar/distribucion', 'ObraSocial\ConvenioObraSocialController@ActualizarValoresDistribucion');
 
 Route::resource('convenio', 'ObraSocial\ConvenioObraSocialController');
-Route::name('convenio-obra-social')->get('convenio/byobrasocial/{id}', 'ObraSocial\ConvenioObraSocialController@findByObraSocial'); 
-Route::name('convenio-obra-social')->get('convenio/bypmo/{id}', 'ObraSocial\ConvenioObraSocialController@findByPmo'); 
-Route::name('convenio-obra-social')->get('convenio/by/obrasocialandcoseguro', 'ObraSocial\ConvenioObraSocialController@findByObraSocialAndCoseguro'); 
+Route::name('convenio-obra-social')->get('convenio/byobrasocial/{id}', 'ObraSocial\ConvenioObraSocialController@findByObraSocial');
+Route::name('convenio-obra-social')->get('convenio/bypmo/{id}', 'ObraSocial\ConvenioObraSocialController@findByPmo');
+Route::name('convenio-obra-social')->get('convenio/by/obrasocialandcoseguro', 'ObraSocial\ConvenioObraSocialController@findByObraSocialAndCoseguro');
 
 
 Route::resource('pmo', 'ObraSocial\PmoController');
@@ -183,8 +183,8 @@ Route::resource('pmo', 'ObraSocial\PmoController');
 
 Route::resource('liquidacion/entidad', 'Liquidacion\EntidadFacturaController');
 Route::name('liquidacion')->get('liquidacion/detalle', 'OperacionCobro\OperacionCobroController@getLiquidacionDetalle');
-Route::name('liquidacion')->post('liquidacion/detalle/prefactura', 'OperacionCobro\OperacionCobroController@getListadoPreFactura'); 
-Route::name('liquidacion')->post('liquidacion/detalle/prefactura/cirugia', 'OperacionCobro\OperacionCobroController@getListadoPreFacturaCirugia');  
+Route::name('liquidacion')->post('liquidacion/detalle/prefactura', 'OperacionCobro\OperacionCobroController@getListadoPreFactura');
+Route::name('liquidacion')->post('liquidacion/detalle/prefactura/cirugia', 'OperacionCobro\OperacionCobroController@getListadoPreFacturaCirugia');
 Route::name('liquidacion')->post('liquidacion/detalle/prefactura/cirugia/coseguro', 'OperacionCobro\OperacionCobroController@getListadoPreFacturaCirugiaCoseguro');
 Route::name('liquidacion')->get('liquidacion/detalle/prefactura/desafectar', 'OperacionCobro\OperacionCobroController@desafectarPresentacion');
 Route::name('liquidacion')->post('liquidacion/distribucion/medico', 'OperacionCobro\OperacionCobroController@liquidarOperacionCobro');
@@ -198,7 +198,7 @@ Route::name('distribucion')->put('distribucion/operacion/cobro/medico/actualizar
 
 /**PACIENTE**/
 
-Route::resource('paciente', 'Paciente\PacienteController'); 
+Route::resource('paciente', 'Paciente\PacienteController');
 Route::name('paciente-consulta')->get('paciente/by/consulta', 'Paciente\PacienteController@getPacienteByQuery');
 Route::name('paciente-consulta')->get('paciente/obrasocial/habilitada/{id}', 'Paciente\PacienteController@pacienteAndObraSocialEsHabilitada');
 Route::name('paciente-consulta')->get('paciente/obrasocial/habilitada/todas/{id}', 'Paciente\PacienteController@pacienteAndObraSocialEsTodas');
@@ -206,13 +206,13 @@ Route::resource('pacienteobrasocial', 'Paciente\PacienteObraSocialController');
 Route::resource('pacienteagenda', 'Paciente\PacienteAgendaController');
 Route::name('pacienteagenda')->get('pacienteagenda/bydate/today', 'Paciente\PacienteAgendaController@byDateToday');
 Route::name('pacienteagenda')->get('pacienteagenda/bydateselected/{fecha}','Paciente\PacienteAgendaController@byDateSelected');
-Route::name('pacienteagenda')->get('pacienteagenda/bydatedni/{dni}','Paciente\PacienteAgendaController@byDni'); 
+Route::name('pacienteagenda')->get('pacienteagenda/bydatedni/{dni}','Paciente\PacienteAgendaController@byDni');
 Route::name('paciente-consulta')->get('paciente/totem/dni', 'Paciente\PacienteController@getPacienteByDni');
 /**OPERACION DE COBRO**/
 Route::resource('operacioncobro', 'OperacionCobro\OperacionCobroController');
 Route::name('operacioncobro')->post('operacioncobro/registros', 'OperacionCobro\OperacionCobroController@registroOperacionCobro');
-Route::name('operacioncobro')->get('operacioncobro/registros/by/dates', 'OperacionCobro\OperacionCobroController@getOperacionCobroRegistrosBetweenDates'); 
-Route::name('operacioncobro')->get('operacioncobro/registros/by/dates/medico', 'OperacionCobro\OperacionCobroController@getOperacionCobroRegistrosBetweenDatesAndMedico'); 
+Route::name('operacioncobro')->get('operacioncobro/registros/by/dates', 'OperacionCobro\OperacionCobroController@getOperacionCobroRegistrosBetweenDates');
+Route::name('operacioncobro')->get('operacioncobro/registros/by/dates/medico', 'OperacionCobro\OperacionCobroController@getOperacionCobroRegistrosBetweenDatesAndMedico');
 Route::name('operacioncobro')->get('operacioncobro/registros/by/id', 'OperacionCobro\OperacionCobroController@getOperacionCobroRegistrosById');
 Route::name('operacioncobro')->get('operacioncobro/registros/by/operacioncobro', 'OperacionCobro\OperacionCobroController@getOperacionCobroRegistrosByIdOperacionCobro');
 Route::name('operacioncobro')->get('operacioncobro/registros/by/paciente', 'OperacionCobro\OperacionCobroController@getOperacionCobroRegistrosBypacienteId');
@@ -224,27 +224,27 @@ Route::name('operacioncobro')->get('operacioncobro/registros/by/distribucion/pre
 
 Route::name('operacioncobro')->post('operacioncobro/facturacion/auditarorden', 'OperacionCobro\OperacionCobroController@auditarOrdenes');
 Route::name('operacioncobro')->post('operacioncobro/afectar/orden', 'OperacionCobro\OperacionCobroController@afectarOperacionCobro');
-Route::name('operacioncobro')->post('operacioncobro/distribuir/orden', 'OperacionCobro\OperacionCobroController@DistribuirOperacionCobro'); 
+Route::name('operacioncobro')->post('operacioncobro/distribuir/orden', 'OperacionCobro\OperacionCobroController@DistribuirOperacionCobro');
 Route::name('operacioncobro')->post('operacioncobro/distribuir/orden/liquidar', 'OperacionCobro\OperacionCobroController@DistribuirOperacionCobroLiquidar');
 Route::name('operacioncobro')->delete('operacioncobro/practica/{id}', 'OperacionCobro\OperacionCobroController@destroyByPracticaById');
-Route::name('operacioncobro')->put('operacioncobro/practica/actualizar/{id}', 'OperacionCobro\OperacionCobroController@updateOperacionCobroPractica'); 
-Route::name('operacioncobro')->put('operacioncobro/practica/anular/{id}', 'OperacionCobro\OperacionCobroController@updateOperacionCobroPracticaAnular'); 
-Route::name('operacioncobro')->put('operacioncobro/practica/editar/distribucion/{id}', 'OperacionCobro\OperacionCobroController@updateOperacionCobroDistribucion');  
+Route::name('operacioncobro')->put('operacioncobro/practica/actualizar/{id}', 'OperacionCobro\OperacionCobroController@updateOperacionCobroPractica');
+Route::name('operacioncobro')->put('operacioncobro/practica/anular/{id}', 'OperacionCobro\OperacionCobroController@updateOperacionCobroPracticaAnular');
+Route::name('operacioncobro')->put('operacioncobro/practica/editar/distribucion/{id}', 'OperacionCobro\OperacionCobroController@updateOperacionCobroDistribucion');
 Route::name('operacioncobro')->put('operacioncobro/practica/editar/distribucion/operacioncobro/{id}', 'OperacionCobro\OperacionCobroController@updateOperacionCobroDistribucionOperacionCobro');
-Route::name('operacioncobro')->put('operacioncobro/operacioncobro/actualizar/{id}', 'OperacionCobro\OperacionCobroController@updateOperacionCobroPrincipal'); 
-Route::name('operacioncobro')->put('operacioncobro/presentacion/actualizar/{id}', 'OperacionCobro\OperacionCobroController@updatePresentacion'); 
+Route::name('operacioncobro')->put('operacioncobro/operacioncobro/actualizar/{id}', 'OperacionCobro\OperacionCobroController@updateOperacionCobroPrincipal');
+Route::name('operacioncobro')->put('operacioncobro/presentacion/actualizar/{id}', 'OperacionCobro\OperacionCobroController@updatePresentacion');
 Route::name('operacioncobro')->get('operacioncobro/consulta/varios', 'OperacionCobro\OperacionCobroController@operacionCobroByCondicion');
 Route::name('operacioncobro')->get('operacioncobro/consulta/varios/distribucion', 'OperacionCobro\OperacionCobroController@operacionCobroByDistribucion');
 Route::name('operacioncobro')->get('operacioncobro/distribucion/recalcular/by/fecha', 'OperacionCobro\OperacionCobroController@updateValoresDistribucionBetwenDates');
 Route::name('operacioncobro')->put('operacioncobro/registro/prestacion/{id}', 'OperacionCobro\OperacionCobroController@updateOperacionCobroPrestacion');
 Route::name('operacioncobro')->post('operacioncobro/recalcular/by/liquidacion', 'OperacionCobro\OperacionCobroController@updateOperacionCobroValoresByNumeroAfectacion');
 Route::name('operacioncobro')->get('operacioncobro/distribucion/by/operacioncobro', 'OperacionCobro\OperacionCobroController@getDistribucionbyOperacionCobro');
-Route::name('operacioncobro')->post('operacioncobro/distribucion/expediente', 'OperacionCobro\OperacionCobroController@GetDistribucionByExpediente'); 
-Route::name('operacioncobro')->post('operacioncobro/distribucion/medico', 'OperacionCobro\OperacionCobroController@GetDistribucionByMedico'); 
-Route::name('operacioncobro')->post('operacioncobro/distribucion/medico/detalle', 'OperacionCobro\OperacionCobroController@GetDistribucionByMedicoDetalle'); 
-Route::name('operacioncobro')->get('operacioncobro/distribucion/numero', 'OperacionCobro\OperacionCobroController@GetDistribucionByNumero'); 
-Route::name('operacioncobro')->post('operacioncobro/liquidacion/generdada/id', 'OperacionCobro\OperacionCobroController@generarLiquidacionNumero'); 
-Route::name('operacioncobro')->get('operacioncobro/liquidacion/generdada', 'OperacionCobro\OperacionCobroController@getLiquidacionNumero'); 
+Route::name('operacioncobro')->post('operacioncobro/distribucion/expediente', 'OperacionCobro\OperacionCobroController@GetDistribucionByExpediente');
+Route::name('operacioncobro')->post('operacioncobro/distribucion/medico', 'OperacionCobro\OperacionCobroController@GetDistribucionByMedico');
+Route::name('operacioncobro')->post('operacioncobro/distribucion/medico/detalle', 'OperacionCobro\OperacionCobroController@GetDistribucionByMedicoDetalle');
+Route::name('operacioncobro')->get('operacioncobro/distribucion/numero', 'OperacionCobro\OperacionCobroController@GetDistribucionByNumero');
+Route::name('operacioncobro')->post('operacioncobro/liquidacion/generdada/id', 'OperacionCobro\OperacionCobroController@generarLiquidacionNumero');
+Route::name('operacioncobro')->get('operacioncobro/liquidacion/generdada', 'OperacionCobro\OperacionCobroController@getLiquidacionNumero');
 
 
 /**FACTURACION **/
@@ -265,9 +265,9 @@ Route::resource('practicadistribucion', 'Practica\PracticaDistribucionController
 Route::name('practicadistribucion')->get('practicadistribucion/byconvenioospmo/{id}', 'Practica\PracticaDistribucionController@bypractica');
 
 /** STOCK **/
-Route::name('stock')->get('stock/lente/by/todos', 'Cirugia\CirugiaController@GetLentes'); 
-Route::name('stock')->get('stock/lente/by/dates/todos', 'Cirugia\CirugiaController@getLentesByDates'); 
-Route::name('stock')->get('stock/lente/by/dates', 'Cirugia\CirugiaController@getLentesCirugiaByDates'); 
+Route::name('stock')->get('stock/lente/by/todos', 'Cirugia\CirugiaController@GetLentes');
+Route::name('stock')->get('stock/lente/by/dates/todos', 'Cirugia\CirugiaController@getLentesByDates');
+Route::name('stock')->get('stock/lente/by/dates', 'Cirugia\CirugiaController@getLentesCirugiaByDates');
 Route::name('stock')->get('stock/lente/by/dates/baja', 'Cirugia\CirugiaController@getLentesCirugiaByDatesAndBaja');
 Route::name('stock')->post('stock/lente', 'Cirugia\CirugiaController@crearLente');
 Route::name('stock')->put('stock/lente/{id}', 'Cirugia\CirugiaController@actualizarLente');
@@ -276,9 +276,9 @@ Route::name('stock')->get('lente/lente', 'Cirugia\CirugiaController@getLenteTipo
 /** FILE MANAGER **/
 Route::name('archivos')->post('/multiuploads/estudios', 'Upload\UploadController@showUploadFile');
 Route::name('archivos')->post('/multiuploads/estudios/datos', 'Upload\UploadController@showUploadFileDatos');
-Route::name('archivos')->post('/multiuploads/texto', 'Files\FilesController@createTestTextFile'); 
-Route::name('archivos')->post('/multiuploads/texto/cirugia', 'Files\FilesController@createTestTextFileCirugia'); 
-Route::name('archivos')->get('/multiuploads/estudios/verimagen', 'Upload\UploadController@getEstudioImagenes'); 
+Route::name('archivos')->post('/multiuploads/texto', 'Files\FilesController@createTestTextFile');
+Route::name('archivos')->post('/multiuploads/texto/cirugia', 'Files\FilesController@createTestTextFileCirugia');
+Route::name('archivos')->get('/multiuploads/estudios/verimagen', 'Upload\UploadController@getEstudioImagenes');
 
 /** CHAT **/
 
@@ -297,19 +297,19 @@ Route::name('notificacion')->put('notificacion/notificacion/{id}', 'notificacion
 /**** INFORMACION SOBRE LOS COMPROBANTES */
 
 
-Route::name('factura-data')->get('afip/data/medicos/facturan', 'Afip\AfipController@getMedicosFacturan'); 
+Route::name('factura-data')->get('afip/data/medicos/facturan', 'Afip\AfipController@getMedicosFacturan');
 
-Route::name('factura-data')->get('afip/data/getlastvoucher', 'Afip\AfipDatosController@GetLastVoucher'); 
+Route::name('factura-data')->get('afip/data/getlastvoucher', 'Afip\AfipDatosController@GetLastVoucher');
 Route::name('factura-data')->get('afip/data/getiformacioncomprobante', 'Afip\AfipDatosController@getIformacionComprobante');
 Route::name('factura-data')->get('afip/data/tipocomprobantesdisponibles', 'Afip\AfipDatosController@TipoComprobantesDisponibles');
 Route::name('factura-data')->get('afip/data/tipoconceptosdisponibles', 'Afip\AfipDatosController@GetConceptTypes');
 Route::name('factura-data')->get('afip/data/tipodocumentosdisponibles', 'Afip\AfipDatosController@TipoDocumentosDisponibles');
-Route::name('factura-data')->get('afip/data/tipoalicuotasdisponibles', 'Afip\AfipDatosController@TipoAlicuotasDisponibles'); 
-Route::name('factura-data')->get('afip/data/getoptionstypes', 'Afip\AfipDatosController@GetOptionsTypes'); 
+Route::name('factura-data')->get('afip/data/tipoalicuotasdisponibles', 'Afip\AfipDatosController@TipoAlicuotasDisponibles');
+Route::name('factura-data')->get('afip/data/getoptionstypes', 'Afip\AfipDatosController@GetOptionsTypes');
 Route::name('factura-data')->get('afip/data/gettaxtypes', 'Afip\AfipDatosController@GetTaxTypes');
-Route::name('factura-data')->get('afip/data/getconcepttypes', 'Afip\AfipDatosController@GetConceptTypes'); 
+Route::name('factura-data')->get('afip/data/getconcepttypes', 'Afip\AfipDatosController@GetConceptTypes');
 Route::name('factura-data')->get('afip/data/obetenerestadodelservidor', 'Afip\AfipDatosController@ObetenerEstadoDelServidor');
-Route::name('factura-data')->get('afip/data/medico/dato', 'Afip\AfipController@getDatoMedico'); 
+Route::name('factura-data')->get('afip/data/medico/dato', 'Afip\AfipController@getDatoMedico');
 
 Route::name('factura')->get('afip/lastvoucher', 'Afip\AfipController@testAfipGetLastVoucher');
 Route::name('factura')->get('afip/test', 'Afip\AfipController@testAfip');
@@ -330,7 +330,7 @@ Route::name('facturacion-elementos')->get('afip/elementos/alicuota', 'Afip\Factu
 Route::name('facturacion-elementos')->get('afip/elementos/alicuota/asociada', 'Afip\FacturaElementosController@AlicuotaAsociada');
 Route::name('facturacion-elementos')->get('afip/elementos/comprobante', 'Afip\FacturaElementosController@Comprobante');
 Route::name('facturacion-elementos')->get('afip/elementos/concepto', 'Afip\FacturaElementosController@Concepto');
-Route::name('facturacion-elementos')->get('afip/elementos/documento', 'Afip\FacturaElementosController@Documento'); 
+Route::name('facturacion-elementos')->get('afip/elementos/documento', 'Afip\FacturaElementosController@Documento');
 Route::name('facturacion-elementos')->get('afip/elementos/pto/vta', 'Afip\FacturaElementosController@PtoVta');
 Route::name('facturacion-elementos')->get('afip/elementos/categoria/iva', 'Afip\FacturaElementosController@CategoriaIva');
 Route::name('facturacion-elementos')->post('afip/elementos/factura/nueva', 'Afip\FacturaElementosController@crearFactura');
@@ -373,19 +373,19 @@ Route::name('listas')->post('lista/obrasocial/autorizacion', 'lista\ListaControl
 /*                                    CHAT                                    */
 /* -------------------------------------------------------------------------- */
 
-Route::name('chat')->get('chat/usuario/alta', 'Chat\ChatController@altaUsuarioSesionLista'); 
-Route::name('chat')->get('chat/usuario/alta/sesion', 'Chat\ChatController@crearSesionListado'); 
-Route::name('chat')->get('chat/usuario/alta/sesion/grupo', 'Chat\ChatController@asociarUsuarioGrupo'); 
+Route::name('chat')->get('chat/usuario/alta', 'Chat\ChatController@altaUsuarioSesionLista');
+Route::name('chat')->get('chat/usuario/alta/sesion', 'Chat\ChatController@crearSesionListado');
+Route::name('chat')->get('chat/usuario/alta/sesion/grupo', 'Chat\ChatController@asociarUsuarioGrupo');
 Route::name('chat')->get('chat/alta/sesion/grupo', 'Chat\ChatController@crearSesionListadoGrupo');
-Route::name('chat')->get('chat/usuario/lista/sesion', 'Chat\ChatController@getSesionListByUsuario'); 
-Route::name('chat')->get('chat/usuario/lista/sesion/grupo', 'Chat\ChatController@getSesionListByGrupo'); 
+Route::name('chat')->get('chat/usuario/lista/sesion', 'Chat\ChatController@getSesionListByUsuario');
+Route::name('chat')->get('chat/usuario/lista/sesion/grupo', 'Chat\ChatController@getSesionListByGrupo');
 Route::name('chat')->post('chat/renglon', 'Chat\ChatController@insertarRenglonChat');
-Route::name('chat')->get('chat/renglon/leido', 'Chat\ChatController@actualizarRenglonListado'); 
-Route::name('chat')->get('chat/by/sesion', 'Chat\ChatController@getChatBySesion'); 
-Route::name('chat')->get('chat/grupos', 'Chat\ChatController@getGrupos'); 
-Route::name('chat')->post('/chat/adjuntar/{sesion_id}/{usuario_id}', 'Chat\ChatController@showUploadFile'); 
-Route::name('chat')->get('chat/grupo/detalle/usuarios', 'Chat\ChatController@getGrupoDetalleUsuarios'); 
-Route::name('chat')->get('chat/grupo/detalle/usuarios/borrar', 'Chat\ChatController@destroyUsuarioGrupoSesion'); 
+Route::name('chat')->get('chat/renglon/leido', 'Chat\ChatController@actualizarRenglonListado');
+Route::name('chat')->get('chat/by/sesion', 'Chat\ChatController@getChatBySesion');
+Route::name('chat')->get('chat/grupos', 'Chat\ChatController@getGrupos');
+Route::name('chat')->post('/chat/adjuntar/{sesion_id}/{usuario_id}', 'Chat\ChatController@showUploadFile');
+Route::name('chat')->get('chat/grupo/detalle/usuarios', 'Chat\ChatController@getGrupoDetalleUsuarios');
+Route::name('chat')->get('chat/grupo/detalle/usuarios/borrar', 'Chat\ChatController@destroyUsuarioGrupoSesion');
 
 
 
@@ -394,48 +394,48 @@ Route::name('chat')->get('chat/grupo/detalle/usuarios/borrar', 'Chat\ChatControl
 /* -------------------------------------------------------------------------- */
 
 
-Route::name('insumo')->get('insumo/activo', 'Insumo\InsumoController@getInsumo'); 
-Route::name('insumo')->post('insumo/nuevo', 'Insumo\InsumoController@crearInsumo'); 
-Route::name('insumo')->put('insumo/actualizar/{id}', 'Insumo\InsumoController@actualizarInsumo'); 
-Route::name('insumo')->post('insumo/stock/nuevo', 'Insumo\InsumoController@crearInsumoStock'); 
-Route::name('insumo')->post('insumo/stock/movimiento', 'Insumo\InsumoController@crearInsumoStockMovimiento'); 
-Route::name('insumo')->get('insumo/stock', 'Insumo\InsumoController@getInsumoStock'); 
-Route::name('insumo')->get('insumo/stock/movimiento', 'Insumo\InsumoController@getInsumoStockMovimiento'); 
+Route::name('insumo')->get('insumo/activo', 'Insumo\InsumoController@getInsumo');
+Route::name('insumo')->post('insumo/nuevo', 'Insumo\InsumoController@crearInsumo');
+Route::name('insumo')->put('insumo/actualizar/{id}', 'Insumo\InsumoController@actualizarInsumo');
+Route::name('insumo')->post('insumo/stock/nuevo', 'Insumo\InsumoController@crearInsumoStock');
+Route::name('insumo')->post('insumo/stock/movimiento', 'Insumo\InsumoController@crearInsumoStockMovimiento');
+Route::name('insumo')->get('insumo/stock', 'Insumo\InsumoController@getInsumoStock');
+Route::name('insumo')->get('insumo/stock/movimiento', 'Insumo\InsumoController@getInsumoStockMovimiento');
 
 
 /* -------------------------------------------------------------------------- */
 /*                             MOVIMIENTOS DE CAJA                            */
 /* -------------------------------------------------------------------------- */
-Route::name('movimiento-caja')->get('movimiento/concepto/moneda', 'MovimientosCaja\MovimientosCajaController@getConceptoMoneda'); 
-Route::name('movimiento-caja')->get('movimiento/concepto/monedas', 'MovimientosCaja\MovimientosCajaController@getConceptoMonedas'); 
-Route::name('movimiento-caja')->post('movimiento/concepto/moneda', 'MovimientosCaja\MovimientosCajaController@setConceptoMoneda'); 
-Route::name('movimiento-caja')->put('movimiento/concepto/moneda/{id}', 'MovimientosCaja\MovimientosCajaController@putConceptoMoneda'); 
+Route::name('movimiento-caja')->get('movimiento/concepto/moneda', 'MovimientosCaja\MovimientosCajaController@getConceptoMoneda');
+Route::name('movimiento-caja')->get('movimiento/concepto/monedas', 'MovimientosCaja\MovimientosCajaController@getConceptoMonedas');
+Route::name('movimiento-caja')->post('movimiento/concepto/moneda', 'MovimientosCaja\MovimientosCajaController@setConceptoMoneda');
+Route::name('movimiento-caja')->put('movimiento/concepto/moneda/{id}', 'MovimientosCaja\MovimientosCajaController@putConceptoMoneda');
 
-Route::name('movimiento-caja')->get('movimiento/concepto/comprobante', 'MovimientosCaja\MovimientosCajaController@getConceptoTipoComprobante'); 
-Route::name('movimiento-caja')->get('movimiento/concepto/comprobantes', 'MovimientosCaja\MovimientosCajaController@getConceptoTipoComprobantes'); 
-Route::name('movimiento-caja')->post('movimiento/concepto/comprobante', 'MovimientosCaja\MovimientosCajaController@setConceptoTipoComprobante'); 
-Route::name('movimiento-caja')->put('movimiento/concepto/comprobante/{id}', 'MovimientosCaja\MovimientosCajaController@putConceptoTipoComprobante'); 
+Route::name('movimiento-caja')->get('movimiento/concepto/comprobante', 'MovimientosCaja\MovimientosCajaController@getConceptoTipoComprobante');
+Route::name('movimiento-caja')->get('movimiento/concepto/comprobantes', 'MovimientosCaja\MovimientosCajaController@getConceptoTipoComprobantes');
+Route::name('movimiento-caja')->post('movimiento/concepto/comprobante', 'MovimientosCaja\MovimientosCajaController@setConceptoTipoComprobante');
+Route::name('movimiento-caja')->put('movimiento/concepto/comprobante/{id}', 'MovimientosCaja\MovimientosCajaController@putConceptoTipoComprobante');
 
-Route::name('movimiento-caja')->get('movimiento/concepto/cuenta', 'MovimientosCaja\MovimientosCajaController@getConceptoCuenta'); 
-Route::name('movimiento-caja')->get('movimiento/concepto/cuentas', 'MovimientosCaja\MovimientosCajaController@getConceptoCuentas'); 
-Route::name('movimiento-caja')->post('movimiento/concepto/cuenta', 'MovimientosCaja\MovimientosCajaController@setConceptoCuenta'); 
-Route::name('movimiento-caja')->put('movimiento/concepto/cuenta/{id}', 'MovimientosCaja\MovimientosCajaController@putConceptoCuenta'); 
+Route::name('movimiento-caja')->get('movimiento/concepto/cuenta', 'MovimientosCaja\MovimientosCajaController@getConceptoCuenta');
+Route::name('movimiento-caja')->get('movimiento/concepto/cuentas', 'MovimientosCaja\MovimientosCajaController@getConceptoCuentas');
+Route::name('movimiento-caja')->post('movimiento/concepto/cuenta', 'MovimientosCaja\MovimientosCajaController@setConceptoCuenta');
+Route::name('movimiento-caja')->put('movimiento/concepto/cuenta/{id}', 'MovimientosCaja\MovimientosCajaController@putConceptoCuenta');
 
-Route::name('movimiento-caja')->get('movimiento/cuenta', 'MovimientosCaja\MovimientosCajaController@getCuenta'); 
-Route::name('movimiento-caja')->get('movimiento/cuentas', 'MovimientosCaja\MovimientosCajaController@getCuentas'); 
-Route::name('movimiento-caja')->post('movimiento/cuenta', 'MovimientosCaja\MovimientosCajaController@setCuenta'); 
-Route::name('movimiento-caja')->put('movimiento/cuenta/{id}', 'MovimientosCaja\MovimientosCajaController@putCuenta'); 
+Route::name('movimiento-caja')->get('movimiento/cuenta', 'MovimientosCaja\MovimientosCajaController@getCuenta');
+Route::name('movimiento-caja')->get('movimiento/cuentas', 'MovimientosCaja\MovimientosCajaController@getCuentas');
+Route::name('movimiento-caja')->post('movimiento/cuenta', 'MovimientosCaja\MovimientosCajaController@setCuenta');
+Route::name('movimiento-caja')->put('movimiento/cuenta/{id}', 'MovimientosCaja\MovimientosCajaController@putCuenta');
 
-Route::name('movimiento-caja')->get('movimiento/registro/by/date', 'MovimientosCaja\MovimientosCajaController@geRegistroMovimientoBydate'); 
+Route::name('movimiento-caja')->get('movimiento/registro/by/date', 'MovimientosCaja\MovimientosCajaController@geRegistroMovimientoBydate');
 
-Route::name('movimiento-caja')->post('movimiento/caja', 'MovimientosCaja\MovimientosCajaController@setMovimientoCaja'); 
-Route::name('movimiento-caja')->put('movimiento/caja/{id}', 'MovimientosCaja\MovimientosCajaController@putMovimientoCaja'); 
+Route::name('movimiento-caja')->post('movimiento/caja', 'MovimientosCaja\MovimientosCajaController@setMovimientoCaja');
+Route::name('movimiento-caja')->put('movimiento/caja/{id}', 'MovimientosCaja\MovimientosCajaController@putMovimientoCaja');
 /* -------------------------------------------------------------------------- */
 /*                                  PROVEEDOR                                 */
 /* -------------------------------------------------------------------------- */
 
-Route::name('movimiento-caja')->get('proveedor', 'MovimientosCaja\MovimientosCajaController@getProveedor'); 
-Route::name('movimiento-caja')->get('proveedores', 'MovimientosCaja\MovimientosCajaController@getProveedores'); 
-Route::name('movimiento-caja')->post('proveedor', 'MovimientosCaja\MovimientosCajaController@setProveedor'); 
-Route::name('movimiento-caja')->put('proveedor/{id}', 'MovimientosCaja\MovimientosCajaController@putProveedor'); 
+Route::name('movimiento-caja')->get('proveedor', 'MovimientosCaja\MovimientosCajaController@getProveedor');
+Route::name('movimiento-caja')->get('proveedores', 'MovimientosCaja\MovimientosCajaController@getProveedores');
+Route::name('movimiento-caja')->post('proveedor', 'MovimientosCaja\MovimientosCajaController@setProveedor');
+Route::name('movimiento-caja')->put('proveedor/{id}', 'MovimientosCaja\MovimientosCajaController@putProveedor');
 
