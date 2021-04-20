@@ -69,23 +69,29 @@ class AgendaController extends ApiController
                SELECT agenda_usuario_dia_horario.id,agenda_horario.hora_desde,agenda_horario.hora_hasta,agenda_horario.hora_desde_hasta,agenda_dia_horario_atencion.id as agenda_dia_horario_atencion_id,
                agenda_dia_horario_atencion.fecha_turno,agenda_dia_horario_atencion.presente,agenda_dia_horario_atencion.llegada,agenda_dia_horario_atencion.atendido,agenda_dia_horario_atencion.es_observacion,
                agenda_dia_horario_atencion.operacion_cobro_id,agenda_dia_horario_atencion.observacion,agenda_dia_horario_atencion.es_alerta,agenda_estado.id as agenda_estado_id,agenda_estado.estado,agenda_dia_id,
-               medicos.usuario_id,users.nombreyapellido, (SELECT nombreyapellido  FROM users WHERE id = usuario_medico_factura_id) AS nombreyapellido_factura, (SELECT fecha_matricula  FROM medicos WHERE usuario_id = usuario_medico_factura_id) AS fecha_matricula_factura, dia_nombre,dia_nro,paciente.id as paciente_id,paciente.nombre as paciente_nombre,paciente.apellido as paciente_apellido,paciente.dni as paciente_dni,paciente.fecha_nacimiento as paciente_fecha_nacimiento,
-               paciente.obra_social_id as paciente_obra_social_id,obra_social.nombre as paciente_obra_social_nombre,obra_social.tiene_distribucion,paciente.coseguro_id as paciente_coseguro_id,coseguro.nombre as paciente_coseguro_nombre,coseguro.es_coseguro as coseguro_es_coseguro,
+               medicos.usuario_id,users.nombreyapellido, (SELECT nombreyapellido  FROM users WHERE id = usuario_medico_factura_id) AS nombreyapellido_factura, (SELECT fecha_matricula  FROM medicos WHERE usuario_id = usuario_medico_factura_id) AS fecha_matricula_factura, user_medico_factura.nombreyapellido as usuario_medico_factura_nombre,  dia_nombre,dia_nro,paciente.id as paciente_id,paciente.nombre as paciente_nombre,paciente.apellido as paciente_apellido,paciente.dni as paciente_dni,paciente.fecha_nacimiento as paciente_fecha_nacimiento,
+               paciente.obra_social_id as paciente_obra_social_id,
+               obra_social.nombre as paciente_obra_social_nombre,
+               obra_social.tiene_distribucion,paciente.coseguro_id as paciente_coseguro_id,
+               coseguro.nombre as paciente_coseguro_nombre,coseguro.es_coseguro as coseguro_es_coseguro,
+               obra_social_alterantiva.nombre obra_social_alterantiva_nombre, obra_social_alterantiva.id as obra_social_alterantiva_id,
                paciente.barra_afiliado,paciente.numero_afiliado ,
                medicos.fecha_matricula, paciente.telefono_cel as telefono_cel,
                paciente.telefono_fijo as telefono_fijo, usuario_medico_factura_id, tiene_whatsapp
                 FROM agenda_usuario_dia_horario, agenda_dia_horario_atencion,agenda_dias,
                 agenda_horario, agenda_estado, paciente,
-                obra_social, obra_social as coseguro, users, users as user_medico, medicos
+                obra_social, obra_social as coseguro, obra_social as obra_social_alterantiva, users, users as user_medico, users as user_medico_factura,  medicos
                 WHERE
                 agenda_dia_horario_atencion.agenda_usuario_dia_horario_id  = agenda_usuario_dia_horario.id AND
                 agenda_dias.id = agenda_usuario_dia_horario.agenda_dia_id AND
                 agenda_horario.id = agenda_usuario_dia_horario.agenda_horario_id AND
                 agenda_estado.id = agenda_dia_horario_atencion.agenda_estado_id AND
                 paciente.id = agenda_dia_horario_atencion.paciente_id AND
-                obra_social.id = paciente.obra_social_id AND coseguro.id = paciente.coseguro_id AND
+                obra_social.id = paciente.obra_social_id AND
+                agenda_dia_horario_atencion.obra_social_id = obra_social_alterantiva.id AND
+                coseguro.id = paciente.coseguro_id AND
                 users.id = agenda_usuario_dia_horario.usuario_id AND
-                user_medico.id =agenda_usuario_dia_horario.usuario_id AND
+                user_medico.id =agenda_usuario_dia_horario.usuario_id AND user_medico_factura.id = agenda_dia_horario_atencion.usuario_medico_factura_id AND
                 medicos.usuario_id =user_medico.id   AND
                 agenda_dia_horario_atencion.fecha_turno = :fecha_turno AND agenda_estado.id IN(1,2,3,5,6,7,8,9,10,11)
             ORDER BY agenda_horario.id ASC
@@ -108,25 +114,32 @@ class AgendaController extends ApiController
 
 
                $horario = DB::select( DB::raw("
-               SELECT agenda_usuario_dia_horario.id,agenda_horario.hora_desde,agenda_horario.hora_hasta,agenda_horario.hora_desde_hasta,agenda_dia_horario_atencion.id as agenda_dia_horario_atencion_id,agenda_dia_horario_atencion.fecha_turno,
-               agenda_dia_horario_atencion.llegada,agenda_dia_horario_atencion.presente,agenda_dia_horario_atencion.llamando,agenda_dia_horario_atencion.atendido, agenda_dia_horario_atencion.es_observacion, agenda_dia_horario_atencion.operacion_cobro_id, agenda_dia_horario_atencion.observacion,agenda_dia_horario_atencion.es_alerta,
-               agenda_estado.id as agenda_estado_id,agenda_estado.estado,agenda_dia_id,medicos.usuario_id,users.nombreyapellido, (SELECT nombreyapellido  FROM users WHERE id = usuario_medico_factura_id) AS nombreyapellido_factura, (SELECT fecha_matricula  FROM medicos WHERE usuario_id = usuario_medico_factura_id) AS fecha_matricula_factura, dia_nombre,dia_nro,paciente.id as paciente_id,paciente.nombre as paciente_nombre,paciente.apellido as paciente_apellido,paciente.dni as paciente_dni,
-               paciente.fecha_nacimiento as paciente_fecha_nacimiento,paciente.obra_social_id as paciente_obra_social_id,obra_social.nombre as paciente_obra_social_nombre,obra_social.tiene_distribucion,paciente.coseguro_id as paciente_coseguro_id,
-               coseguro.nombre as paciente_coseguro_nombre,coseguro.es_coseguro as coseguro_es_coseguro,paciente.barra_afiliado,paciente.numero_afiliado ,
+               SELECT agenda_usuario_dia_horario.id,agenda_horario.hora_desde,agenda_horario.hora_hasta,agenda_horario.hora_desde_hasta,agenda_dia_horario_atencion.id as agenda_dia_horario_atencion_id,
+               agenda_dia_horario_atencion.fecha_turno,agenda_dia_horario_atencion.presente,agenda_dia_horario_atencion.llegada,agenda_dia_horario_atencion.atendido,agenda_dia_horario_atencion.es_observacion,
+               agenda_dia_horario_atencion.operacion_cobro_id,agenda_dia_horario_atencion.observacion,agenda_dia_horario_atencion.es_alerta,agenda_estado.id as agenda_estado_id,agenda_estado.estado,agenda_dia_id,
+               medicos.usuario_id,users.nombreyapellido, (SELECT nombreyapellido  FROM users WHERE id = usuario_medico_factura_id) AS nombreyapellido_factura, (SELECT fecha_matricula  FROM medicos WHERE usuario_id = usuario_medico_factura_id) AS fecha_matricula_factura, user_medico_factura.nombreyapellido as usuario_medico_factura_nombre,  dia_nombre,dia_nro,paciente.id as paciente_id,paciente.nombre as paciente_nombre,paciente.apellido as paciente_apellido,paciente.dni as paciente_dni,paciente.fecha_nacimiento as paciente_fecha_nacimiento,
+               paciente.obra_social_id as paciente_obra_social_id,
+               obra_social.nombre as paciente_obra_social_nombre,
+               obra_social.tiene_distribucion,paciente.coseguro_id as paciente_coseguro_id,
+               coseguro.nombre as paciente_coseguro_nombre,coseguro.es_coseguro as coseguro_es_coseguro,
+               obra_social_alterantiva.nombre obra_social_alterantiva_nombre, obra_social_alterantiva.id as obra_social_alterantiva_id,
+               paciente.barra_afiliado,paciente.numero_afiliado ,
                medicos.fecha_matricula, paciente.telefono_cel as telefono_cel,
-               paciente.telefono_fijo as telefono_fijo, es_sobreturno, usuario_medico_factura_id, tiene_whatsapp
+               paciente.telefono_fijo as telefono_fijo, usuario_medico_factura_id, tiene_whatsapp
                 FROM agenda_usuario_dia_horario, agenda_dia_horario_atencion,agenda_dias,
                 agenda_horario, agenda_estado, paciente,
-                obra_social, obra_social as coseguro, users, users as user_medico, medicos
+                obra_social, obra_social as coseguro, obra_social as obra_social_alterantiva, users, users as user_medico, users as user_medico_factura,  medicos
                 WHERE
                 agenda_dia_horario_atencion.agenda_usuario_dia_horario_id  = agenda_usuario_dia_horario.id AND
                 agenda_dias.id = agenda_usuario_dia_horario.agenda_dia_id AND
                 agenda_horario.id = agenda_usuario_dia_horario.agenda_horario_id AND
                 agenda_estado.id = agenda_dia_horario_atencion.agenda_estado_id AND
                 paciente.id = agenda_dia_horario_atencion.paciente_id AND
-                obra_social.id = paciente.obra_social_id AND coseguro.id = paciente.coseguro_id AND
+                obra_social.id = paciente.obra_social_id AND
+                agenda_dia_horario_atencion.obra_social_id = obra_social_alterantiva.id AND
+                coseguro.id = paciente.coseguro_id AND
                 users.id = agenda_usuario_dia_horario.usuario_id AND
-                user_medico.id =agenda_usuario_dia_horario.usuario_id AND
+                user_medico.id =agenda_usuario_dia_horario.usuario_id AND user_medico_factura.id = agenda_dia_horario_atencion.usuario_medico_factura_id AND
                 medicos.usuario_id =user_medico.id   AND
                 agenda_dia_horario_atencion.fecha_turno = :fecha_turno AND agenda_estado.id IN(1,2,3,4,5,6,8,9,10,11,12,13)
             ORDER BY agenda_horario.id ASC
@@ -148,25 +161,32 @@ class AgendaController extends ApiController
 
 
                $horario = DB::select( DB::raw("
-               SELECT agenda_usuario_dia_horario.id,agenda_horario.hora_desde,agenda_horario.hora_hasta,agenda_horario.hora_desde_hasta,agenda_dia_horario_atencion.id as agenda_dia_horario_atencion_id,agenda_dia_horario_atencion.fecha_turno,
-               agenda_dia_horario_atencion.llegada,agenda_dia_horario_atencion.presente,agenda_dia_horario_atencion.atendido, agenda_dia_horario_atencion.es_observacion, agenda_dia_horario_atencion.operacion_cobro_id, agenda_dia_horario_atencion.observacion,agenda_dia_horario_atencion.es_alerta,
-               agenda_estado.id as agenda_estado_id,agenda_estado.estado,agenda_dia_id,medicos.usuario_id,users.nombreyapellido,dia_nombre,dia_nro,paciente.id as paciente_id,paciente.nombre as paciente_nombre,paciente.apellido as paciente_apellido,paciente.dni as paciente_dni,
-               paciente.fecha_nacimiento as paciente_fecha_nacimiento,paciente.obra_social_id as paciente_obra_social_id,obra_social.nombre as paciente_obra_social_nombre,obra_social.tiene_distribucion,paciente.coseguro_id as paciente_coseguro_id,
-               coseguro.nombre as paciente_coseguro_nombre,coseguro.es_coseguro as coseguro_es_coseguro,paciente.barra_afiliado,paciente.numero_afiliado ,
+               SELECT agenda_usuario_dia_horario.id,agenda_horario.hora_desde,agenda_horario.hora_hasta,agenda_horario.hora_desde_hasta,agenda_dia_horario_atencion.id as agenda_dia_horario_atencion_id,
+               agenda_dia_horario_atencion.fecha_turno,agenda_dia_horario_atencion.presente,agenda_dia_horario_atencion.llegada,agenda_dia_horario_atencion.atendido,agenda_dia_horario_atencion.es_observacion,
+               agenda_dia_horario_atencion.operacion_cobro_id,agenda_dia_horario_atencion.observacion,agenda_dia_horario_atencion.es_alerta,agenda_estado.id as agenda_estado_id,agenda_estado.estado,agenda_dia_id,
+               medicos.usuario_id,users.nombreyapellido, (SELECT nombreyapellido  FROM users WHERE id = usuario_medico_factura_id) AS nombreyapellido_factura, (SELECT fecha_matricula  FROM medicos WHERE usuario_id = usuario_medico_factura_id) AS fecha_matricula_factura, user_medico_factura.nombreyapellido as usuario_medico_factura_nombre,  dia_nombre,dia_nro,paciente.id as paciente_id,paciente.nombre as paciente_nombre,paciente.apellido as paciente_apellido,paciente.dni as paciente_dni,paciente.fecha_nacimiento as paciente_fecha_nacimiento,
+               paciente.obra_social_id as paciente_obra_social_id,
+               obra_social.nombre as paciente_obra_social_nombre,
+               obra_social.tiene_distribucion,paciente.coseguro_id as paciente_coseguro_id,
+               coseguro.nombre as paciente_coseguro_nombre,coseguro.es_coseguro as coseguro_es_coseguro,
+               obra_social_alterantiva.nombre obra_social_alterantiva_nombre, obra_social_alterantiva.id as obra_social_alterantiva_id,
+               paciente.barra_afiliado,paciente.numero_afiliado ,
                medicos.fecha_matricula, paciente.telefono_cel as telefono_cel,
-               paciente.telefono_fijo as telefono_fijo, es_sobreturno, usuario_medico_factura_id, tiene_whatsapp
+               paciente.telefono_fijo as telefono_fijo, usuario_medico_factura_id, tiene_whatsapp
                 FROM agenda_usuario_dia_horario, agenda_dia_horario_atencion,agenda_dias,
                 agenda_horario, agenda_estado, paciente,
-                obra_social, obra_social as coseguro, users, users as user_medico, medicos
+                obra_social, obra_social as coseguro, obra_social as obra_social_alterantiva, users, users as user_medico, users as user_medico_factura,  medicos
                 WHERE
                 agenda_dia_horario_atencion.agenda_usuario_dia_horario_id  = agenda_usuario_dia_horario.id AND
                 agenda_dias.id = agenda_usuario_dia_horario.agenda_dia_id AND
                 agenda_horario.id = agenda_usuario_dia_horario.agenda_horario_id AND
                 agenda_estado.id = agenda_dia_horario_atencion.agenda_estado_id AND
                 paciente.id = agenda_dia_horario_atencion.paciente_id AND
-                obra_social.id = paciente.obra_social_id AND coseguro.id = paciente.coseguro_id AND
+                obra_social.id = paciente.obra_social_id AND
+                agenda_dia_horario_atencion.obra_social_id = obra_social_alterantiva.id AND
+                coseguro.id = paciente.coseguro_id AND
                 users.id = agenda_usuario_dia_horario.usuario_id AND
-                user_medico.id =agenda_usuario_dia_horario.usuario_id AND
+                user_medico.id =agenda_usuario_dia_horario.usuario_id AND user_medico_factura.id = agenda_dia_horario_atencion.usuario_medico_factura_id AND
                 medicos.usuario_id =user_medico.id   AND
                 agenda_dia_horario_atencion.fecha_turno = :fecha_turno AND agenda_estado.id IN(2,8,9,11,12,13)
                 AND agenda_dia_horario_atencion.presente !='2099-12-31 00:00:00'
@@ -189,25 +209,32 @@ class AgendaController extends ApiController
 
 
                $horario = DB::select( DB::raw("
-               SELECT agenda_usuario_dia_horario.id,agenda_horario.hora_desde,agenda_horario.hora_hasta,agenda_horario.hora_desde_hasta,agenda_dia_horario_atencion.id as agenda_dia_horario_atencion_id,agenda_dia_horario_atencion.fecha_turno,
-               agenda_dia_horario_atencion.llegada,agenda_dia_horario_atencion.presente,agenda_dia_horario_atencion.atendido, agenda_dia_horario_atencion.es_observacion, agenda_dia_horario_atencion.operacion_cobro_id, agenda_dia_horario_atencion.observacion,agenda_dia_horario_atencion.es_alerta,
-               agenda_estado.id as agenda_estado_id,agenda_estado.estado,agenda_dia_id,medicos.usuario_id,users.nombreyapellido, (SELECT nombreyapellido  FROM users WHERE id = usuario_medico_factura_id) AS nombreyapellido_factura, (SELECT fecha_matricula  FROM medicos WHERE usuario_id = usuario_medico_factura_id) AS fecha_matricula_factura, dia_nombre,dia_nro,paciente.id as paciente_id,paciente.nombre as paciente_nombre,paciente.apellido as paciente_apellido,paciente.dni as paciente_dni,
-               paciente.fecha_nacimiento as paciente_fecha_nacimiento,paciente.obra_social_id as paciente_obra_social_id,obra_social.nombre as paciente_obra_social_nombre,obra_social.tiene_distribucion,paciente.coseguro_id as paciente_coseguro_id,
-               coseguro.nombre as paciente_coseguro_nombre,coseguro.es_coseguro as coseguro_es_coseguro,paciente.barra_afiliado,paciente.numero_afiliado ,
+               SELECT agenda_usuario_dia_horario.id,agenda_horario.hora_desde,agenda_horario.hora_hasta,agenda_horario.hora_desde_hasta,agenda_dia_horario_atencion.id as agenda_dia_horario_atencion_id,
+               agenda_dia_horario_atencion.fecha_turno,agenda_dia_horario_atencion.presente,agenda_dia_horario_atencion.llegada,agenda_dia_horario_atencion.atendido,agenda_dia_horario_atencion.es_observacion,
+               agenda_dia_horario_atencion.operacion_cobro_id,agenda_dia_horario_atencion.observacion,agenda_dia_horario_atencion.es_alerta,agenda_estado.id as agenda_estado_id,agenda_estado.estado,agenda_dia_id,
+               medicos.usuario_id,users.nombreyapellido, (SELECT nombreyapellido  FROM users WHERE id = usuario_medico_factura_id) AS nombreyapellido_factura, (SELECT fecha_matricula  FROM medicos WHERE usuario_id = usuario_medico_factura_id) AS fecha_matricula_factura, user_medico_factura.nombreyapellido as usuario_medico_factura_nombre,  dia_nombre,dia_nro,paciente.id as paciente_id,paciente.nombre as paciente_nombre,paciente.apellido as paciente_apellido,paciente.dni as paciente_dni,paciente.fecha_nacimiento as paciente_fecha_nacimiento,
+               paciente.obra_social_id as paciente_obra_social_id,
+               obra_social.nombre as paciente_obra_social_nombre,
+               obra_social.tiene_distribucion,paciente.coseguro_id as paciente_coseguro_id,
+               coseguro.nombre as paciente_coseguro_nombre,coseguro.es_coseguro as coseguro_es_coseguro,
+               obra_social_alterantiva.nombre obra_social_alterantiva_nombre, obra_social_alterantiva.id as obra_social_alterantiva_id,
+               paciente.barra_afiliado,paciente.numero_afiliado ,
                medicos.fecha_matricula, paciente.telefono_cel as telefono_cel,
-               paciente.telefono_fijo as telefono_fijo, es_sobreturno, usuario_medico_factura_id, tiene_whatsapp
+               paciente.telefono_fijo as telefono_fijo, usuario_medico_factura_id, tiene_whatsapp
                 FROM agenda_usuario_dia_horario, agenda_dia_horario_atencion,agenda_dias,
                 agenda_horario, agenda_estado, paciente,
-                obra_social, obra_social as coseguro, users, users as user_medico, medicos
+                obra_social, obra_social as coseguro, obra_social as obra_social_alterantiva, users, users as user_medico, users as user_medico_factura,  medicos
                 WHERE
                 agenda_dia_horario_atencion.agenda_usuario_dia_horario_id  = agenda_usuario_dia_horario.id AND
                 agenda_dias.id = agenda_usuario_dia_horario.agenda_dia_id AND
                 agenda_horario.id = agenda_usuario_dia_horario.agenda_horario_id AND
                 agenda_estado.id = agenda_dia_horario_atencion.agenda_estado_id AND
                 paciente.id = agenda_dia_horario_atencion.paciente_id AND
-                obra_social.id = paciente.obra_social_id AND coseguro.id = paciente.coseguro_id AND
+                obra_social.id = paciente.obra_social_id AND
+                agenda_dia_horario_atencion.obra_social_id = obra_social_alterantiva.id AND
+                coseguro.id = paciente.coseguro_id AND
                 users.id = agenda_usuario_dia_horario.usuario_id AND
-                user_medico.id =agenda_usuario_dia_horario.usuario_id AND
+                user_medico.id =agenda_usuario_dia_horario.usuario_id AND user_medico_factura.id = agenda_dia_horario_atencion.usuario_medico_factura_id AND
                 medicos.usuario_id =user_medico.id   AND
                 agenda_dia_horario_atencion.fecha_turno = :fecha_turno AND agenda_estado.id IN(11,12,13)
                 AND agenda_dia_horario_atencion.presente !='2099-12-31 00:00:00' AND  agenda_dia_horario_atencion.llegada != '2099-12-31 00:00:00'
@@ -1054,8 +1081,9 @@ ORDER BY agenda_usuario_dia_horario_id  ASC
             'nombreyapellido',
             'agenda_dia_horario_atencion_eliminado.fecha_turno as dia_nombre',
             'dia_nro')
-            ->orderByRaw('agenda_horario.hora_desde ASC')
+            ->orderByRaw('agenda_horario.hora_desde DESC')
             ->orderByRaw('nombreyapellido ASC')
+            ->limit(500)
             ->get();
 
         return $this->showAll($horario);
@@ -1218,6 +1246,7 @@ ORDER BY agenda_usuario_dia_horario_id  ASC
              'agenda_estado_id' => $request->agenda_estado_id,
              'es_observacion' => $request->es_observacion,
              'es_sobreturno' => $request->es_sobreturno,
+             'obra_social_id' => $request->obra_social_nombre_adicional_id,
              'operacion_cobro_id' => 0,
              'presente' => "2099-12-31 00:00:00",
              'llamando' => "2099-12-31 00:00:00",
