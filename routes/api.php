@@ -279,6 +279,7 @@ Route::name('archivos')->post('/multiuploads/estudios/datos', 'Upload\UploadCont
 Route::name('archivos')->post('/multiuploads/texto', 'Files\FilesController@createTestTextFile');
 Route::name('archivos')->post('/multiuploads/texto/cirugia', 'Files\FilesController@createTestTextFileCirugia');
 Route::name('archivos')->get('/multiuploads/estudios/verimagen', 'Upload\UploadController@getEstudioImagenes');
+Route::name('archivos')->get('/multiuploads/documentacion', 'Files\FilesController@getDocumentacion');
 
 /** CHAT **/
 
