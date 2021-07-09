@@ -9,7 +9,8 @@ use Illuminate\Support\Facades\DB;
 class AfipDatosController extends Controller
 {
     
-   var  $produccion = TRUE;
+          //var  $produccion = TRUE;
+          var  $produccion = FALSE;
 
     public function GetLastVoucher(Request $request){
         $punto_vta =  $request->input('punto_vta');

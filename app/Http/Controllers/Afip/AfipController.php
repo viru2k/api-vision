@@ -8,16 +8,17 @@ use Illuminate\Support\Facades\DB;
 
 class AfipController extends Controller
 {
-       var  $produccion = TRUE;
+       //var  $produccion = TRUE;
+       var  $produccion = FALSE;
     
     public function testAfipGetLastVoucher(){
         $medico = DB::select( DB::raw("SELECT cuit, factura_key, factura_crt FROM medicos WHERE id = 24"));
         $afip = new Afip(array(
-        'CUIT' => 20300712143,
+        'CUIT' => 30681711445,
         'production' => $this->produccion,
         'cert'         => $medico[0]->factura_crt,
         'key'          => $medico[0]->factura_key));
-        $last_voucher = $afip->ElectronicBilling->GetLastVoucher(1,4);
+        $last_voucher = $afip->ElectronicBilling->GetLastVoucher(1,5);
         var_dump( $last_voucher);
     }
     
@@ -39,6 +40,7 @@ class AfipController extends Controller
         // echo $request->input('comprobante_numero');
         // echo $request->input('punto_vta');
         // echo $request->input('comprobante_id');
+        echo $this->produccion;
         $medico = DB::select( DB::raw("SELECT cuit, factura_key, factura_crt FROM medicos WHERE id = ".$request->input('medico_id').""));
         $afip = new Afip(array(
         'CUIT' => (float)$medico[0]->cuit,
@@ -712,6 +714,14 @@ class AfipController extends Controller
                 factura_punto_vta.punto_vta , factura_punto_vta.punto_vta, factura_comprobante.id AS factura_comprobante_id,  factura_comprobante.es_afip, factura_comprobante.letra, 
                 factura_comprobante.comprobante_codigo, factura_comprobante.descripcion AS factura_comprobante_descripcion , es_afip
                 FROM medicos, categoria_iva, factura_documento_comprador, factura_punto_vta, factura_comprobante WHERE medicos.punto_vta_id = factura_punto_vta.id AND factura_documento_comprador.id = medicos.factura_documento_comprador_id AND  medicos.factura_comprobante_id = factura_comprobante.id AND   cuit != '' AND factura_key != '' AND factura_crt !='' AND medicos.categoria_iva_id = categoria_iva.id AND medicos.id = ".$medico_id." ORDER BY nombreyapellido ASC"));
+                return $medico;
+        }
+
+
+        public function getComprobanteXMedico(Request $request){
+                $medico_id = $request->input('medico_id');
+                
+                $medico = DB::select( DB::raw("SELECT factura_comprobante_medico.id as factura_comprobante_medico_id, factura_comprobante_medico.factura_comprobante_id, apellido, nombre,  usuario_id, factura_comprobante.descripcion, factura_comprobante.id, factura_comprobante.es_afip, factura_comprobante.comprobante_codigo, factura_comprobante.letra, factura_comprobante.comprobante_codigo, factura_comprobante.id_interno    FROM `factura_comprobante_medico`, medicos, factura_comprobante WHERE  factura_comprobante_medico.factura_comprobante_id = factura_comprobante.id AND factura_comprobante_medico.medico_id = medicos.id   AND  medicos.id = ".$medico_id." "));
                 return $medico;
         }
 

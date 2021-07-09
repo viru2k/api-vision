@@ -12,6 +12,8 @@ class Proveedor extends Model
         'id',
         'proveedor_nombre', 
         'proveedor_cuit', 
+        'tipo_documento',
+        'condicion_iva', 
         'proveedor_direccion',
     ];
 

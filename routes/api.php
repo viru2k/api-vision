@@ -311,6 +311,7 @@ Route::name('factura-data')->get('afip/data/gettaxtypes', 'Afip\AfipDatosControl
 Route::name('factura-data')->get('afip/data/getconcepttypes', 'Afip\AfipDatosController@GetConceptTypes');
 Route::name('factura-data')->get('afip/data/obetenerestadodelservidor', 'Afip\AfipDatosController@ObetenerEstadoDelServidor');
 Route::name('factura-data')->get('afip/data/medico/dato', 'Afip\AfipController@getDatoMedico');
+Route::name('factura-data')->get('afip/data/comprobante/by/medico', 'Afip\AfipController@getComprobanteXMedico');
 
 Route::name('factura')->get('afip/lastvoucher', 'Afip\AfipController@testAfipGetLastVoucher');
 Route::name('factura')->get('afip/test', 'Afip\AfipController@testAfip');

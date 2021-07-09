@@ -189,8 +189,8 @@ class MovimientosCajaController extends ApiController
         $tmp_fecha = str_replace('/', '-', $request->input('fecha_hasta'));
         $fecha_hasta =  date('Y-m-d H:i:s', strtotime($tmp_fecha));      
 
-        $horario = DB::select( DB::raw("SELECT mov_registro.id, mov_concepto_cuenta_id, descripcion, mov_cuenta_id , fecha_carga, mov_tipo_comprobante_id, comprobante_numero, tiene_enlace_factura, mov_tipo_moneda_id,  mov_registro.importe,  mov_registro.cotizacion, mov_registro.total, liq_liquidacion_distribucion_id,factura_encabezado_id, paciente_id, proveedor_id, proveedor_nombre, 
-        proveedor_cuit, proveedor_direccion , dni, CONCAT(paciente.apellido, ' ', paciente.nombre) AS paciente_nombre, paciente.domicilio, 
+        $horario = DB::select( DB::raw("SELECT mov_registro.id, mov_concepto_cuenta_id, descripcion, mov_cuenta_id , fecha_carga, mov_tipo_comprobante_id, comprobante_numero, tiene_enlace_factura, mov_tipo_moneda_id,  mov_registro.importe,  mov_registro.cotizacion, mov_registro.total, liq_liquidacion_distribucion_id,factura_encabezado_id, paciente_id, proveedor_id, proveedor_nombre, tipo_documento,
+        proveedor_cuit, condicion_iva, proveedor_direccion , dni, CONCAT(paciente.apellido, ' ', paciente.nombre) AS paciente_nombre, paciente.domicilio, 
         paciente.fecha_nacimiento, factura_encabezado.factura_pto_vta_id, factura_encabezado.medico_id, factura_encabezado.factura_comprobante_id, 
         factura_encabezado.factura_concepto_id, liq_liquidacion_distribucion.id as liq_liquidacion_distribucion_id,  concepto_liquidacion_id, concepto_cuenta, 
         cuenta_nombre, movimiento_tipo, tipo_comprobante ,tipo_moneda    , cierre_caja_id
@@ -291,33 +291,40 @@ public function getProveedor(Proveedor $Sector)
 
 public function setProveedor(Request $request)
 {
+
+   // echo $request['categoria_iva']['categoria_iva']; 
     $id= DB::table('paciente_proveedor')->insertGetId([
-        'proveedor_nombre' => $request->proveedor_nombre,                       
+        'proveedor_nombre' => $request->proveedor_nombre,  
+        'tipo_documento' =>  $request['descripcion']['descripcion'],                      
         'proveedor_cuit' => $request->proveedor_cuit,                       
+        'condicion_iva' => $request['categoria_iva']['categoria_iva'],     
         'proveedor_direccion' => $request->proveedor_direccion,  
         'created_at' => date("Y-m-d H:i:s"),
         'updated_at' => date("Y-m-d H:i:s")    
 
     ]);
   
-    return response()->json($id, 201);
+   return response()->json($id, 201);
 }
 
 
 public function putProveedor(Request $request, $id)
 {
-    $pmo = Proveedor::findOrFail($id);
-    $pmo->fill($request->only([
-        'proveedor_nombre',
-        'proveedor_cuit',
-        'proveedor_direccion'
-]));
+  //  echo $request['categoria_iva']['categoria_iva'];
+  // var_dump($request['categoria_iva']);
 
-if ($pmo->isClean()) {
-    return $this->errorRepsonse('Se debe especificar al menos un valor', 422);
-}
-$pmo->save();
-return $this->showOne($pmo);
+
+$update = DB::table('paciente_proveedor') 
+->where('id', $id) ->limit(1) 
+->update( [ 
+    'proveedor_nombre' => $request['proveedor_nombre'],     
+    'tipo_documento' =>   $request['descripcion']['descripcion'],                   
+    'proveedor_cuit' => $request['proveedor_cuit'],                     
+    'condicion_iva' => $request['categoria_iva']['categoria_iva'],   
+    'proveedor_direccion' => $request['proveedor_direccion'],                             
+    'updated_at' => date("Y-m-d H:i:s") ]); 
+
+    return response()->json($update, 201);
 }
 
 
