@@ -40,6 +40,8 @@ Route::resource('medico', 'Medico\MedicoController');
 /********************* */
 
 Route::name('medico-afip')->get('medico/factura/afip', 'Medico\MedicoController@getAfip');
+Route::name('medico-afip')->post('medico/factura/add/{id}', 'Medico\MedicoController@agregarComprobanteMedico');
+Route::name('medico-afip')->delete('medico/factura/remove/{factura_comprobante_medico_id}', 'Medico\MedicoController@borrarComprobanteMedico');
 
 Route::resource('medicoobrasocial', 'Medico\MedicoObraSocialController');
 Route::name('medico-obrasocial')->post('medicoobrasocial', 'Medico\MedicoController@postMedicoObraSocial');

@@ -106,27 +106,27 @@ class FacturaElementosController extends ApiController{
               //  var_dump($recibo[0]);
                 $numero_recibo = $recibo[0]->factura_numero+1;
             }
-           
-$factura_encabezado_id= DB::table('factura_encabezado')->insertGetId([
-    'factura_pto_vta_id'=> $request->factura_pto_vta_id,
-    'medico_id'=> $request->medico_id,
-    'factura_comprobante_id'=> $request->factura_comprobante_id,
-    'factura_concepto_id'=> $request->factura_concepto_id,
-    'factura_documento_comprador_id'=> $request->factura_documento_comprador_id,
-    'categoria_iva'=> $request->elementoCondicionIva,
-    'factura_documento'=> $request->factura_documento,
-    'factura_obra_social'=> $request->factura_obra_social,
-    'factura_cliente'=> $request->factura_cliente,
-    'factura_numero'=>$numero_recibo,
-    'fecha'=> $request->fecha,
-    'fecha_desde'=> $request->fecha_desde,
-    'fecha_hasta'=> $request->fecha_hasta,
-    'importe_gravado'=> $request->importe_gravado,
-    'importe_exento_iva'=> $request->importe_exento_iva,
-    'importe_iva'=> $request->importe_iva,
-    'importe_total'=> $request->importe_total,
-    'usuario_id'=> $request->usuario_id
-    ]);        
+                
+        $factura_encabezado_id= DB::table('factura_encabezado')->insertGetId([
+            'factura_pto_vta_id'=> $request->factura_pto_vta_id,
+            'medico_id'=> $request->medico_id,
+            'factura_comprobante_id'=> $request->factura_comprobante_id,
+            'factura_concepto_id'=> $request->factura_concepto_id,
+            'factura_documento_comprador_id'=> $request->factura_documento_comprador_id,
+            'categoria_iva'=> $request->elementoCondicionIva,
+            'factura_documento'=> $request->factura_documento,
+            'factura_obra_social'=> $request->factura_obra_social,
+            'factura_cliente'=> $request->factura_cliente,
+            'factura_numero'=>$numero_recibo,
+            'fecha'=> $request->fecha,
+            'fecha_desde'=> $request->fecha_desde,
+            'fecha_hasta'=> $request->fecha_hasta,
+            'importe_gravado'=> $request->importe_gravado,
+            'importe_exento_iva'=> $request->importe_exento_iva,
+            'importe_iva'=> $request->importe_iva,
+            'importe_total'=> $request->importe_total,
+            'usuario_id'=> $request->usuario_id
+            ]);        
 
     foreach ($request->facturaElectronicaRenglon as $res) {
         DB::table('factura_renglon')->insertGetId([    
@@ -143,10 +143,17 @@ $factura_encabezado_id= DB::table('factura_encabezado')->insertGetId([
     }
     
     return response()->json($numero_recibo, 201);
+    
          }
+
+
          
 
     if($request->factura_comprobante_id != 11){ 
+        foreach($request->facturaElectronicaRenglon as $_facturaElectronicaRenglon){
+//            echo $_facturaElectronicaRenglon['descripcion']; 
+            echo $_facturaElectronicaRenglon['tipo_concepto_iva']['name'];
+        }
 
         /********************** */
         // DEBE AGREGARSE UN ARREGLO PARA EL IVA        

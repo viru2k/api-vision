@@ -78,6 +78,35 @@ class MedicoController extends ApiController
 
     }
 
+    public function agregarComprobanteMedico(Request $request,$id){
+
+        $i = 0;
+
+            $i=0;
+            while(isset($request[$i])){
+                $res = DB::select( DB::raw(" INSERT INTO  factura_comprobante_medico (medico_id, factura_comprobante_id) SELECT '".$id."','".$request[$i]['id']."' FROM DUAL
+        WHERE NOT EXISTS
+          (SELECT medico_id,factura_comprobante_id FROM factura_comprobante_medico WHERE medico_id = '".$id."' AND factura_comprobante_id= '".$request[$i]['id']."' )"));
+                $i++;
+            }
+
+
+        return response()->json($request, "201");
+
+    }
+
+
+    public function borrarComprobanteMedico($factura_comprobante_medico_id){
+  
+        DB::table('factura_comprobante_medico')->where('id', $factura_comprobante_medico_id)->delete();
+
+        return response()->json("ok", "201");
+    }
+
+    
+
+    
+
     /**
      * Display the specified resource.
      *
