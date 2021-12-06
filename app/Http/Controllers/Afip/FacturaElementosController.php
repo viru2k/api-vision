@@ -94,20 +94,19 @@ class FacturaElementosController extends ApiController{
         //if($request->factura_comprobante_id == 15){
         if($request->es_afip === "NO"){
             $recibo = DB::select( DB::raw("SELECT * FROM factura_encabezado WHERE  medico_id = ".$request->medico_id." AND factura_comprobante_id = ".$request->factura_comprobante_id." ORDER BY id DESC limit 1 "));
-          //  echo $request->factura_comprobante_id;
-           // echo $request->medico_id;
-          //  var_dump($recibo);
-            if(!$recibo){
-                // SI NO EXISTE DEVUELVE EL PRIMER NUMERO
-              //  echo 0;
-             //   echo $request->factura_pto_vta_id;
-                $numero_recibo = $numero_recibo +1;
-            }else{
-              //  var_dump($recibo[0]);
-                $numero_recibo = $recibo[0]->factura_numero+1;
-            }
+        
+                if(!$recibo){
+                    // SI NO EXISTE DEVUELVE EL PRIMER NUMERO
+
+                    $numero_recibo = $numero_recibo +1;
+                }else{
+
+                    $numero_recibo = $recibo[0]->factura_numero+1;
+                }
                 
-        $factura_encabezado_id= DB::table('factura_encabezado')->insertGetId([
+     
+     
+            $factura_encabezado_id= DB::table('factura_encabezado')->insertGetId([
             'factura_pto_vta_id'=> $request->factura_pto_vta_id,
             'medico_id'=> $request->medico_id,
             'factura_comprobante_id'=> $request->factura_comprobante_id,
@@ -122,109 +121,128 @@ class FacturaElementosController extends ApiController{
             'fecha_desde'=> $request->fecha_desde,
             'fecha_hasta'=> $request->fecha_hasta,
             'importe_gravado'=> $request->importe_gravado,
-            'importe_exento_iva'=> $request->importe_exento_iva,
+            'importe_exento_iva'=> $request->importe_op_exenta,
             'importe_iva'=> $request->importe_iva,
             'importe_total'=> $request->importe_total,
             'usuario_id'=> $request->usuario_id
             ]);        
 
-    foreach ($request->facturaElectronicaRenglon as $res) {
-        DB::table('factura_renglon')->insertGetId([    
-            'factura_id' => $factura_encabezado_id,        
-            'descripcion' => $res["descripcion"],
-            'cantidad' => $res["cantidad"],
-            'precio_unitario' => $res["precio_unitario"],
-            'alicuota_id' => $res["alicuota_id"],
-            'alicuota' => $res["alicuota"],
-            'iva' => $res["iva"],
-            'total_sin_iva' => $res["total_sin_iva"],
-            'total_renglon' => $res["total_renglon"]
-        ]);    
-    }
+        foreach ($request->facturaElectronicaRenglon as $res) {
+            DB::table('factura_renglon')->insertGetId([    
+                'factura_id' => $factura_encabezado_id,        
+                'descripcion' => $res["descripcion"],
+                'cantidad' => $res["cantidad"],
+                'precio_unitario' => $res["precio_unitario"],
+                'alicuota_id' => $res["alicuota_id"],
+                'alicuota' => $res["alicuota"],
+                'iva' => $res["iva"],
+                'total_sin_iva' => $res["total_sin_iva"],
+                'total_renglon' => $res["total_renglon"]
+            ]);    
+        }
     
     return response()->json($numero_recibo, 201);
     
          }
 
 
-         
+         // FACTURAS CON IVA
 
     if($request->factura_comprobante_id != 11){ 
-        foreach($request->facturaElectronicaRenglon as $_facturaElectronicaRenglon){
-//            echo $_facturaElectronicaRenglon['descripcion']; 
-            echo $_facturaElectronicaRenglon['tipo_concepto_iva']['name'];
-        }
-
-        /********************** */
-        // DEBE AGREGARSE UN ARREGLO PARA EL IVA        
-
-  $j=0;
-   /*  $item =  ['id' => $s['id'] ,'BaseImp' => $s['Importe'], 'Importe' => $s['importe_gravado']];              
-         $Iva[$i] = $item;
-         $i++;*/
-      foreach($request->facturaAlicuotaAsociada as $s){
-     
-         if($s['id'] == 5){
-
-        $array[$j] =     
-                array(        
-                        'Id'            => $s['id'], // Id del tipo de IVA (5 = 21%)
-                        'BaseImp'       => $s['Importe'],
-                        'Importe'       =>  $s['importe_gravado']
-                );
-                $j++;
-         }
-
-         if($s['id'] == 3){
-            $array[$j]  =     
-                    array(
-                            'Id'            => $s['id'], // Id del tipo de IVA (5 = 21%)
-                            'BaseImp'       => $s['Importe'],
-                            'Importe'       =>  $s['importe_gravado']
-                    );
-                    $j++;
-             }
-
-        if($s['id'] == 4){
-           $array[$j] =    
-                   array(
-                           'Id'            => $s['id'], // Id del tipo de IVA (5 = 21%)
-                           'BaseImp'       => $s['Importe'],
-                           'Importe'       =>  $s['importe_gravado']
-                   );
-                   $j++;
-            }
-
-        if($s['id'] == 6){
-            $array[$j]  =     
-                    array(
-                            'Id'            => $s['id'], // Id del tipo de IVA (5 = 21%)
-                            'BaseImp'       => $s['Importe'],
-                            'Importe'       =>  $s['importe_gravado']
-                    );
-                    $j++;
-             }
-             
-        if($s['id'] == 8){
-           $array[$j]  =     
-                   array(
-                           'Id'            => $s['id'], // Id del tipo de IVA (5 = 21%)
-                           'BaseImp'       => $s['Importe'],
-                           'Importe'       =>  $s['importe_gravado']
-                   );
-                   $j++;
-            }
+      
+        $j=0;
+        $renglones = 0;
+        $array = null;
+        $arrayCredito = null;
+      foreach($request->facturaElectronicaRenglon as $s){
+    
                 
-         if($s['id'] == 9){
-            $array[$j]  =     
-                    array(
-                            'Id'            => $s['id'], // Id del tipo de IVA (5 = 21%)
-                            'BaseImp'       => $s['Importe'],
-                            'Importe'       =>  $s['importe_gravado']
-                    );
-                    $j++;
-             }
-      }
+
+            if( $request->facturaElectronicaRenglon[$j]['tipo_concepto_iva']['name'] === "GRAVADO"){
+               
+                if($s['alicuota_id'] == 5){
+
+                    $array[$renglones] =     
+                            array(        
+                                'Id'            => $s['alicuota_id'], // Id del tipo de IVA (5 = 21%)
+                                'BaseImp'       => $s['total_sin_iva'],
+                                'Importe'       =>  $s['iva']
+                            );                            
+                     }
+            
+                     if($s['alicuota_id'] == 3){
+                        $array[$renglones]  =     
+                                array(
+                                    'Id'            => $s['alicuota_id'], // Id del tipo de IVA (5 = 21%)
+                                    'BaseImp'       => $s['total_sin_iva'],
+                                    'Importe'       =>  $s['iva']
+                                );
+                         }
+            
+                    if($s['alicuota_id'] == 4){
+                       $array[$renglones] =    
+                               array(
+                                'Id'            => $s['alicuota_id'], // Id del tipo de IVA (5 = 21%)
+                                'BaseImp'       => $s['total_sin_iva'],
+                                'Importe'       =>  $s['iva']
+                               );                               
+                        }
+            
+                    if($s['alicuota_id'] == 6){
+                        $array[$renglones]  =     
+                                array(
+                                    'Id'            => $s['alicuota_id'], // Id del tipo de IVA (5 = 21%)
+                                    'BaseImp'       => $s['total_sin_iva'],
+                                    'Importe'       =>  $s['iva']
+                                );
+
+                         }
+                         
+                    if($s['alicuota_id'] == 8){
+                       $array[$renglones]  =     
+                               array(
+                                'Id'            => $s['alicuota_id'], // Id del tipo de IVA (5 = 21%)
+                                'BaseImp'       => $s['total_sin_iva'],
+                                'Importe'       =>  $s['iva']
+                               );                               
+                        }
+                            
+                     if($s['alicuota_id'] == 9){
+                        $array[$renglones]  =     
+                                array(
+                                    'Id'            => $s['alicuota_id'], // Id del tipo de IVA (5 = 21%)
+                                    'BaseImp'       => $s['total_sin_iva'],
+                                    'Importe'       =>  $s['iva']
+                                );     
+                         }  
+                         $renglones++;         
+            }
+    //  }
+      $j++;
+    }
+    if($request->es_credito){
+        $tipo_factura_asociada =  $request->factura_comprobante_id_credito;
+        $punto_factura_asociada = $request->factura_pto_vta_id_credito;
+        $numero_factura_asociada = $request->factura_comprobante_numero_credito;
+
+     /*    $arrayCredito =  array(
+            'Tipo'          => $tipo_factura_asociada,
+            'PtoVta'        => $punto_factura_asociada,
+            'Nro'           => $numero_factura_asociada,
+        ); */
+        $arrayCredito[0]  =     
+        array(
+           'Tipo'          =>88,// $tipo_factura_asociada,
+            'PtoVta'        => $punto_factura_asociada,
+            'Nro'           => $numero_factura_asociada,
+        );   
+        
+      //  echo 'nota credito';
+      //  echo 'nota comprobante_id_credito'. $request->factura_comprobante_id_credito;
+      //  echo 'pto_Vta'.$request->factura_pto_vta_id_credito;
+      //  echo 'numero_credito'.$request->factura_comprobante_numero_credito;
+
+    }
 
     //OBTENGO EL ULTIMO NUMERO DE COMPROBANTE
 
@@ -250,17 +268,17 @@ class FacturaElementosController extends ApiController{
             'CbteHasta'     => $numero_de_factura ,
             'CbteFch'       => intval(str_replace('-', '', $request->fecha)),
             'ImpTotal'      => $request->importe_total,
-            'ImpTotConc'=> 0, // Importe neto no gravado
-            'ImpNeto'       => $request->importe_gravado,
-            'ImpOpEx'       => $request->importe_exento_iva,
+            'ImpTotConc'    => $request->importe_total_neto_no_gravado, // Importe neto no gravado
+            'ImpNeto'       => $request->importe_neto,
+            'ImpOpEx'       => $request->importe_op_exenta,
             'ImpIVA'        => $request->importe_iva,
             'ImpTrib'       => 0, //Importe total de tributos
             'MonId'         => 'PES', //Tipo de moneda usada en la factura ('PES' = pesos argentinos)
             'MonCotiz'      => 1, // Cotización de la moneda usada (1 para pesos argentinos)
+            'CbtesAsoc' => $arrayCredito,
             'Iva'       //=>$Iva  
               => $array
-    );
-
+    );   
 }else{
 
 
@@ -295,7 +313,7 @@ class FacturaElementosController extends ApiController{
     );
 
 }
-//var_dump($data);
+
 
     $resAfip = $afip->ElectronicBilling->CreateVoucher($data);
 
@@ -305,9 +323,11 @@ if($resAfip){
 
 $factura_encabezado_id= DB::table('factura_encabezado')->insertGetId([
     'factura_pto_vta_id'=> $request->factura_pto_vta_id,
+    'medico_id'=> $request->medico_id, 
     'medico_id'=> $request->medico_id,
-    'factura_comprobante_id'=> $request->factura_comprobante_id,
+    'categoria_iva'=> $request->elementoCondicionIva,
     'factura_concepto_id'=> $request->factura_concepto_id,
+    'factura_comprobante_id'=> $request->factura_comprobante_id,
     'factura_documento_comprador_id'=> $request->factura_documento_comprador_id,
     'factura_documento'=> $request->factura_documento,
     'factura_obra_social'=> $request->factura_obra_social,
@@ -316,11 +336,12 @@ $factura_encabezado_id= DB::table('factura_encabezado')->insertGetId([
     'fecha'=> $request->fecha,
     'fecha_desde'=> $request->fecha_desde,
     'fecha_hasta'=> $request->fecha_hasta,
-    'importe_gravado'=> $request->importe_gravado,
-    'importe_exento_iva'=> $request->importe_exento_iva,
+    'importe_gravado'=> $request->importe_neto,
+    'importe_exento_iva'=> $request->importe_total_neto_no_gravado + $request->importe_op_exenta,
     'importe_iva'=> $request->importe_iva,
     'importe_total'=> $request->importe_total
     ]);        
+
 
     foreach ($request->facturaElectronicaRenglon as $res) {
         DB::table('factura_renglon')->insertGetId([    
@@ -330,10 +351,11 @@ $factura_encabezado_id= DB::table('factura_encabezado')->insertGetId([
             'precio_unitario' => $res["precio_unitario"],
             'alicuota_id' => $res["alicuota_id"],
             'alicuota' => $res["alicuota"],
-            'iva' => $res["iva"],
+            'iva' => $res["iva"], 
             'total_sin_iva' => $res["total_sin_iva"],
             'total_renglon' => $res["total_renglon"]
         ]);    
+        
     }
    /*
    
@@ -362,8 +384,8 @@ $factura_encabezado_id= DB::table('factura_encabezado')->insertGetId([
             'cae_vto' => $resAfip["CAEFchVto"],
             'factura_numero' => $numero_de_factura
         ]);
-         //   echo $numero_de_factura;
-        $factura = DB::select( DB::raw("        SELECT  cae, cae_vto, factura_numero FROM factura_encabezado WHERE factura_numero = '".$numero_de_factura."'"));
+
+        $factura = DB::select( DB::raw("        SELECT  cae, cae_vto, factura_numero FROM factura_encabezado WHERE id = '".$factura_encabezado_id."'"));
 }
 
         return response()->json($factura, 201);
@@ -376,13 +398,13 @@ $factura_encabezado_id= DB::table('factura_encabezado')->insertGetId([
         $fecha =  date('Y-m-d');          
         $Iva = [];
         $i =0;
-        echo $request->id;
+
+        /* SELECT factura_encabezado.id, `factura_pto_vta_id`, `medico_id`, `factura_comprobante_id`, `factura_concepto_id`, `categoria_iva`, `factura_documento_comprador_id`, `factura_documento`, `factura_obra_social`, `factura_cliente`, `factura_numero`, `fecha`, `fecha_desde`, `fecha_hasta`, `importe_gravado`, `importe_exento_iva`, `importe_iva`, `importe_total`, `cae`, `cae_vto`, `usuario_id`, factura_punto_vta.id as factura_punto_vta_id, factura_punto_vta.punto_vta, factura_concepto.id as factura_concepto_id ,factura_concepto.descripcion, factura_comprobante.id as factura_comprobante_id , factura_comprobante.descripcion, factura_comprobante.letra ,factura_comprobante.descripcion FROM `factura_encabezado`, factura_punto_vta, factura_concepto, factura_comprobante WHERE factura_encabezado.factura_pto_vta_id = factura_punto_vta.id AND factura_encabezado.factura_comprobante_id = factura_comprobante.id AND factura_encabezado.factura_concepto_id = factura_concepto.id */
 
         $encabezado = DB::select( DB::raw("SELECT factura_encabezado.id, factura_pto_vta_id, medico_id, factura_concepto_id, factura_documento_comprador_id, factura_documento, factura_cliente, factura_numero, fecha, fecha_desde, fecha_hasta, importe_gravado, importe_exento_iva, importe_iva, importe_total, cae, cae_vto , factura_punto_vta.punto_vta, factura_comprobante.id as factura_comprobante_id
         FROM factura_encabezado , factura_punto_vta, factura_comprobante, factura_concepto, factura_documento_comprador
         WHERE factura_punto_vta.id = factura_encabezado.factura_pto_vta_id AND factura_encabezado.factura_comprobante_id = factura_comprobante.id AND factura_encabezado.factura_concepto_id = factura_concepto.id AND factura_encabezado.factura_documento_comprador_id = factura_documento_comprador.id  AND factura_encabezado.id = ".$request->id.""));
-      //  var_dump($encabezado[0]);
-   //   echo $encabezado[0]->id;
+
         $medico = DB::select( DB::raw("SELECT cuit, factura_key, factura_crt FROM medicos WHERE id = ".$encabezado[0]->medico_id.""));
         $afip = new Afip(array(
             'CUIT' => (float)$medico[0]->cuit,
@@ -393,7 +415,7 @@ $factura_encabezado_id= DB::table('factura_encabezado')->insertGetId([
 
         $alicuota = DB::select( DB::raw(" SELECT id, importe_gravado, importe, factura_encabezado_id 
                                          FROM factura_alicuota_asociada WHERE factura_encabezado_id = ".$encabezado[0]->id.""));
-     //   var_dump($alicuota);
+
 
 
         $j=0;
@@ -467,7 +489,6 @@ $factura_encabezado_id= DB::table('factura_encabezado')->insertGetId([
      * Numero de factura
      **/
     $numero_de_nota = $last_voucher+1;
-   // echo $numero_de_nota;
         
 $data = array(
     'FchServDesde'  => intval(str_replace('-', '', $fecha)),//Fecha de inicio de servicio (formato aaaammdd)
@@ -500,7 +521,6 @@ $data = array(
     'Iva'         => $array,
 );
 
-var_dump($data);
     $resAfip = $afip->ElectronicBilling->CreateVoucher($data);
     return response()->json($resAfip, 201);
 
