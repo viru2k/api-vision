@@ -171,6 +171,22 @@ class CirugiaController extends ApiController
     return $this->showOne($Lente);
   }
 
+  public function updHistoriaClinicaDni(Request $request)
+  {
+    // echo $request;
+
+    echo $request->input("dninew");
+    echo $request->input("dniold");
+
+    $update = DB::table("ficha")
+      ->where("PACIENTE", $request->input("dniold"))
+      ->update([
+        "PACIENTE" => $request["dninew"],
+      ]);
+
+    return response()->json($update, 201);
+  }
+
   public function crearEstudio(Request $request)
   {
     $tmp_fecha = str_replace("/", "-", $request["fecha_estudio"]);

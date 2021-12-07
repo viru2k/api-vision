@@ -333,6 +333,11 @@ Route::name("historia-clinica")->put(
   "Cirugia\CirugiaController@updHistoriaClinicaById"
 );
 
+Route::name("historia-clinica")->get(
+  "cirugia/historia/registro/dni",
+  "Cirugia\CirugiaController@updHistoriaClinicaDni"
+);
+
 /** ASESORAMIENTO **/
 Route::name("cirugia")->get(
   "cirugia/ficha/ficha/estado/{estado}",
