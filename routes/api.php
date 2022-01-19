@@ -1334,3 +1334,179 @@ Route::name("v2-parametros")->put(
   "v2/receta/{id}",
   "OperacionCobro\OperacionCobroController@putReceta"
 );
+
+//********************* V2 factura electronica  ****************************************/
+
+Route::name("factura-data")->get(
+  "v2/afip/data/medicos/facturan",
+  "V2\Afip\AfipController@getMedicosFacturan"
+);
+
+Route::name("factura-data")->get(
+  "v2/afip/data/getlastvoucher",
+  "V2\Afip\AfipDatosController@GetLastVoucher"
+);
+Route::name("factura-data")->get(
+  "v2/afip/data/getiformacioncomprobante",
+  "V2\Afip\AfipDatosController@getIformacionComprobante"
+);
+Route::name("factura-data")->get(
+  "v2/afip/data/tipocomprobantesdisponibles",
+  "V2\Afip\AfipDatosController@TipoComprobantesDisponibles"
+);
+Route::name("factura-data")->get(
+  "v2/afip/data/tipoconceptosdisponibles",
+  "V2\Afip\AfipDatosController@GetConceptTypes"
+);
+Route::name("factura-data")->get(
+  "v2/afip/data/tipodocumentosdisponibles",
+  "V2\Afip\AfipDatosController@TipoDocumentosDisponibles"
+);
+Route::name("factura-data")->get(
+  "v2/afip/data/tipoalicuotasdisponibles",
+  "V2\Afip\AfipDatosController@TipoAlicuotasDisponibles"
+);
+Route::name("factura-data")->get(
+  "v2/afip/data/getoptionstypes",
+  "V2\Afip\AfipDatosController@GetOptionsTypes"
+);
+Route::name("factura-data")->get(
+  "v2/afip/data/gettaxtypes",
+  "V2\Afip\AfipDatosController@GetTaxTypes"
+);
+Route::name("factura-data")->get(
+  "v2/afip/data/getconcepttypes",
+  "V2\Afip\AfipDatosController@GetConceptTypes"
+);
+Route::name("factura-data")->get(
+  "v2/afip/data/obetenerestadodelservidor",
+  "V2\Afip\AfipDatosController@ObetenerEstadoDelServidor"
+);
+Route::name("factura-data")->get(
+  "v2/afip/data/medico/dato",
+  "V2\Afip\AfipController@getDatoMedico"
+);
+Route::name("factura-data")->get(
+  "v2/afip/data/comprobante/by/medico",
+  "V2\Afip\AfipController@getComprobanteXMedico"
+);
+
+Route::name("factura")->get(
+  "v2/afip/lastvoucher",
+  "V2\Afip\AfipController@testAfipGetLastVoucher"
+);
+Route::name("factura")->get("v2/afip/test", "V2\Afip\AfipController@testAfip");
+Route::name("factura")->get(
+  "v2/afip/factura/a",
+  "V2\Afip\AfipController@CrearFacturaA"
+);
+Route::name("factura")->get(
+  "v2/afip/factura/b",
+  "V2\Afip\AfipController@CrearFacturaB"
+);
+Route::name("factura")->get(
+  "v2/afip/factura/c",
+  "V2\Afip\AfipController@CrearFacturaC"
+);
+
+Route::name("factura")->get(
+  "v2/afip/notacredito/a",
+  "V2\Afip\AfipController@CrearNotaCreditoA"
+);
+Route::name("factura")->get(
+  "v2/afip/notacredito/b",
+  "V2\Afip\AfipController@CrearNotaCreditoB"
+);
+Route::name("factura")->get(
+  "v2/afip/notacredito/c",
+  "V2\Afip\AfipController@CrearNotaCreditoC"
+);
+
+Route::name("factura")->get(
+  "v2/afip/factura/info",
+  "V2\Afip\AfipController@GetVoucherInfo"
+);
+
+/**** ELEMENTOS FACTURACION */
+
+Route::name("facturacion-elementos")->get(
+  "v2/afip/elementos/alicuota",
+  "V2\Afip\FacturaElementosController@Alicuota"
+);
+Route::name("facturacion-elementos")->get(
+  "v2/afip/elementos/alicuota/asociada",
+  "V2\Afip\FacturaElementosController@AlicuotaAsociada"
+);
+Route::name("facturacion-elementos")->get(
+  "v2/afip/elementos/comprobante",
+  "V2\Afip\FacturaElementosController@Comprobante"
+);
+Route::name("facturacion-elementos")->get(
+  "v2/afip/elementos/concepto",
+  "V2\Afip\FacturaElementosController@Concepto"
+);
+Route::name("facturacion-elementos")->get(
+  "v2/afip/elementos/documento",
+  "V2\Afip\FacturaElementosController@Documento"
+);
+Route::name("facturacion-elementos")->get(
+  "v2/afip/elementos/pto/vta",
+  "V2\Afip\FacturaElementosController@PtoVta"
+);
+Route::name("facturacion-elementos")->get(
+  "v2/afip/elementos/categoria/iva",
+  "V2\Afip\FacturaElementosController@CategoriaIva"
+);
+Route::name("facturacion-elementos")->post(
+  "v2/afip/elementos/factura/nueva",
+  "V2\Afip\FacturaElementosController@crearFactura"
+);
+Route::name("facturacion-elementos")->get(
+  "v2/afip/elementos/factura",
+  "V2\Afip\FacturaElementosController@GetFacturaByid"
+);
+Route::name("facturacion-elementos")->post(
+  "v2/afip/elementos/factura/nota/credito",
+  "V2\Afip\FacturaElementosController@crearFacturaNotaCredito"
+);
+Route::name("facturacion-elementos")->get(
+  "v2/afip/elementos/factura/by/fecha",
+  "V2\Afip\FacturaElementosController@GetFacturaBetweenDates"
+);
+Route::name("facturacion-elementos")->get(
+  "v2/afip/elementos/factura/by/cliente",
+  "V2\Afip\FacturaElementosController@GetFacturaByNameOrDocumento"
+);
+Route::name("facturacion-elementos")->get(
+  "v2/afip/elementos/factura/by/id",
+  "V2\Afip\FacturaElementosController@FacturaById"
+);
+Route::name("facturacion-elementos")->get(
+  "v2/afip/elementos/factura/libro/iva",
+  "V2\Afip\FacturaElementosController@getLibroIva"
+);
+
+Route::name("facturacion-elementos")->get(
+  "v2/afip/elementos/articulo",
+  "V2\Afip\FacturaElementosController@FacturaArticulo"
+);
+Route::name("facturacion-elementos")->post(
+  "v2/afip/elementos/articulo",
+  "V2\Afip\FacturaElementosController@CrearFacturaArticulo"
+);
+Route::name("facturacion-elementos")->put(
+  "v2/afip/elementos/articulo/{id}",
+  "V2\Afip\FacturaElementosController@ActualizarFacturaArticulo"
+);
+Route::name("facturacion-elementos")->get(
+  "v2/afip/elementos/articulo/tipo",
+  "V2\Afip\FacturaElementosController@GetFacturaByArticuloTipo"
+);
+Route::name("facturacion-elementos")->put(
+  "v2/afip/elementos/articulo/tipo/{id}",
+  "V2\Afip\FacturaElementosController@ActualizarFacturaArticuloTipo"
+);
+Route::name("facturacion-elementos")->post(
+  "v2/afip/elementos/articulo/tipo",
+  "V2\Afip\FacturaElementosController@CrearFacturaArticuloTipo"
+);
