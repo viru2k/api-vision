@@ -162,7 +162,23 @@ class FacturaElementosController extends ApiController
         ]);
       }
 
-      return response()->json($numero_recibo, 201);
+      DB::table("factura_encabezado")
+        ->where("id", $factura_encabezado_id)
+        ->update([
+          "cae" => $numero_recibo,
+          "cae_vto" => $request->fecha,
+          "factura_numero" => $numero_recibo,
+        ]);
+
+      $factura = DB::select(
+        DB::raw(
+          "        SELECT  cae, cae_vto, factura_numero FROM factura_encabezado WHERE id = '" .
+            $factura_encabezado_id .
+            "'"
+        )
+      );
+
+      return response()->json($factura, 201);
     }
 
     // FACTURAS CON IVA
