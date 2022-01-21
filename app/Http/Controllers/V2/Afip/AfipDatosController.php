@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\DB;
 class AfipDatosController extends Controller
 {
   //var  $produccion = TRUE;
-  var $produccion = false;
+  var $produccion = true;
 
   public function GetLastVoucher(Request $request)
   {
